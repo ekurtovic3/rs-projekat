@@ -13,4 +13,10 @@
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
 }
+.poljeIspravno {
+    -fx-control-inner-background: greenyellow;
+}
+.poljeNijeIspravno {
+    -fx-control-inner-background: lightpink;
+}
 

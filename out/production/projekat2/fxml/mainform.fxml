@@ -134,7 +134,6 @@
                                 <TextField fx:id="fldUsername" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                 <Label text="Password" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                 <PasswordField fx:id="fldPassword" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-                                <PasswordField fx:id="fldPasswordRepeat" GridPane.columnIndex="2" GridPane.rowIndex="7" />
 
                                 <ButtonBar prefHeight="32.0" prefWidth="523.0" GridPane.columnSpan="3" GridPane.rowIndex="8">
                                     <buttons>
@@ -143,7 +142,7 @@
                                     </buttons>
                                 </ButtonBar>
                         <Label text="JMBG" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <TextField GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <TextField fx:id="fldJmbg" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                         <DatePicker fx:id="dpBirthday" prefHeight="26.0" prefWidth="204.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <HBox prefHeight="25.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="7">
                            <children>
