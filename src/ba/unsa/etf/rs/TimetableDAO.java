@@ -23,6 +23,115 @@ public class TimetableDAO{
 
 
 
+    //SalaDAO
+    public void defaultClass() {
+        addClassroom(new Classroom("2-0", 50));
+        addClassroom(new Classroom("2-a", 60));
+        addClassroom(new Classroom("asd", 500));
+    }
+    public void TESTdeleteClassroom() {
+        deleteClassroom("2-0");
+        deleteClassroom("2-a");
+        deleteClassroom("asd");
+    }
+
+    public boolean addClassroom(Classroom room) {
+        try  {
+            Classroom cl = findClassroom(room.getName());
+            if (cl == null) {
+                ID = findMaxIDClassroom() + 1;
+                int classroomID = ID;
+                //  room.setId(classroomID);
+                addClassroomQuery.setInt(1, classroomID);
+                addClassroomQuery.setString(2, room.getName());
+                addClassroomQuery.setInt(3, room.getCapacity());
+                addClassroomQuery.executeUpdate();
+                System.out.println(room.getName() + " "+ room.getCapacity());
+                return true;
+            }
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private int findMaxIDClassroom() {
+        int result = 0;
+        try {
+            ResultSet resultSet = findMaxIDClassroom.executeQuery();
+            while (resultSet.next())
+                result = resultSet.getInt(1);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public Classroom findClassroom(String classroomName) {
+        Classroom result = null;
+        try {
+            findClassroomQuery.setString(1,classroomName);
+            ResultSet resultSet = findClassroomQuery.executeQuery();
+            while (resultSet.next())
+                result = new Classroom(resultSet.getString(1),resultSet.getInt(2));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public int findClassroomID(String classroomName) {
+        int result = 0;
+        try {
+            findClassroomQuery.setString(1,classroomName);
+            ResultSet resultSet = findClassroomQuery.executeQuery();
+            result = resultSet.getInt(1);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public Classroom findClassroomByID(int id) {
+        Classroom result = null;
+        try {
+            findClassroomByIDQuery.setInt(1,id);
+            ResultSet resultSet = findClassroomByIDQuery.executeQuery();
+            while (resultSet.next())
+                result = new Classroom(resultSet.getString(1),resultSet.getInt(2));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public void deleteClassroom(String c) {
+        try {
+            // Classroom cl = findClassroom(c.getName());
+            deleteClassroom.setInt(1, findClassroomID(c));
+            deleteClassroom.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public ObservableList<Classroom> getAllClassrooms() {
+        ArrayList<Classroom> result = new ArrayList<>();
+        try {
+            ResultSet resultSet = selectClassrooms.executeQuery();
+            while (resultSet.next())
+                result.add(new Classroom(resultSet.getString(2), resultSet.getInt(3)));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return FXCollections.observableArrayList(result);
+    }
+
     //PredmetDAO
 
     public void defaultSubject() {
