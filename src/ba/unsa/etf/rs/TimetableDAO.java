@@ -21,7 +21,221 @@ public class TimetableDAO{
     private PreparedStatement deleteClassroom, deleteSubject,deleteUser,deleteClass;
     private PreparedStatement findClassroomByIDQuery,findClassByIDQuery;
 
+    public User getTrenutniKorisnik() {
+        return trenutniKorisnik.get();
+    }
 
+    public SimpleObjectProperty<User> trenutniKorisnikProperty() {
+        return trenutniKorisnik;
+    }
+
+    public void setTrenutniKorisnik(User trenutniKorisnik) {
+        this.trenutniKorisnik.set(trenutniKorisnik);
+    }
+
+    private SimpleObjectProperty<User> trenutniKorisnik = new SimpleObjectProperty<>();
+    public static TimetableDAO getInstance() throws SQLException {
+        if (instance == null) instance = new TimetableDAO();
+        return instance;
+    }
+
+    private TimetableDAO() throws SQLException {
+        try {
+
+            conn = DriverManager.getConnection("jdbc:sqlite:base.db");
+            selectClassrooms = conn.prepareStatement("SELECT * FROM Classroom");
+            selectSubjects = conn.prepareStatement("SELECT * FROM Subject");
+            selectUsers = conn.prepareStatement("SELECT * FROM User");
+            selectClass = conn.prepareStatement("SELECT * FROM Class");
+            addClassroomQuery = conn.prepareStatement("INSERT INTO Classroom values (?,?,?)");
+            addSubjectQuery = conn.prepareStatement("INSERT INTO Subject values (?,?)");
+            addUserQuery = conn.prepareStatement("Insert INTO User values(?,?,?,?,?,?,?,?)");
+            addClassQuery = conn.prepareStatement("Insert INTO Class values(?,?,?,?,?,?,?)");
+            findClassroomQuery = conn.prepareStatement("SELECT * FROM Classroom WHERE name =?");
+            findSubjectQuery = conn.prepareStatement("SELECT * FROM Subject WHERE name = ?");
+            findUserQuery= conn.prepareStatement("SELECT * FROM User WHERE jmbg = ?");
+            findClassQuery= conn.prepareStatement("SELECT * FROM Class WHERE id = ?");
+            findMaxIDClassroom = conn.prepareStatement("SELECT max(id) FROM Classroom");
+            findMaxIDSubject = conn.prepareStatement("SELECT max(id) FROM Subject");
+            findMaxIDUser= conn.prepareStatement("SELECT max(id) FROM User");
+            findMaxIDClass= conn.prepareStatement("SELECT max(id) FROM Class");
+            deleteClassroom = conn.prepareStatement("DELETE FROM Classroom WHERE id = ?");
+            deleteSubject = conn.prepareStatement("DELETE FROM Subject WHERE name = ?");
+            deleteUser = conn.prepareStatement("DELETE FROM User WHERE jmbg = ?");
+            deleteClass = conn.prepareStatement("DELETE FROM User WHERE id = ?");
+
+            findClassroomByIDQuery = conn.prepareStatement("SELECT * FROM Classroom WHERE id = ?");
+            findClassByIDQuery = conn.prepareStatement("SELECT * FROM Class WHERE id = ?");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+//ClassDAO
+    public boolean addClass(Class c) {
+        try  {
+            Class c1 = findClass(c.getId());
+            if (c1 == null) {
+                ID = findMaxIDClass() + 1;
+                int classID = ID;
+                //   room.setId(classroomID);
+                addClassQuery.setInt(1,classID );
+                addClassQuery.setTime(2, c1.getStart());
+                addClassQuery.setTime(3, c1.getEnd());
+                addClassQuery.setInt(4, c1.getPeriod());
+                addClassQuery.setInt(5, c1.getClassroom().getId());
+                addClassQuery.setInt(6, findSubjectID(c1.getSubject().getName()));
+                addClassQuery.setInt(7, c1.getType().ordinal());
+
+                addUserQuery.executeUpdate();
+                //   System.out.println(s.getName() + " "+ s.getSurname()+" "+s.getEmail());
+                return true;
+            }
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Class findClass(int id) {
+        Class result = null;
+        try {
+            findClassQuery.setInt(1,id);
+            ResultSet resultSet = findClassQuery.executeQuery();
+            while (resultSet.next()) {
+                Class.Type vrsta = Class.Type.values()[resultSet.getInt(7)];
+                result = new Class(resultSet.getInt(1),resultSet.getTime(2), resultSet.getTime(3), resultSet.getInt(4), findClassroomByID(resultSet.getInt(5)), findSubjectByID(resultSet.getInt(6)),vrsta);
+            }}
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    private int findMaxIDClass() {
+        int result = 0;
+        try {
+            ResultSet resultSet = findMaxIDUser.executeQuery();
+            while (resultSet.next())
+                result = resultSet.getInt(1);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public void deleteClass(int id) {
+        try {
+            Class pc = findClass(id);
+            deleteClass.setInt(1,pc.getId());
+            deleteClass.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+//UserDAO
+
+    //Za test
+    public void defaultUser() {
+        addUser(new Student("Emir", "Kurtovic","kurtovic@gmail.com","0404888170254","asd",Date.valueOf(LocalDate.now())));
+        addUser(new Profesor("Azra", "Balic","awdawd@wadad.com","18115615651","wasd",Date.valueOf(LocalDate.now())));
+        addUser(new Student("A", "B","C","15465464","n15a",Date.valueOf(LocalDate.now())));
+    }
+    public void TESTdeleteUser() {
+        //  deleteUser("0404888170254");
+        // deleteUser("18115615651");
+        deleteUser("15465464");
+    }
+
+    public boolean addUser(User s) {
+        try  {
+            User s1 = findUser(s.getName());
+            if (s1 == null) {
+                ID = findMaxIDUser() + 1;
+                int userID = ID;
+                //   room.setId(classroomID);
+                addUserQuery.setInt(1,userID );
+                addUserQuery.setString(2, s.getName());
+                addUserQuery.setString(3, s.getSurname());
+                addUserQuery.setString(4, s.getEmail());
+                addUserQuery.setString(5, s.getJmbg());
+                addUserQuery.setString(6, s.getUsername());
+                addUserQuery.setDate(7, s.getDateOfBirth());
+                if(s instanceof Profesor) {addUserQuery.setInt(8, 2);}
+                else if(s instanceof Student) {addUserQuery.setInt(8, 1);}
+                else {addUserQuery.setInt(8, 0);}
+                /*  UBACIT JOS ZA ADMINA*/
+                addUserQuery.executeUpdate();
+                System.out.println(s.getName() + " "+ s.getSurname()+" "+s.getEmail());
+                return true;
+            }
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private int findMaxIDUser() {
+        int result = 0;
+        try {
+            ResultSet resultSet = findMaxIDUser.executeQuery();
+            while (resultSet.next())
+                result = resultSet.getInt(1);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public User findUser(String userJmbg) {
+        User result = null;                 /* VRACA PROFESORA ILI STUDENTA A NE USER??????????*/
+        try {
+            findUserQuery.setString(1,userJmbg);
+            ResultSet resultSet = findUserQuery.executeQuery();
+            while (resultSet.next())
+                result = new User(resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6),resultSet.getDate(7));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public void deleteUser(String s) {
+        try {
+            User pu = findUser(s);
+            deleteUser.setString(1,pu.getJmbg());
+            deleteUser.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    public ObservableList<User> getAllUsers() { // DODAT ADMINA i indeks
+        ArrayList<User> result = new ArrayList<>();
+        try {
+            ResultSet resultSet = selectUsers.executeQuery();
+            while (resultSet.next())
+                if(resultSet.getInt(8) ==2)
+                { result.add(new Profesor(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
+                else  if(resultSet.getInt(8) ==1)
+                { result.add(new Student(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
+
+            //      else {addUserQuery.setInt(8, 0);}
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return FXCollections.observableArrayList(result);
+    }
 
     //SalaDAO
     public void defaultClass() {
