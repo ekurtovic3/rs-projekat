@@ -57,7 +57,7 @@ public class MainController {
                 fldUsername.textProperty().unbindBidirectional(oldKorisnik.usernameProperty() );
                 fldJmbg.textProperty().unbindBidirectional(oldKorisnik.jmbgProperty() );
              //   fldPassword.textProperty().unbindBidirectional(oldKorisnik.() );
-              //  dpBirthday.textProperty().unbindBidirectional(oldKorisnik.passwordProperty() );
+              //  dpBirthday.setPromptText(oldKorisnik.getDateOfBirth().toString());
             }
             if (newKorisnik == null) {
                 fldName.setText("");
@@ -169,7 +169,34 @@ public class MainController {
             }
         });
     }
-
+    private boolean isJmbgValid(String s) {
+        if (s.length() != 13) return false;
+        try {
+            int dd = Integer.parseInt(fldJmbg.getText(0, 2));
+            int mm = Integer.parseInt(fldJmbg.getText(2, 4));
+            int ggg = Integer.parseInt(fldJmbg.getText(4, 7));
+            if (mm < 1 || mm > 12) return false;
+            if (dd < 1 || dd > YearMonth.of(ggg, mm).lengthOfMonth()) return false;
+            int rr = Integer.parseInt(fldJmbg.getText(7, 9));
+            int bbb = Integer.parseInt(fldJmbg.getText(9, 12));
+            int k = Integer.parseInt(fldJmbg.getText(12, 13));
+            int l = 11 - ((7 * (Integer.parseInt(fldJmbg.getText(0, 1)) + Integer.parseInt(fldJmbg.getText(6, 7))) +
+                    6 * (Integer.parseInt(fldJmbg.getText(1, 2)) + Integer.parseInt(fldJmbg.getText(7, 8))) +
+                    5 * (Integer.parseInt(fldJmbg.getText(2, 3)) + Integer.parseInt(fldJmbg.getText(8, 9))) +
+                    4 * (Integer.parseInt(fldJmbg.getText(3, 4)) + Integer.parseInt(fldJmbg.getText(9, 10))) +
+                    3 * (Integer.parseInt(fldJmbg.getText(4, 5)) + Integer.parseInt(fldJmbg.getText(10, 11))) +
+                    2 * (Integer.parseInt(fldJmbg.getText(5, 6)) + Integer.parseInt(fldJmbg.getText(11, 12)))) % 11);
+            if (l >= 1 && l <= 9 && l != k) return false;
+            if (l > 9 && k != 0) return false;
+            //unakrsno sa datumom
+            if (ggg != dpBirthday.getValue().getYear() % 1000) return false;
+            if (mm != dpBirthday.getValue().getMonthValue()) return false;
+            if (dd != dpBirthday.getValue().getDayOfMonth()) return false;
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
     private boolean isDateValid(LocalDate s) {
         if (s == null) return false;
         LocalDate trenutni = LocalDate.now();
@@ -184,5 +211,18 @@ public class MainController {
     }
 
     public void btnSubjectDelete(ActionEvent actionEvent) {
+    }
+
+    public void AllUsers(ActionEvent actionEvent) {
+        listViewUsers.setItems(dao.getAllUsers());
+    }
+
+    public void Students(ActionEvent actionEvent) {
+        listViewUsers.setItems(dao.getAllSpecificUsers(1));
+
+    }
+
+    public void Profesors(ActionEvent actionEvent) {
+        listViewUsers.setItems(dao.getAllSpecificUsers(2));
     }
 }
