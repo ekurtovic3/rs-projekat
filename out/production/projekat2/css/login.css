@@ -1,0 +1,10 @@
+#btnLogin{
+    -fx-background-color: #1894d4;
+}
+
+#lLogin{
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-font-size: 25;
+
+}
