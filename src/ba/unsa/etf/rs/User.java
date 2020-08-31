@@ -14,11 +14,6 @@ public class User {
     private SimpleStringProperty username;
     private SimpleObjectProperty<Date> dateOfBirth;
 
-    @Override
-    public String toString() {
-        return  name +" " +" "+surname +" " +email ;
-    }
-
     public User(String name, String surname, String email, String jmbg, String username, Date dateOfBirth) {
         this.name = new SimpleStringProperty(name);
         this.surname = new SimpleStringProperty(surname);
@@ -96,7 +91,13 @@ public class User {
         return dateOfBirth;
     }
 
+
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth.set(dateOfBirth);
+    }
+
+    @Override
+    public String toString() {
+        return this.getName()+" "+this.getSurname()+" "+this.getEmail();
     }
 }

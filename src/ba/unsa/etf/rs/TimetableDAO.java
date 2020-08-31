@@ -236,6 +236,23 @@ public class TimetableDAO{
         }
         return FXCollections.observableArrayList(result);
     }
+    public ObservableList<User> getAllSpecificUsers(int i) { // DODAT ADMINA i indeks
+        ArrayList<User> result = new ArrayList<>();
+        try {
+            ResultSet resultSet = selectUsers.executeQuery();
+            while (resultSet.next())
+                if(resultSet.getInt(8) ==2 &&  i==2)
+                { result.add(new Profesor(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
+                else  if(resultSet.getInt(8) ==1 && i==1)
+                { result.add(new Student(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
+
+            //      else {addUserQuery.setInt(8, 0);}
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return FXCollections.observableArrayList(result);
+    }
 
     //SalaDAO
     public void defaultClass() {

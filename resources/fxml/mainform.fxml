@@ -146,13 +146,13 @@
                         <DatePicker fx:id="dpBirthday" prefHeight="26.0" prefWidth="204.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <HBox prefHeight="25.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="7">
                            <children>
-                              <RadioButton mnemonicParsing="false" text="All">
+                              <RadioButton  onAction="#AllUsers" mnemonicParsing="false" text="All">
                                  <toggleGroup>
                                     <ToggleGroup fx:id="group1" />
                                  </toggleGroup>
                               </RadioButton>
-                              <RadioButton mnemonicParsing="false" text="Students" toggleGroup="$group1" />
-                              <RadioButton mnemonicParsing="false" text="Profesors" toggleGroup="$group1" />
+                              <RadioButton onAction="#Students" mnemonicParsing="false" text="Students" toggleGroup="$group1" />
+                              <RadioButton onAction="#Profesors" mnemonicParsing="false" text="Profesors" toggleGroup="$group1" />
                            </children>
                         </HBox>
                             </children>
