@@ -6,11 +6,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListView;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -28,6 +26,13 @@ public class MainController {
     public TextField fldJmbg;
     public DatePicker dpBirthday;
     public PasswordField fldPassword;
+    public Button btnAddUser;
+    public RadioButton radioStudent;
+    public RadioButton radioProfesor;
+    public Button btnCancelUser;
+    public Button btnConfirmUser;
+ //   private User pom=null;
+    private User pom=null;
     private TimetableDAO dao;
     private ObservableList<Subject> listSubjects;
     private ObservableList<User> listUsers;
@@ -47,7 +52,7 @@ public class MainController {
 
         listViewUsers.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             dao.setTrenutniKorisnik((User) newKorisnik);
-
+            pom =new User(dao.getTrenutniKorisnik());
         });
         dao.trenutniKorisnikProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             if (oldKorisnik != null) {
@@ -56,8 +61,10 @@ public class MainController {
                 fldEmail.textProperty().unbindBidirectional(oldKorisnik.emailProperty() );
                 fldUsername.textProperty().unbindBidirectional(oldKorisnik.usernameProperty() );
                 fldJmbg.textProperty().unbindBidirectional(oldKorisnik.jmbgProperty() );
-             //   fldPassword.textProperty().unbindBidirectional(oldKorisnik.() );
-              //  dpBirthday.setPromptText(oldKorisnik.getDateOfBirth().toString());
+                dpBirthday.valueProperty().unbindBidirectional(oldKorisnik.dateOfBirthProperty());
+                if(dao.getTrenutniKorisnik() instanceof Student) radioStudent.setSelected(true);
+                if(dao.getTrenutniKorisnik() instanceof Profesor) radioProfesor.setSelected(true);
+
             }
             if (newKorisnik == null) {
                 fldName.setText("");
@@ -65,7 +72,6 @@ public class MainController {
                 fldEmail.setText("");
                 fldUsername.setText("");
                 fldJmbg.setText("");
-                fldPassword.setText("");
                 dpBirthday.setValue(LocalDate.now());
             }
             else {
@@ -74,8 +80,10 @@ public class MainController {
                 fldEmail.textProperty().bindBidirectional(newKorisnik.emailProperty() );
                 fldUsername.textProperty().bindBidirectional(newKorisnik.usernameProperty() );
                 fldJmbg.textProperty().bindBidirectional(newKorisnik.jmbgProperty() );
-               // fldPassword.textProperty().bindBidirectional(newKorisnik.jmbgProperty() );
-                //  dpBirthday.textProperty().unbindBidirectional(oldKorisnik.passwordProperty() );
+                dpBirthday.valueProperty().bindBidirectional(newKorisnik.dateOfBirthProperty());
+                if(dao.getTrenutniKorisnik() instanceof Student) radioStudent.setSelected(true);
+                if(dao.getTrenutniKorisnik() instanceof Profesor) radioProfesor.setSelected(true);
+
             }
         });
             fldName.textProperty().addListener((obs, oldIme, newIme) -> {
@@ -159,7 +167,7 @@ public class MainController {
         });
 
 
-        fldPassword.textProperty().addListener((obs, oldIme, newIme) -> {
+/*        fldPassword.textProperty().addListener((obs, oldIme, newIme) -> {
             if (!newIme.isEmpty() || newIme.length()<3) {
                 fldPassword.getStyleClass().removeAll("poljeNijeIspravno");
                 fldPassword.getStyleClass().add("poljeIspravno");
@@ -167,7 +175,7 @@ public class MainController {
                 fldPassword.getStyleClass().removeAll("poljeIspravno");
                 fldPassword.getStyleClass().add("poljeNijeIspravno");
             }
-        });
+        });*/
     }
     private boolean isJmbgValid(String s) {
         if (s.length() != 13) return false;
@@ -204,6 +212,20 @@ public class MainController {
         return true;
     }
 
+    private boolean style(TextField polje) {
+        for (String s : polje.getStyleClass())
+            if (s.equals("poljeIspravno")) return true;
+        return false;
+    }
+    private boolean style(DatePicker polje) {
+        for (String s : polje.getStyleClass())
+            if (s.equals("poljeIspravno")) return true;
+        return false;
+    }
+    private boolean isValidAll( ){
+        if(style(fldName) && style(fldSurname) && style(fldJmbg) && style(fldEmail) && style(fldUsername) && style(dpBirthday))  return true;
+        return false;
+    }
     public void btnSubjectAdd(ActionEvent actionEvent) {
     }
 
@@ -224,5 +246,19 @@ public class MainController {
 
     public void Profesors(ActionEvent actionEvent) {
         listViewUsers.setItems(dao.getAllSpecificUsers(2));
+    }
+
+    public void addUser(ActionEvent actionEvent) {
+
+    }
+
+    public void cancelUser(ActionEvent actionEvent) {
+/*fldName.setText(dao.findUser());
+
+System.out.println(pom.toString());*/
+    }
+
+    public void confirmUser(ActionEvent actionEvent) {
+        if (isValidAll())  System.out.println("VALIDNO SVE");
     }
 }

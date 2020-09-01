@@ -5,14 +5,18 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
 
+//mozda abstract
 public class User {
     private SimpleStringProperty  name;
     private SimpleStringProperty surname;
     private SimpleStringProperty email;
     private SimpleStringProperty jmbg;
     private SimpleStringProperty username;
-    private SimpleObjectProperty<Date> dateOfBirth;
+    private SimpleObjectProperty<LocalDate> dateOfBirth;
+    private static User loggedInUser;
+    //lista predmeta
 
     public User(String name, String surname, String email, String jmbg, String username, Date dateOfBirth) {
         this.name = new SimpleStringProperty(name);
@@ -20,7 +24,10 @@ public class User {
         this.email =new SimpleStringProperty(email);
         this.jmbg = new SimpleStringProperty(jmbg);
         this.username = new SimpleStringProperty(username);
-        this.dateOfBirth = new SimpleObjectProperty<Date>(dateOfBirth);
+        this.dateOfBirth = new SimpleObjectProperty<LocalDate>(getLocalDateOfBirth(dateOfBirth));
+    }
+
+    public User(Object newKorisnik) {
     }
 
     public String getName() {
@@ -84,15 +91,33 @@ public class User {
     }
 
     public Date getDateOfBirth() {
-        return dateOfBirth.get();
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+
+        //creating the instance of LocalDate using the day, month, year info
+        LocalDate localDate = LocalDate.of(dateOfBirth.get().getYear(), dateOfBirth.get().getMonth(), dateOfBirth.get().getDayOfMonth());
+
+        Date date = Date.valueOf(localDate);
+
+        //Displaying LocalDate and Date
+      /*  System.out.println("LocalDate is: " + localDate);
+        System.out.println("Date is: " + date);*/
+        return date;
     }
 
-    public SimpleObjectProperty<Date> dateOfBirthProperty() {
+    public SimpleObjectProperty<LocalDate> dateOfBirthProperty() {
         return dateOfBirth;
     }
 
 
     public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth.set(getLocalDateOfBirth(dateOfBirth));
+    }
+
+    public LocalDate getLocalDateOfBirth(Date date){
+        return date.toLocalDate();
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth.set(dateOfBirth);
     }
 
@@ -100,4 +125,6 @@ public class User {
     public String toString() {
         return this.getName()+" "+this.getSurname()+" "+this.getEmail();
     }
+
+    //equals
 }

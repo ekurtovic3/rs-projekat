@@ -254,6 +254,8 @@ public class TimetableDAO{
         return FXCollections.observableArrayList(result);
     }
 
+
+
     //SalaDAO
     public void defaultClass() {
         addClassroom(new Classroom("2-0", 50));
