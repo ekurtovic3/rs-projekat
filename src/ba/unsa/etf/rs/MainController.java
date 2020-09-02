@@ -31,7 +31,6 @@ public class MainController {
     public RadioButton radioProfesor;
     public Button btnCancelUser;
     public Button btnConfirmUser;
- //   private User pom=null;
     private User pom=null;
     private TimetableDAO dao;
     private ObservableList<Subject> listSubjects;
@@ -46,13 +45,16 @@ public class MainController {
     }
     @FXML
     public void initialize() {
+        //btnCancelUser.setDisable(true);
         listViewSubjects.setItems(dao.getAllSubjects());
         listViewUsers.setItems(dao.getAllUsers());
         listViewClassroom.setItems(dao.getAllClassrooms());
 
         listViewUsers.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             dao.setTrenutniKorisnik((User) newKorisnik);
-            pom =new User(dao.getTrenutniKorisnik());
+           // System.out.println(newKorisnik.toString());
+            pom =new User(((User) newKorisnik).getName(),((User) newKorisnik).getSurname(),((User) newKorisnik).getEmail(),((User) newKorisnik).getJmbg(),((User) newKorisnik).getUsername(),((User) newKorisnik).getDateOfBirth());
+        System.out.println(pom.toString());
         });
         dao.trenutniKorisnikProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             if (oldKorisnik != null) {
@@ -142,10 +144,12 @@ public class MainController {
         fldJmbg.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String o, String n) {
-                if (isJmbgValid(n)) {
+                if (isJmbgValid(n))
+                {
                     fldJmbg.getStyleClass().removeAll("poljeNijeIspravno");
                     fldJmbg.getStyleClass().add("poljeIspravno");
-                } else {
+                }
+                else {
                     fldJmbg.getStyleClass().removeAll("poljeIspravno");
                     fldJmbg.getStyleClass().add("poljeNijeIspravno");
                 }
@@ -163,7 +167,18 @@ public class MainController {
                     dpBirthday.getStyleClass().removeAll("poljeIspravno");
                     dpBirthday.getStyleClass().add("poljeNijeIspravno");
                 }
+                if (isJmbgValid(fldJmbg.getText()))
+                {
+                    fldJmbg.getStyleClass().removeAll("poljeNijeIspravno");
+                    fldJmbg.getStyleClass().add("poljeIspravno");
+                }
+                else {
+                    fldJmbg.getStyleClass().removeAll("poljeIspravno");
+                    fldJmbg.getStyleClass().add("poljeNijeIspravno");
+                }
             }
+
+
         });
 
 
@@ -244,21 +259,42 @@ public class MainController {
 
     }
 
+
     public void Profesors(ActionEvent actionEvent) {
         listViewUsers.setItems(dao.getAllSpecificUsers(2));
     }
 
     public void addUser(ActionEvent actionEvent) {
-
+        User pom=new Student("E","E","E","0504998170021","e",Date.valueOf(LocalDate.now()));
+        dao.addUser(pom);
+        dao.setTrenutniKorisnik(pom);
     }
 
     public void cancelUser(ActionEvent actionEvent) {
-/*fldName.setText(dao.findUser());
-
-System.out.println(pom.toString());*/
+if(pom != null) {
+  //  System.out.println(dao.getTrenutniKorisnik().toString());
+    System.out.println(pom.toString());
+    fldName.setText(pom.getName());
+    fldSurname.setText(pom.getSurname());
+    fldEmail.setText(pom.getEmail());
+    fldJmbg.setText(pom.getJmbg());
+    fldUsername.setText(pom.getUsername());
+    dpBirthday.setValue(pom.getDateOfBirth().toLocalDate());
+}
     }
 
     public void confirmUser(ActionEvent actionEvent) {
-        if (isValidAll())  System.out.println("VALIDNO SVE");
+        if (isValidAll())  {
+            dao.UpdateUser(dao.getTrenutniKorisnik());
+            listViewUsers.setItems(dao.getAllUsers());
+        }
+
+    }
+
+    public void deleteUser(ActionEvent actionEvent) {
+        if(dao.getTrenutniKorisnik()!=null){
+            dao.deleteUser(dao.getTrenutniKorisnik().getJmbg());
+            listViewUsers.setItems(dao.getAllUsers());
+        }
     }
 }

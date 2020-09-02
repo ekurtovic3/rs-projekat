@@ -102,9 +102,11 @@
                     </content>
                 </Tab>
                 <Tab text="Korisnici">
+
+
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                        <GridPane alignment="center" hgap="10" prefHeight="346.0" prefWidth="666.0" vgap="10">
+                        <GridPane alignment="center" hgap="10" prefHeight="319.0" prefWidth="632.0" vgap="10">
                             <columnConstraints>
                                 <ColumnConstraints maxWidth="214.00000000000003" minWidth="198.4" prefWidth="198.4" />
                                 <ColumnConstraints maxWidth="102.39999999999998" minWidth="86.0" prefWidth="102.39999999999998" />
@@ -135,8 +137,9 @@
 
                                 <ButtonBar prefHeight="32.0" prefWidth="523.0" GridPane.columnSpan="3" GridPane.rowIndex="8">
                                     <buttons>
-                                        <Button fx:id="btnCancelUser"  onAction="#cancelUser" mnemonicParsing="false" text="Cancel" />
-                                        <Button fx:id="btnConfirmUser" onAction="#confirmUser" mnemonicParsing="false" text="Confirm" />
+                                        <Button fx:id="btnCancelUser" mnemonicParsing="false" onAction="#cancelUser" text="Cancel" />
+                                        <Button fx:id="btnConfirmUser" mnemonicParsing="false" onAction="#confirmUser" text="Confirm" />
+                              <Button fx:id="btnDeleteUser" mnemonicParsing="false" onAction="#deleteUser" text="Delete" />
                               <Button fx:id="btnAddUser" mnemonicParsing="false" onAction="#addUser" text="Add user" />
                                     </buttons>
                                 </ButtonBar>
@@ -154,9 +157,9 @@
                               <RadioButton mnemonicParsing="false" onAction="#Profesors" text="Profesors" toggleGroup="$group1" />
                            </children>
                         </HBox>
-                                <HBox prefHeight="25.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="7" GridPane.columnIndex="2">
+                                <HBox prefHeight="25.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="7">
                                     <children>
-                                        <RadioButton fx:id="radioStudent" mnemonicParsing="false"  text="Student">
+                                        <RadioButton fx:id="radioStudent" mnemonicParsing="false" text="Student">
                                             <toggleGroup>
                                                 <ToggleGroup fx:id="group2" />
                                             </toggleGroup>

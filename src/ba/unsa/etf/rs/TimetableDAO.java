@@ -20,6 +20,7 @@ public class TimetableDAO{
     private PreparedStatement findMaxIDClassroom,findMaxIDClass, findMaxIDSubject,findMaxIDUser;
     private PreparedStatement deleteClassroom, deleteSubject,deleteUser,deleteClass;
     private PreparedStatement findClassroomByIDQuery,findClassByIDQuery;
+    private PreparedStatement updateUser,findUserID;
 
     public User getTrenutniKorisnik() {
         return trenutniKorisnik.get();
@@ -59,10 +60,13 @@ public class TimetableDAO{
             findMaxIDSubject = conn.prepareStatement("SELECT max(id) FROM Subject");
             findMaxIDUser= conn.prepareStatement("SELECT max(id) FROM User");
             findMaxIDClass= conn.prepareStatement("SELECT max(id) FROM Class");
+            findUserID =conn.prepareStatement("SELECT id from User where jmbg= ?");
             deleteClassroom = conn.prepareStatement("DELETE FROM Classroom WHERE id = ?");
             deleteSubject = conn.prepareStatement("DELETE FROM Subject WHERE name = ?");
             deleteUser = conn.prepareStatement("DELETE FROM User WHERE jmbg = ?");
             deleteClass = conn.prepareStatement("DELETE FROM User WHERE id = ?");
+            updateUser = conn.prepareStatement("update USER set name=?, surname= ?, email=?, jmbg=?,username =?,dateOfBirth=?,status=? where id = ?");
+
 
             findClassroomByIDQuery = conn.prepareStatement("SELECT * FROM Classroom WHERE id = ?");
             findClassByIDQuery = conn.prepareStatement("SELECT * FROM Class WHERE id = ?");
@@ -151,6 +155,23 @@ public class TimetableDAO{
         // deleteUser("18115615651");
         deleteUser("15465464");
     }
+    public void UpdateUser(User user){
+       // User trenutni = this.getTrenutniKorisnik();
+        try {
+            updateUser.setString(1, user.getName());
+            updateUser.setString(2, user.getSurname());
+            updateUser.setString(3, user.getEmail());
+            updateUser.setString(4, user.getJmbg());
+            updateUser.setString(5, user.getUsername());
+            updateUser.setDate(6, user.getDateOfBirth());
+            if(user instanceof Student) updateUser.setInt(7,2 );
+            if(user instanceof Profesor) updateUser.setInt(7,1 );
+            updateUser.setInt(8, findUserID(user.getJmbg()));
+            updateUser.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public boolean addUser(User s) {
         try  {
@@ -208,6 +229,22 @@ public class TimetableDAO{
         }
         return result;
     }
+    public int findUserID(String userJmbg) {
+        int id=0;
+        try {
+            findUserID.setString(1, userJmbg);
+            ResultSet resultSet = findUserID.executeQuery();
+             id=resultSet.getInt(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return id;
+    }
+
     public void deleteUser(String s) {
         try {
             User pu = findUser(s);

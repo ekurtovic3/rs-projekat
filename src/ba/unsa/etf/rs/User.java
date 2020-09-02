@@ -27,8 +27,18 @@ public class User {
         this.dateOfBirth = new SimpleObjectProperty<LocalDate>(getLocalDateOfBirth(dateOfBirth));
     }
 
-    public User(Object newKorisnik) {
+
+
+    public User(User newKorisnik) {
+        this.setName(newKorisnik.getName());
+        this.setSurname(newKorisnik.getSurname());
+        this.setEmail(newKorisnik.getEmail());
+        this.setJmbg(newKorisnik.getJmbg());
+        this.setUsername(newKorisnik.getUsername());
+        this.setDateOfBirth(newKorisnik.getDateOfBirth());
+
     }
+
 
     public String getName() {
         return name.get();
