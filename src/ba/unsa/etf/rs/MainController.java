@@ -6,12 +6,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
+
+import static javafx.scene.control.PopupControl.USE_COMPUTED_SIZE;
 
 public class MainController {
 
@@ -36,6 +43,7 @@ public class MainController {
     private ObservableList<Subject> listSubjects;
     private ObservableList<User> listUsers;
     private ObservableList<Classroom> listClassrooms;
+    private Object SubjectController;
 
     public MainController() throws SQLException {
         dao = TimetableDAO.getInstance();
@@ -55,6 +63,10 @@ public class MainController {
            // System.out.println(newKorisnik.toString());
             pom =new User(((User) newKorisnik).getName(),((User) newKorisnik).getSurname(),((User) newKorisnik).getEmail(),((User) newKorisnik).getJmbg(),((User) newKorisnik).getUsername(),((User) newKorisnik).getDateOfBirth());
         System.out.println(pom.toString());
+        });
+        listViewSubjects.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
+            dao.setTrenutniSubject((Subject) newKorisnik);
+//            System.out.println(newKorisnik.toString());
         });
         dao.trenutniKorisnikProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             if (oldKorisnik != null) {
@@ -245,6 +257,22 @@ public class MainController {
     }
 
     public void btnSubjectChange(ActionEvent actionEvent) {
+        Parent root = null;
+        try {
+            Stage myStage = new Stage();
+            FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/subject.fxml"));
+            loader2.setController(new SubjectController(dao,(Subject) listViewSubjects.getSelectionModel().getSelectedItem()));
+            root = loader2.load();
+            SubjectController = loader2.getController();
+            myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            myStage.setResizable(false);
+            myStage.show();
+            myStage.setOnHidden(event -> {
+                listViewSubjects.setItems(dao.getAllSubjects());
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void btnSubjectDelete(ActionEvent actionEvent) {

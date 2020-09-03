@@ -22,19 +22,10 @@ public class TimetableDAO{
     private PreparedStatement findClassroomByIDQuery,findClassByIDQuery;
     private PreparedStatement updateUser,findUserID;
 
-    public User getTrenutniKorisnik() {
-        return trenutniKorisnik.get();
+    public TimetableDAO(TimetableDAO dao) {
+
     }
 
-    public SimpleObjectProperty<User> trenutniKorisnikProperty() {
-        return trenutniKorisnik;
-    }
-
-    public void setTrenutniKorisnik(User trenutniKorisnik) {
-        this.trenutniKorisnik.set(trenutniKorisnik);
-    }
-
-    private SimpleObjectProperty<User> trenutniKorisnik = new SimpleObjectProperty<>();
     public static TimetableDAO getInstance() throws SQLException {
         if (instance == null) instance = new TimetableDAO();
         return instance;
@@ -542,5 +533,39 @@ public class TimetableDAO{
                 e.printStackTrace();
             }
         }
+
+    public void setTrenutniSubject(Subject newKorisnik) {    }
+    public User getTrenutniKorisnik() {
+        return trenutniKorisnik.get();
     }
+
+    public SimpleObjectProperty<User> trenutniKorisnikProperty() {
+        return trenutniKorisnik;
+    }
+
+    public void setTrenutniKorisnik(User trenutniKorisnik) {
+        this.trenutniKorisnik.set(trenutniKorisnik);
+    }
+
+    private SimpleObjectProperty<User> trenutniKorisnik = new SimpleObjectProperty<>();
+
+    public TimetableDAO(SimpleObjectProperty<User> trenutniSubject) {
+        this.trenutniSubject = trenutniSubject;
+    }
+
+    public User getTrenutniSubject() {
+        return trenutniSubject.get();
+    }
+
+    public SimpleObjectProperty<User> trenutniSubjectProperty() {
+        return trenutniSubject;
+    }
+
+    public void setTrenutniSubject(User trenutniSubject) {
+        this.trenutniSubject.set(trenutniSubject);
+    }
+    private SimpleObjectProperty<User> trenutniSubject = new SimpleObjectProperty<>();
+
+
+}
 

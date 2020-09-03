@@ -88,7 +88,7 @@
                                                     <children>
                                                         <Button mnemonicParsing="false" onAction="#btnSubjectAdd" prefHeight="43.0" prefWidth="43.0" styleClass="tbAdd" />
                                                         <Button mnemonicParsing="false" onAction="#btnSubjectChange" prefHeight="43.0" prefWidth="43.0" styleClass="tbChange" />
-                                                        <Button mnemonicParsing="false" onAction="#btnSubjectDelete" prefHeight="43.0" prefWidth="43.0" styleClass="tbDelete" />
+                                                        <Button fx:id="btnSubjectD" mnemonicParsing="false" onAction="#btnSubjectDelete" prefHeight="43.0" prefWidth="43.0" styleClass="tbDelete" />
                                                     </children>
                                                 </HBox>
                                             </items>

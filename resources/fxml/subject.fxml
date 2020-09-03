@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="290.0" prefWidth="337.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane layoutX="34.0" layoutY="14.0" prefHeight="270.0" prefWidth="288.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="98.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="201.0" minWidth="10.0" prefWidth="190.0" />
+            <ColumnConstraints />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="159.4" minHeight="10.0" prefHeight="159.4" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="85.40000000000003" minHeight="10.0" prefHeight="21.400000000000034" vgrow="SOMETIMES" />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+        </rowConstraints>
+         <children>
+            <Label text="Subject name" />
+            <Label text="Profesors:" GridPane.rowIndex="1" />
+            <ListView prefHeight="160.0" prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <HBox prefHeight="51.0" prefWidth="113.0" spacing="15.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+               <children>
+                  <MenuButton fx:id="mbtnAddProfesor" mnemonicParsing="false" text="Add profesor">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                    </items>
+                  </MenuButton>
+                  <MenuButton fx:id="mbtnDeleteProfesor" mnemonicParsing="false" onAction="#deleteProfesor" text="Delete profesor">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                    </items>
+                  </MenuButton>
+               </children>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <padding>
+                  <Insets left="35.0" top="10.0" />
+               </padding>
+            </HBox>
+            <TextField fx:id="fldSubjectName" GridPane.columnIndex="1" />
+         </children>
+
+      </GridPane>
+   </children>
+</AnchorPane>
