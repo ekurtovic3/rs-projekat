@@ -26,7 +26,7 @@
          <children>
             <Label text="Subject name" />
             <Label text="Profesors:" GridPane.rowIndex="1" />
-            <ListView prefHeight="160.0" prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ListView fx:id="profesorsOfSubject" prefHeight="160.0" prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <HBox prefHeight="51.0" prefWidth="113.0" spacing="15.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
                <children>
                   <MenuButton fx:id="mbtnAddProfesor" mnemonicParsing="false" text="Add profesor">

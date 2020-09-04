@@ -19,8 +19,10 @@ public class TimetableDAO{
     private PreparedStatement addSubjectQuery, addClassroomQuery,addUserQuery,addClassQuery, findClassroomQuery, findSubjectQuery,findUserQuery,findClassQuery;
     private PreparedStatement findMaxIDClassroom,findMaxIDClass, findMaxIDSubject,findMaxIDUser;
     private PreparedStatement deleteClassroom, deleteSubject,deleteUser,deleteClass;
-    private PreparedStatement findClassroomByIDQuery,findClassByIDQuery;
+    private PreparedStatement findClassroomByIDQuery,findClassByIDQuery,findUserByIDQuery;
     private PreparedStatement updateUser,findUserID;
+    private PreparedStatement addProfesorToSubject,deleteProfesorToSubject,selectProfesorsForAdd,selectProfesorsOfSubject;
+
 
     public TimetableDAO(TimetableDAO dao) {
 
@@ -58,9 +60,14 @@ public class TimetableDAO{
             deleteClass = conn.prepareStatement("DELETE FROM User WHERE id = ?");
             updateUser = conn.prepareStatement("update USER set name=?, surname= ?, email=?, jmbg=?,username =?,dateOfBirth=?,status=? where id = ?");
 
+            selectProfesorsOfSubject = conn.prepareStatement("SELECT idp FROM ProfesorSubject Where ids=?");
+            selectProfesorsForAdd = conn.prepareStatement("SELECT idp FROM ProfesorSubject where  ids<>?");
+            addProfesorToSubject = conn.prepareStatement("INSERT INTO ProfesorSubject VALUES(?,?)");
+            deleteProfesorToSubject =conn.prepareStatement("DELETE FROM ProfesorSubject WHERE idp = ? and ids=?");
 
             findClassroomByIDQuery = conn.prepareStatement("SELECT * FROM Classroom WHERE id = ?");
             findClassByIDQuery = conn.prepareStatement("SELECT * FROM Class WHERE id = ?");
+            findUserByIDQuery = conn.prepareStatement("SELECT * FROM User WHERE id = ?");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -283,7 +290,19 @@ public class TimetableDAO{
     }
 
 
-
+    public Profesor findUserByID(int id) {
+        Profesor result = null;
+        try {
+            findUserByIDQuery.setInt(1,id);
+            ResultSet resultSet = findUserByIDQuery.executeQuery();
+            while (resultSet.next())
+                result = new Profesor(resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6),Date.valueOf(LocalDate.now()));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     //SalaDAO
     public void defaultClass() {
         addClassroom(new Classroom("2-0", 50));
@@ -501,6 +520,58 @@ public class TimetableDAO{
         return result;
     }
 
+//ProfesorToSubjectDAO
+public ObservableList<Profesor> getProfesorsOfSubject(Subject subject) throws SQLException {
+    selectProfesorsOfSubject.setInt(1,findSubjectID(subject.getName()));
+    ArrayList<Profesor> result = new ArrayList<>();
+    try {
+
+        ResultSet resultSet = selectProfesorsOfSubject.executeQuery();
+        while (resultSet.next()){
+        System.out.println(findUserByID(resultSet.getInt(1)).toString()            );
+            if (findUserByID(resultSet.getInt(1)) instanceof Profesor) result.add(findUserByID(resultSet.getInt(1)));}
+        //  result.add(new User( findUserByID(resultSet.getInt(1))));
+    }
+    catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return FXCollections.observableArrayList(result);
+}
+    public ObservableList<Profesor> getProfesorsForAdd(Subject subject) throws SQLException {
+        selectProfesorsForAdd.setInt(1,findSubjectID(subject.getName()));
+        ArrayList<Profesor> result = new ArrayList<>();
+        try {
+            ResultSet resultSet = selectProfesorsForAdd.executeQuery();
+            while (resultSet.next()){
+
+                result.add(findUserByID(resultSet.getInt(1)));}
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return FXCollections.observableArrayList(result);
+    }
+
+public  void addProfesorToSubject(int id1,int id2){
+        try {
+            addProfesorToSubject.setInt(1,id1);
+            addProfesorToSubject.setInt(2,id2);
+            addProfesorToSubject.executeUpdate();
+            System.out.println();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public  void deleteProfesorToSubject(int id1,int id2){
+        try {
+            deleteProfesorToSubject.setInt(1,id1);
+            deleteProfesorToSubject.setInt(2,id2);
+            deleteProfesorToSubject.executeUpdate();
+            System.out.println();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     ///// Ostalo
         public static void deleteInstance(){

@@ -8,44 +8,87 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.sql.SQLException;
+
 public class SubjectController {
     public MenuButton mbtnAddProfesor;
     public MenuButton mbtnDeleteProfesor;
-    public TextField  fldSubjectName;
+    public ListView profesorsOfSubject;
+    public TextField fldSubjectName;
     private Subject subject;
     private TimetableDAO dao;
 
     @FXML
     public void initialize() {
         mbtnAddProfesor.getItems().clear();
+        mbtnDeleteProfesor.getItems().clear();
         fldSubjectName.setText(subject.toString());
-         ObservableList<User> allUsers = dao.getAllUsers();
-              for(int i=0;i<allUsers.size();i++)
-        { User p= allUsers.get(i);
-            MenuItem i1=new MenuItem(allUsers.get(i).toString());
+        ObservableList<Profesor> profesors = null;
+        ObservableList<Profesor> profesors2 = null;
+        try {
+            profesors = dao.getProfesorsOfSubject(subject);
+           // profesors2= dao.getProfesorsForAdd(subject);
+            profesorsOfSubject.setItems(profesors);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i < profesors.size(); i++) {
+            Profesor p = profesors.get(i);
+            MenuItem i1 = new MenuItem(profesors.get(i).toString());
             i1.setOnAction(event -> {
-                System.out.println("Dodavanje profesora" + p.toString()); // Dodavanje profesora na predmet
+                dao.addProfesorToSubject(dao.findUserID(p.getJmbg()), dao.findSubjectID(subject.getName()));
+                try {
+                    profesorsOfSubject.setItems(dao.getProfesorsOfSubject(subject));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             });
             mbtnAddProfesor.getItems().add(i1);
         }
 
-        for(int i=0;i<allUsers.size();i++)
-        { User p= allUsers.get(i);
-            MenuItem i1=new MenuItem(allUsers.get(i).toString());
-            i1.setOnAction(event -> {
-                //Brisanje profesora sa predmeta
+        for (int i = 0; i < profesors.size(); i++) {
+            User p = profesors.get(i);
+            MenuItem i2 = new MenuItem(profesors.get(i).toString());
+            i2.setOnAction(event -> {
+                dao.deleteProfesorToSubject(dao.findUserID(p.getJmbg()), dao.findSubjectID(subject.getName()));
+                try {
+                    profesorsOfSubject.setItems(dao.getProfesorsOfSubject(subject));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             });
-            mbtnAddProfesor.getItems().add(i1);
+            mbtnDeleteProfesor.getItems().add(i2);
         }
 
 
     }
+    /*
+    public void postavi() throws SQLException {
+        mbtnDeleteProfesor.getItems().clear();
+        ObservableList<Profesor> profesors3 = null;
+        profesors3 = dao.getProfesorsOfSubject(subject);
+       if(profesors3!=null){ for (int i = 0; i < profesors3.size(); i++) {
 
+            User p = profesors3.get(i);
+            MenuItem i2 = new MenuItem(profesors3.get(i).toString());
+                dao.deleteProfesorToSubject(dao.findUserID(p.getJmbg()), dao.findSubjectID(subject.getName()));
+                try {
+                    profesorsOfSubject.setItems(dao.getProfesorsOfSubject(subject));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            mbtnDeleteProfesor.getItems().add(i2);
+        }}
+       // profesorsOfSubject.setItems(dao.getProfesorsOfSubject(subject));
+    }*/
 
     public SubjectController(TimetableDAO dao, Subject s) {
         this.dao = dao;
         this.subject = s;
     }
+
     public SubjectController() {
     }
 
