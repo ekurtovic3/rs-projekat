@@ -27,19 +27,25 @@ public class SubjectController {
         ObservableList<Profesor> profesors2 = null;
         try {
             profesors = dao.getProfesorsOfSubject(subject);
-           // profesors2= dao.getProfesorsForAdd(subject);
+            profesors2= dao.getProfesorsForAdd(subject);
             profesorsOfSubject.setItems(profesors);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        for (int i = 0; i < profesors.size(); i++) {
-            Profesor p = profesors.get(i);
-            MenuItem i1 = new MenuItem(profesors.get(i).toString());
+        for (int i = 0; i < profesors2.size(); i++) {
+            Profesor p = profesors2.get(i);
+            MenuItem i1 = new MenuItem(profesors2.get(i).toString());
             i1.setOnAction(event -> {
                 dao.addProfesorToSubject(dao.findUserID(p.getJmbg()), dao.findSubjectID(subject.getName()));
                 try {
                     profesorsOfSubject.setItems(dao.getProfesorsOfSubject(subject));
+                   // System.out.println("DUGME ADD");
+                    mbtnDeleteProfesor.getItems().add(i1);
+                    mbtnAddProfesor.getItems().remove(i1);
+                 //   i1.setOnAction(event2 -> { dao.deleteProfesorToSubject(dao.findUserID(p.getJmbg()), dao.findSubjectID(subject.getName())); });
+
+                    //postavi();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -54,6 +60,10 @@ public class SubjectController {
                 dao.deleteProfesorToSubject(dao.findUserID(p.getJmbg()), dao.findSubjectID(subject.getName()));
                 try {
                     profesorsOfSubject.setItems(dao.getProfesorsOfSubject(subject));
+                    mbtnDeleteProfesor.getItems().remove(i2);
+                    mbtnAddProfesor.getItems().add(i2);
+                 //   i2.setOnAction(event2 -> { dao.deleteProfesorToSubject(dao.findUserID(p.getJmbg()), dao.findSubjectID(subject.getName())); });
+             //   postavi();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -63,26 +73,8 @@ public class SubjectController {
 
 
     }
-    /*
-    public void postavi() throws SQLException {
-        mbtnDeleteProfesor.getItems().clear();
-        ObservableList<Profesor> profesors3 = null;
-        profesors3 = dao.getProfesorsOfSubject(subject);
-       if(profesors3!=null){ for (int i = 0; i < profesors3.size(); i++) {
 
-            User p = profesors3.get(i);
-            MenuItem i2 = new MenuItem(profesors3.get(i).toString());
-                dao.deleteProfesorToSubject(dao.findUserID(p.getJmbg()), dao.findSubjectID(subject.getName()));
-                try {
-                    profesorsOfSubject.setItems(dao.getProfesorsOfSubject(subject));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
 
-            mbtnDeleteProfesor.getItems().add(i2);
-        }}
-       // profesorsOfSubject.setItems(dao.getProfesorsOfSubject(subject));
-    }*/
 
     public SubjectController(TimetableDAO dao, Subject s) {
         this.dao = dao;

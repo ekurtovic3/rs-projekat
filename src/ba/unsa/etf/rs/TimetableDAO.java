@@ -15,7 +15,7 @@ public class TimetableDAO{
     private static TimetableDAO instance = null;
     private  static Connection conn=null;
     private static int ID;
-    private PreparedStatement selectSubjects, selectClassrooms,selectUsers,selectClass;
+    private PreparedStatement selectSubjects, selectClassrooms,selectUsers,selectClass,selectProfesors;
     private PreparedStatement addSubjectQuery, addClassroomQuery,addUserQuery,addClassQuery, findClassroomQuery, findSubjectQuery,findUserQuery,findClassQuery;
     private PreparedStatement findMaxIDClassroom,findMaxIDClass, findMaxIDSubject,findMaxIDUser;
     private PreparedStatement deleteClassroom, deleteSubject,deleteUser,deleteClass;
@@ -39,6 +39,7 @@ public class TimetableDAO{
             conn = DriverManager.getConnection("jdbc:sqlite:base.db");
             selectClassrooms = conn.prepareStatement("SELECT * FROM Classroom");
             selectSubjects = conn.prepareStatement("SELECT * FROM Subject");
+            //selectProfesors=conn.prepareStatement("SELECT * FROM Subject");
             selectUsers = conn.prepareStatement("SELECT * FROM User");
             selectClass = conn.prepareStatement("SELECT * FROM Class");
             addClassroomQuery = conn.prepareStatement("INSERT INTO Classroom values (?,?,?)");
@@ -91,7 +92,8 @@ public class TimetableDAO{
                 addClassQuery.setInt(7, c1.getType().ordinal());
 
                 addUserQuery.executeUpdate();
-                //   System.out.println(s.getName() + " "+ s.getSurname()+" "+s.getEmail());
+                //
+                //   .out.println(s.getName() + " "+ s.getSurname()+" "+s.getEmail());
                 return true;
             }
 
@@ -154,7 +156,6 @@ public class TimetableDAO{
         deleteUser("15465464");
     }
     public void UpdateUser(User user){
-       // User trenutni = this.getTrenutniKorisnik();
         try {
             updateUser.setString(1, user.getName());
             updateUser.setString(2, user.getSurname());
@@ -190,7 +191,7 @@ public class TimetableDAO{
                 else {addUserQuery.setInt(8, 0);}
                 /*  UBACIT JOS ZA ADMINA*/
                 addUserQuery.executeUpdate();
-                System.out.println(s.getName() + " "+ s.getSurname()+" "+s.getEmail());
+               // System.out.println(s.getName() + " "+ s.getSurname()+" "+s.getEmail());
                 return true;
             }
 
@@ -271,6 +272,20 @@ public class TimetableDAO{
         }
         return FXCollections.observableArrayList(result);
     }
+
+    public ObservableList<Profesor> getAllProfesors() { // DODAT ADMINA i indeks
+        ArrayList<Profesor> result = new ArrayList<>();
+        try {
+            ResultSet resultSet = selectUsers.executeQuery();
+            while (resultSet.next())
+                if(resultSet.getInt(8) ==2)
+                { result.add(new Profesor(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return FXCollections.observableArrayList(result);
+    }
     public ObservableList<User> getAllSpecificUsers(int i) { // DODAT ADMINA i indeks
         ArrayList<User> result = new ArrayList<>();
         try {
@@ -326,7 +341,7 @@ public class TimetableDAO{
                 addClassroomQuery.setString(2, room.getName());
                 addClassroomQuery.setInt(3, room.getCapacity());
                 addClassroomQuery.executeUpdate();
-                System.out.println(room.getName() + " "+ room.getCapacity());
+        //        System.out.println(room.getName() + " "+ room.getCapacity());
                 return true;
             }
 
@@ -474,7 +489,7 @@ public class TimetableDAO{
             addSubjectQuery.setInt(1,subjectID);
             addSubjectQuery.setString(2, sub.getName());
             addSubjectQuery.executeUpdate();
-            System.out.println(sub.getName() + " " + ID);
+        //    System.out.println(sub.getName() + " " + ID);
             return true;
         }
         catch (SQLException e) {
@@ -528,7 +543,7 @@ public ObservableList<Profesor> getProfesorsOfSubject(Subject subject) throws SQ
 
         ResultSet resultSet = selectProfesorsOfSubject.executeQuery();
         while (resultSet.next()){
-        System.out.println(findUserByID(resultSet.getInt(1)).toString()            );
+       // System.out.println(findUserByID(resultSet.getInt(1)).toString()            );
             if (findUserByID(resultSet.getInt(1)) instanceof Profesor) result.add(findUserByID(resultSet.getInt(1)));}
         //  result.add(new User( findUserByID(resultSet.getInt(1))));
     }
@@ -538,7 +553,14 @@ public ObservableList<Profesor> getProfesorsOfSubject(Subject subject) throws SQ
     return FXCollections.observableArrayList(result);
 }
     public ObservableList<Profesor> getProfesorsForAdd(Subject subject) throws SQLException {
-        selectProfesorsForAdd.setInt(1,findSubjectID(subject.getName()));
+        ArrayList<Profesor> result = new ArrayList<>();
+        ObservableList<Profesor> allProfesors= getAllProfesors();
+        ObservableList<Profesor> profesorsOfSubject= getProfesorsOfSubject(subject);
+        for (int i=0;i<allProfesors.size();i++){
+            if(!profesorsOfSubject.contains(allProfesors.get(i))) result.add(allProfesors.get(i));
+        }
+
+        /*selectProfesorsForAdd.setInt(1,findSubjectID(subject.getName()));
         ArrayList<Profesor> result = new ArrayList<>();
         try {
             ResultSet resultSet = selectProfesorsForAdd.executeQuery();
@@ -549,7 +571,8 @@ public ObservableList<Profesor> getProfesorsOfSubject(Subject subject) throws SQ
         catch (SQLException e) {
             e.printStackTrace();
         }
-        return FXCollections.observableArrayList(result);
+        return FXCollections.observableArrayList(result);*/
+        return  FXCollections.observableArrayList(result);
     }
 
 public  void addProfesorToSubject(int id1,int id2){
@@ -557,7 +580,7 @@ public  void addProfesorToSubject(int id1,int id2){
             addProfesorToSubject.setInt(1,id1);
             addProfesorToSubject.setInt(2,id2);
             addProfesorToSubject.executeUpdate();
-            System.out.println();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
