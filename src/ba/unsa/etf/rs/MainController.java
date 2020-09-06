@@ -44,7 +44,6 @@ public class MainController {
     public Button btnUserDelete;
 
 
-
     private User pom = null;
     private TimetableDAO dao;
     private ObservableList<Subject> listSubjects;
@@ -70,13 +69,9 @@ public class MainController {
         disable();
         listViewUsers.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             dao.setTrenutniKorisnik((User) newKorisnik);
-            // System.out.println(newKorisnik.toString());
-        //    pom = new User(((User) newKorisnik).getName(), ((User) newKorisnik).getSurname(), ((User) newKorisnik).getEmail(), ((User) newKorisnik).getJmbg(), ((User) newKorisnik).getUsername(), ((User) newKorisnik).getDateOfBirth());
-         //   System.out.println(pom.toString());
         });
         listViewSubjects.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             dao.setTrenutniSubject((Subject) newKorisnik);
-//            System.out.println(newKorisnik.toString());
         });
         dao.trenutniKorisnikProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             if (oldKorisnik != null) {
@@ -348,16 +343,21 @@ public class MainController {
     }
 
     public void confirmUser(ActionEvent actionEvent) {
-        if (isValidAll() && dao.getTrenutniKorisnik()!=null)  {
+        if (dao.getTrenutniKorisnik() != null && !btnUserDelete.isDisable()) {
+            dao.deleteUser(dao.getTrenutniKorisnik().getJmbg());
+            listViewUsers.setItems(dao.getAllUsers());
+
+        } else if (dao.getTrenutniKorisnik() == null && !btnUserDelete.isDisable()) {
+            System.out.println("Nije oznacen ni jedan korisnik za brisanje");
+        } else if (isValidAll() && dao.getTrenutniKorisnik() != null && !btnUserEdit.isDisable()) {
             if (radioProfesor.isSelected()) {
                 dao.UpdateUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
-            System.out.println("Edit");
+                System.out.println("Edit");
             } else if (radioStudent.isSelected()) {
 
                 dao.UpdateUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
             }
-           }
-     else if (isValidAll()) {
+        } else if (isValidAll() && !btnUserAdd.isDisable()) {
             if (radioProfesor.isSelected()) {
                 dao.addUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
                 System.out.println("Dodan novi");
@@ -365,28 +365,28 @@ public class MainController {
                 System.out.println("Dodan novi");
                 dao.addUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
             }
-            listViewUsers.setItems(dao.getAllUsers());
 
+
+        } else if(!isValidAll() && (!btnUserEdit.isDisable() || !btnUserAdd.isDisable())) {
+            System.out.println("Nije validno sve ili ima polje koje nije popunjeno");
         }
-     else {
-         System.out.println("Nije validno sve ili ima polje koje nije popunjeno");
-        }
-        if (isValidAll()) {
+        if (isValidAll() && (!btnUserEdit.isDisabled() || !btnUserAdd.isDisabled())) {
             btnCancelUser.setDisable(true);
             btnConfirmUser.setDisable(true);
             btnUserAdd.setDisable(false);
             btnUserDelete.setDisable(false);
             btnUserEdit.setDisable(false);
             listViewUsers.setDisable(false);
-            listViewUsers.setItems(dao.getAllUsers());
+           // listViewUsers.setItems(dao.getAllUsers());
             disable();
 
         }
+        listViewUsers.setItems(dao.getAllUsers());
     }
 
     public void btnUserAdd(ActionEvent actionEvent) {
         enable();
-        btnUserAdd.setDisable(true);
+        // btnUserAdd.setDisable(true);
         btnUserDelete.setDisable(true);
         btnUserEdit.setDisable(true);
         dao.setTrenutniKorisnik(null);
@@ -405,16 +405,20 @@ public class MainController {
     public void btnUserEdit(ActionEvent actionEvent) {
         btnCancelUser.setDisable(false);
         btnConfirmUser.setDisable(false);
+        btnUserAdd.setDisable(true);
+        btnUserDelete.setDisable(true);
         enable();
-if (dao.getTrenutniKorisnik()==null) System.out.println("ERROR nije izabran ni jedan korisnik");
+        if (dao.getTrenutniKorisnik() == null) {
+            System.out.println("ERROR nije izabran ni jedan korisnik");
+    disable();
+        }
     }
 
     public void btnUserDelete(ActionEvent actionEvent) {
-        if (dao.getTrenutniKorisnik() != null) {
-            dao.deleteUser(dao.getTrenutniKorisnik().getJmbg());
-            listViewUsers.setItems(dao.getAllUsers());
-
-        }
+        btnUserAdd.setDisable(true);
+        btnUserEdit.setDisable(true);
+        btnConfirmUser.setDisable(false);
+        btnCancelUser.setDisable(false);
     }
 
 

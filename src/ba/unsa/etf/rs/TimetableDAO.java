@@ -9,7 +9,9 @@ import java.io.FileNotFoundException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class TimetableDAO{
     private static TimetableDAO instance = null;
@@ -553,25 +555,16 @@ public ObservableList<Profesor> getProfesorsOfSubject(Subject subject) throws SQ
     return FXCollections.observableArrayList(result);
 }
     public ObservableList<Profesor> getProfesorsForAdd(Subject subject) throws SQLException {
-        ArrayList<Profesor> result = new ArrayList<>();
+      //  ArrayList<Profesor> result = new ArrayList<>();
         ObservableList<Profesor> allProfesors= getAllProfesors();
         ObservableList<Profesor> profesorsOfSubject= getProfesorsOfSubject(subject);
-        for (int i=0;i<allProfesors.size();i++){
-            if(!profesorsOfSubject.contains(allProfesors.get(i))) result.add(allProfesors.get(i));
-        }
+      // profesorsOfSubject.removeAll(allProfesors);
+        List<Profesor> result = allProfesors.stream().filter(aObject -> {return  profesorsOfSubject.contains(aObject); }).collect(Collectors.toList());
+        for (int i=0;i<result.size();i++) {
+              System.out.println("Profesor za dodavanje:"+result.get(i));
 
-        /*selectProfesorsForAdd.setInt(1,findSubjectID(subject.getName()));
-        ArrayList<Profesor> result = new ArrayList<>();
-        try {
-            ResultSet resultSet = selectProfesorsForAdd.executeQuery();
-            while (resultSet.next()){
+             }
 
-                result.add(findUserByID(resultSet.getInt(1)));}
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return FXCollections.observableArrayList(result);*/
         return  FXCollections.observableArrayList(result);
     }
 
@@ -585,10 +578,10 @@ public  void addProfesorToSubject(int id1,int id2){
             e.printStackTrace();
         }
     }
-    public  void deleteProfesorToSubject(int id1,int id2){
+    public  void deleteProfesorToSubject(int idP,int idS){
         try {
-            deleteProfesorToSubject.setInt(1,id1);
-            deleteProfesorToSubject.setInt(2,id2);
+            deleteProfesorToSubject.setInt(1,idP);
+            deleteProfesorToSubject.setInt(2,idS);
             deleteProfesorToSubject.executeUpdate();
             System.out.println();
         } catch (SQLException e) {
@@ -660,6 +653,18 @@ public  void addProfesorToSubject(int id1,int id2){
     }
     private SimpleObjectProperty<User> trenutniSubject = new SimpleObjectProperty<>();
 
+    private SimpleObjectProperty<User> trenutniProfesor = new SimpleObjectProperty<>();
 
+    public User getTrenutniProfesor() {
+        return trenutniProfesor.get();
+    }
+
+    public SimpleObjectProperty<User> trenutniProfesorProperty() {
+        return trenutniProfesor;
+    }
+
+    public void setTrenutniProfesor(User trenutniProfesor) {
+        this.trenutniProfesor.set(trenutniProfesor);
+    }
 }
 
