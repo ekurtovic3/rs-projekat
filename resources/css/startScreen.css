@@ -1,0 +1,36 @@
+#button
+{
+    position: absolute;
+    width: 239px;
+    height: 50px;
+
+    background: #6ECDDD;
+    mix-blend-mode: darken;
+    border: 3px solid #F8982B;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.correctInput
+{
+    -fx-controll-inner-background: greenyellow;
+}
+
+.incorrectInput
+{
+    -fx-controll-inner-background: lightpink;
+}
+
+.backgroundImage
+{
+    -fx-background-image: url("/img/scheduleAppBackground.png");
+
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-color: white;
+
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover, auto;
+    -fx-background-position: center;
+}
+
