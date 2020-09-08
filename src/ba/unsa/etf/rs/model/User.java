@@ -1,4 +1,4 @@
-package ba.unsa.etf.rs;
+package ba.unsa.etf.rs.model;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;

@@ -1,8 +1,6 @@
-package ba.unsa.etf.rs;
+package ba.unsa.etf.rs.model;
 
 import java.sql.Date;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Profesor extends User {
