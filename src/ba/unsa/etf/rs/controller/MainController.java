@@ -1,8 +1,9 @@
-package ba.unsa.etf.rs;
+package ba.unsa.etf.rs.controller;
 
+import ba.unsa.etf.rs.database.TimetableDAO;
+import ba.unsa.etf.rs.model.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -285,7 +286,7 @@ public class MainController {
     }
 
     public void btnSubjectChange(ActionEvent actionEvent) {
-        Parent root = null;
+      if(!listViewSubjects.getSelectionModel().isEmpty())  {Parent root = null;
         try {
             Stage myStage = new Stage();
             FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/subject.fxml"));
@@ -300,7 +301,7 @@ public class MainController {
             });
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }}
     }
 
     public void btnSubjectDelete(ActionEvent actionEvent) {
@@ -320,11 +321,7 @@ public class MainController {
         listViewUsers.setItems(dao.getAllSpecificUsers(2));
     }
 
-    public void addUser(ActionEvent actionEvent) {
-        User pom = new Student("E", "E", "E", "0504998170021", "e", Date.valueOf(LocalDate.now()));
-        dao.addUser(pom);
-        dao.setTrenutniKorisnik(pom);
-    }
+
 
     public void cancelUser(ActionEvent actionEvent) {
         btnUserAdd.setDisable(false);

@@ -1,8 +1,8 @@
-package ba.unsa.etf.rs;
+package ba.unsa.etf.rs.controller;
 
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableArray;
+import ba.unsa.etf.rs.model.Profesor;
+import ba.unsa.etf.rs.model.Subject;
+import ba.unsa.etf.rs.database.TimetableDAO;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,7 +23,6 @@ public class SubjectController {
     public void initialize() {
 
         try {
-            setProf();
             profesorsOfSubject.setItems(dao.getProfesorsOfSubject(subject));
             fldSubjectName.setText(subject.toString());
         } catch (SQLException e) {
@@ -33,7 +32,7 @@ public class SubjectController {
             dao.setTrenutniProfesor((Profesor) newKorisnik);
         });
 
-
+         setProf();
     }
 
     public SubjectController(TimetableDAO dao, Subject s) {
