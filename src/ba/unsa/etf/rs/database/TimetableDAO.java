@@ -1,5 +1,7 @@
-package ba.unsa.etf.rs;
+package ba.unsa.etf.rs.database;
 
+import ba.unsa.etf.rs.model.*;
+import ba.unsa.etf.rs.model.Class;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
