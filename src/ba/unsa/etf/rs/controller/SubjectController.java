@@ -1,8 +1,11 @@
 package ba.unsa.etf.rs.controller;
 
+import ba.unsa.etf.rs.database.*;
 import ba.unsa.etf.rs.model.Profesor;
+import ba.unsa.etf.rs.model.Student;
 import ba.unsa.etf.rs.model.Subject;
-import ba.unsa.etf.rs.database.TimetableDAO;
+import ba.unsa.etf.rs.model.User;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,30 +18,53 @@ public class SubjectController {
     public ListView profesorsOfSubject;
     public TextField fldSubjectName;
     public Button btnDeleteProfesor;
+
+
     private Subject subject;
-    private TimetableDAO dao;
+   // private TimetableDAO dao;
+    private User user;
+    private ClassDAO daoClass;
+    private ClassroomDAO daoClassroom;
+    private ProfessorToSubjectDAO daoProfessorToSubjectDAO;
+    private SubjectDAO daoSubject;
+    private UserDAO daoUser;
+    private SimpleObjectProperty<User> trenutniProfesor = new SimpleObjectProperty<>();
+
+    /*
+
+    public SubjectController(TimetableDAO dao, Student student) {
+        this.dao=dao;
+        this.user=student;
+    }*/
+
+    public SubjectController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Subject selectedItem) {
+        this.subject=selectedItem;
+        this.daoClass=daoClass;
+        this.daoClassroom=daoClassroom;
+        this.daoProfessorToSubjectDAO=daoProfessorToSubjectDAO;
+        this.daoSubject=daoSubject;
+        this.daoUser=daoUser;
+    }
 
 
     @FXML
     public void initialize() {
-
         try {
-            profesorsOfSubject.setItems(dao.getProfesorsOfSubject(subject));
+            profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getProfesorsOfSubject(subject));
             fldSubjectName.setText(subject.toString());
         } catch (SQLException e) {
             e.printStackTrace();
         }
         profesorsOfSubject.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
-            dao.setTrenutniProfesor((Profesor) newKorisnik);
+            setTrenutniProfesor((Profesor) newKorisnik);
         });
-
          setProf();
     }
-
+/*
     public SubjectController(TimetableDAO dao, Subject s) {
         this.dao = dao;
         this.subject = s;
-    }
+    }*/
 
     public SubjectController() {
     }
@@ -47,15 +73,15 @@ public class SubjectController {
         try {
             mbtnAddProfesor.getItems().clear();
             ObservableList<Profesor> profesors = null;
-            profesors = dao.getProfesorsForAdd(subject);
+            profesors = daoProfessorToSubjectDAO.getProfesorsForAdd(subject);
 
             for (int i = 0; i < profesors.size(); i++) {
                 Profesor p = profesors.get(i);
                 MenuItem i1 = new MenuItem(profesors.get(i).toString());
                 i1.setOnAction(event -> {
-                    dao.addProfesorToSubject(dao.findUserID(p.getJmbg()), dao.findSubjectID(subject.getName()));
+                    daoProfessorToSubjectDAO.addProfesorToSubject(daoUser.findUserID(p.getJmbg()), daoSubject.findSubjectID(subject.getName()));
                     try {
-                        profesorsOfSubject.setItems(dao.getProfesorsOfSubject(subject));
+                        profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getProfesorsOfSubject(subject));
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -73,15 +99,15 @@ public class SubjectController {
 
 
     public void btnDeleteProf(ActionEvent actionEvent) {
-        if (dao.getTrenutniProfesor() != null) {
+        if (getTrenutniProfesor() != null) {
             // System.out.println("Brisanje profesora:"+profesorsOfSubject.getSelectionModel().getSelectedItem().toString()+" sa predmeta "+subject.toString());
-            int idP = dao.findUserID(dao.getTrenutniProfesor().getJmbg());
-            int idS = dao.findSubjectID(subject.getName());
-            dao.deleteProfesorToSubject(idP, idS);
-            dao.setTrenutniProfesor(null);
+            int idP = daoUser.findUserID(getTrenutniProfesor().getJmbg());
+            int idS = daoSubject.findSubjectID(subject.getName());
+            daoProfessorToSubjectDAO.deleteProfesorToSubject(idP, idS);
+            setTrenutniProfesor(null);
             setProf();
             try {
-                profesorsOfSubject.setItems(dao.getProfesorsOfSubject(subject));
+                profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getProfesorsOfSubject(subject));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -90,4 +116,15 @@ public class SubjectController {
         }
     }
 
+    public User getTrenutniProfesor() {
+        return trenutniProfesor.get();
+    }
+
+    public SimpleObjectProperty<User> trenutniProfesorProperty() {
+        return trenutniProfesor;
+    }
+
+    public void setTrenutniProfesor(User trenutniProfesor) {
+        this.trenutniProfesor.set(trenutniProfesor);
+    }
 }

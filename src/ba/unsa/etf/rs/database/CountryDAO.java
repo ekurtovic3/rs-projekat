@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class CountryDao
+public class CountryDAO
 {
     //ATTRIBUTES
     private PreparedStatement nadjiDrzavuPoIdu;
@@ -18,15 +18,15 @@ public class CountryDao
     private PreparedStatement nadjiDrzavuPoNazivu;
     private Statement nadjiSveDrzave;
 
-    private static CountryDao instance = null;
+    private static CountryDAO instance = null;
     private DatabaseConnection datConn;
     //SINGLETONE
     private static void initialize()
     {
-        instance = new CountryDao();
+        instance = new CountryDAO();
     }
 
-    private CountryDao()
+    private CountryDAO()
     {
         try
         {
@@ -39,10 +39,9 @@ public class CountryDao
         {
             e.printStackTrace();
         }
-
     }
 
-    public static CountryDao getInstance()
+    public static CountryDAO getInstance()
     {
         if(instance == null)
             initialize();

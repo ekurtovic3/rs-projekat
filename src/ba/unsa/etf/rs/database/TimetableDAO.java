@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-public class TimetableDAO{
+public class TimetableDAO
+{
     private static TimetableDAO instance = null;
     private  static Connection conn=null;
     private static int ID;
@@ -24,7 +25,7 @@ public class TimetableDAO{
     private PreparedStatement findMaxIDClassroom,findMaxIDClass, findMaxIDSubject,findMaxIDUser;
     private PreparedStatement deleteClassroom, deleteSubject,deleteUser,deleteClass;
     private PreparedStatement findClassroomByIDQuery,findClassByIDQuery,findUserByIDQuery;
-    private PreparedStatement updateUser,findUserID;
+    private PreparedStatement updateUser,findUserID,findUserLogIn;
     private PreparedStatement addProfesorToSubject,deleteProfesorToSubject,selectProfesorsForAdd,selectProfesorsOfSubject;
 
 
@@ -48,7 +49,7 @@ public class TimetableDAO{
             selectClass = conn.prepareStatement("SELECT * FROM Class");
             addClassroomQuery = conn.prepareStatement("INSERT INTO Classroom values (?,?,?)");
             addSubjectQuery = conn.prepareStatement("INSERT INTO Subject values (?,?)");
-            addUserQuery = conn.prepareStatement("Insert INTO User values(?,?,?,?,?,?,?,?)");
+            addUserQuery = conn.prepareStatement("Insert INTO User values(?,?,?,?,?,?,?,?,?)");
             addClassQuery = conn.prepareStatement("Insert INTO Class values(?,?,?,?,?,?,?)");
             findClassroomQuery = conn.prepareStatement("SELECT * FROM Classroom WHERE name =?");
             findSubjectQuery = conn.prepareStatement("SELECT * FROM Subject WHERE name = ?");
@@ -73,6 +74,7 @@ public class TimetableDAO{
             findClassroomByIDQuery = conn.prepareStatement("SELECT * FROM Classroom WHERE id = ?");
             findClassByIDQuery = conn.prepareStatement("SELECT * FROM Class WHERE id = ?");
             findUserByIDQuery = conn.prepareStatement("SELECT * FROM User WHERE id = ?");
+            findUserLogIn= conn.prepareStatement("SELECT * FROM User WHERE username = ? and pass");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -95,7 +97,7 @@ public class TimetableDAO{
                 addClassQuery.setInt(6, findSubjectID(c1.getSubject().getName()));
                 addClassQuery.setInt(7, c1.getType().ordinal());
 
-                addUserQuery.executeUpdate();
+                addClassQuery.executeUpdate();
                 //
                 //   .out.println(s.getName() + " "+ s.getSurname()+" "+s.getEmail());
                 return true;
@@ -148,12 +150,7 @@ public class TimetableDAO{
 
 //UserDAO
 
-    //Za test
-    public void defaultUser() {
-        addUser(new Student("Emir", "Kurtovic","kurtovic@gmail.com","0404888170254","asd",Date.valueOf(LocalDate.now())));
-        addUser(new Profesor("Azra", "Balic","awdawd@wadad.com","18115615651","wasd",Date.valueOf(LocalDate.now())));
-        addUser(new Student("A", "B","C","15465464","n15a",Date.valueOf(LocalDate.now())));
-    }
+
     public void TESTdeleteUser() {
         //  deleteUser("0404888170254");
         // deleteUser("18115615651");
@@ -176,7 +173,7 @@ public class TimetableDAO{
         }
     }
 
-    public boolean addUser(User s) {
+    public boolean addUser(User s,String pass) {
         try  {
             User s1 = findUser(s.getName());
             if (s1 == null) {
@@ -190,6 +187,7 @@ public class TimetableDAO{
                 addUserQuery.setString(5, s.getJmbg());
                 addUserQuery.setString(6, s.getUsername());
                 addUserQuery.setDate(7, s.getDateOfBirth());
+                addUserQuery.setString(8, pass);
                 if(s instanceof Profesor) {addUserQuery.setInt(8, 2);}
                 else if(s instanceof Student) {addUserQuery.setInt(8, 1);}
                 else {addUserQuery.setInt(8, 0);}
@@ -200,11 +198,14 @@ public class TimetableDAO{
             }
 
         }
+
         catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
+
+
 
     private int findMaxIDUser() {
         int result = 0;
@@ -220,6 +221,20 @@ public class TimetableDAO{
     }
 
     public User findUser(String userJmbg) {
+        User result = null;                 /* VRACA PROFESORA ILI STUDENTA A NE USER??????????*/
+        try {
+            findUserQuery.setString(1,userJmbg);
+            ResultSet resultSet = findUserQuery.executeQuery();
+            while (resultSet.next())
+                result = new User(resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6),resultSet.getDate(7));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public User findUserLogIn(String userJmbg) {
         User result = null;                 /* VRACA PROFESORA ILI STUDENTA A NE USER??????????*/
         try {
             findUserQuery.setString(1,userJmbg);

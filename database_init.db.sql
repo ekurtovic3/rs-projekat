@@ -13,28 +13,46 @@ CREATE TABLE IF NOT EXISTS "drzava"
   CONSTRAINT provjera_duzine_skarcenice3 CHECK (length(IFNULL(skracenica3, 'a')) = 3 )
 );
 
-CREATE TABLE "pjevac" (
-	"id"	INTEGER,
-	"ime"	TEXT NOT null,
-	"prezime"	TEXT NOT null,
-	"datum_rodjenja" INTEGER NOT null,
-  "id_drzava" INTEFER NOT null,
-  "godina_rodjenja" DATE NOT null,
-	CONSTRAINT provjer_godine_rodjenja CHECK (godina_rodjenja > 1960 AND godina_rodjenja < strftime("%Y",date("now"))),
-	PRIMARY KEY("id"),
-	FOREIGN KEY("id_drzava") REFERENCES "drzava"("id")
+CREATE TABLE IF NOT EXISTS "ProfesorSubject" (
+	"idp"	INTEGER,
+	"ids"	INTEGER,
+	FOREIGN KEY("idp") REFERENCES "User"("id"),
+	FOREIGN KEY("ids") REFERENCES "Subject"("id")
 );
--------------------------------------------------
-CREATE TABLE IF NOT EXISTS "korisnik" (
-	"username"	TEXT, --username jednosznacno odredjuje korisnika, pa se moze koristiti kao id
-	"ime"	TEXT NOT null,
-	"prezime"	TEXT NOT null,
-	"email"	INTEGER DEFAULT null,
-	"datum_rodjenja"	TEXT null,
-	"id_drzava"	INTEGER NOT null,
-  "hes_lozinke" TEXT NOT null,
-	FOREIGN KEY("id_drzava") REFERENCES "drzava"("id"),
-	PRIMARY KEY("username")
+CREATE TABLE IF NOT EXISTS "Class" (
+	"id"	INTEGER,
+	"start"	TIME,
+	"end"	TIME,
+	"period"	INTEGER,
+	"Classroom"	INTEGER,
+	"Subject"	INTEGER,
+	"Type"	INTEGER,
+	PRIMARY KEY("id"),
+	FOREIGN KEY("Classroom") REFERENCES "Classroom"("id"),
+	FOREIGN KEY("Subject") REFERENCES "Subject"("id")
+);
+CREATE TABLE IF NOT EXISTS "User" (
+	"id"	INTEGER,
+	"name"	TEXT,
+	"surname"	TEXT,
+	"email"	TEXT,
+	"jmbg"	TEXT,
+	"username"	TEXT,
+	"dateOfBirth"	DATE,
+	"status"	INTEGER,
+	"password" TEXT,
+	PRIMARY KEY("id")
+);
+CREATE TABLE IF NOT EXISTS "Classroom" (
+	"id"	INTEGER,
+	"name"	TEXT,
+	"capacity"	INTEGER,
+	PRIMARY KEY("id")
+);
+CREATE TABLE IF NOT EXISTS "Subject" (
+	"id"	INTEGER,
+	"name"	TEXT,
+	PRIMARY KEY("id")
 );
 
 --ctrl+shift+desni_klik = visestruki kursor

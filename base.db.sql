@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS "User" (
 	"username"	TEXT,
 	"dateOfBirth"	DATE,
 	"status"	INTEGER,
+	"password" TEXT,
 	PRIMARY KEY("id")
 );
 CREATE TABLE IF NOT EXISTS "Classroom" (
@@ -39,27 +40,5 @@ CREATE TABLE IF NOT EXISTS "Subject" (
 	"name"	TEXT,
 	PRIMARY KEY("id")
 );
-INSERT INTO "ProfesorSubject" VALUES (1,1);
-INSERT INTO "ProfesorSubject" VALUES (2,1);
-INSERT INTO "ProfesorSubject" VALUES (NULL,NULL);
-INSERT INTO "ProfesorSubject" VALUES (NULL,NULL);
-INSERT INTO "ProfesorSubject" VALUES (NULL,NULL);
-INSERT INTO "ProfesorSubject" VALUES (NULL,NULL);
-INSERT INTO "ProfesorSubject" VALUES (NULL,NULL);
-INSERT INTO "ProfesorSubject" VALUES (NULL,NULL);
-INSERT INTO "ProfesorSubject" VALUES (NULL,NULL);
-INSERT INTO "ProfesorSubject" VALUES (NULL,NULL);
-INSERT INTO "ProfesorSubject" VALUES (NULL,NULL);
-INSERT INTO "ProfesorSubject" VALUES (1,2);
-INSERT INTO "User" VALUES (0,'E','E','E','asd','e',1598997600000,1);
-INSERT INTO "User" VALUES (1,'Emir ','Kurtovic','','asdasdsda','',1598997600000,1);
-INSERT INTO "User" VALUES (2,'','','','','','','');
-INSERT INTO "User" VALUES (3,'','','','','','','');
-INSERT INTO "User" VALUES (5,'','','','','','','');
-INSERT INTO "Classroom" VALUES (1,'2-0',50);
-INSERT INTO "Classroom" VALUES (2,'2-a',60);
-INSERT INTO "Classroom" VALUES (3,'asd',500);
-INSERT INTO "Subject" VALUES (1,'Fizika');
-INSERT INTO "Subject" VALUES (2,'Matematika');
-INSERT INTO "Subject" VALUES (3,'asd');
+
 COMMIT;

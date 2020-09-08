@@ -1,6 +1,6 @@
 package ba.unsa.etf.rs;
-
-/*package ba.unsa.etf.rs;
+/*
+package ba.unsa.etf.rs;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +18,10 @@ public class Main extends Application {
        Parent root = (Parent) FXMLLoader.load(this.getClass().getResource("/fxml/mainform.fxml"));
         primaryStage.setTitle("Aplikacija za raspored casova");
         primaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
-        primaryStage.show();*/
+        primaryStage.show();}
+    public static void main(String[] args) {
+        launch(args);
+    }}*/
    /*     TimetableDAO model = TimetableDAO.getInstance();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/mainform.fxml"));
         loader.setController(new mainController(model));
@@ -38,7 +41,7 @@ public class Main extends Application {
 }*/
 
 import ba.unsa.etf.rs.controller.StartScreenController;
-import ba.unsa.etf.rs.database.CountryDao;
+import ba.unsa.etf.rs.database.CountryDAO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -54,11 +57,11 @@ public class Main extends Application
     {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/startScreen.fxml"));
 
-        CountryDao countryDao = CountryDao.getInstance();
+        CountryDAO countryDao = CountryDAO.getInstance();
 
         loader.setController(new StartScreenController(countryDao));
         Parent root = loader.load();
-        primaryStage.setTitle("pocetna stranica");
+        primaryStage.setTitle("Aplikacija za raspored casova");
         primaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
         primaryStage.show();
     }
@@ -69,4 +72,3 @@ public class Main extends Application
         launch(args);
     }
 }
-
