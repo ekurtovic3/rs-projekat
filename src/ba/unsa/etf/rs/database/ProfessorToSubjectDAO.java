@@ -16,6 +16,7 @@ public class ProfessorToSubjectDAO
 {
     private static ProfessorToSubjectDAO instance = null;
     private DatabaseConnection datConn;
+    private SubjectDAO daoSubject=SubjectDAO.getInstance();
     private static void initialize()
     {
         instance = new ProfessorToSubjectDAO();
@@ -25,6 +26,16 @@ public class ProfessorToSubjectDAO
 
     private ProfessorToSubjectDAO()
     {
+        try {
+            selectProfesorsOfSubject = datConn.getConnection().prepareStatement("SELECT idp FROM ProfesorSubject Where ids=?");
+            selectProfesorsForAdd = datConn.getConnection().prepareStatement("SELECT idp FROM ProfesorSubject where  ids<>?");
+            addProfesorToSubject = datConn.getConnection().prepareStatement("INSERT INTO ProfesorSubject VALUES(?,?)");
+            deleteProfesorToSubject =datConn.getConnection().prepareStatement("DELETE FROM ProfesorSubject WHERE idp = ? and ids=?");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
 
     }
 
@@ -43,16 +54,14 @@ public class ProfessorToSubjectDAO
 
     //METHODS
     public ObservableList<Profesor> getProfesorsOfSubject(Subject subject) throws SQLException {
-        selectProfesorsOfSubject.setInt(1,SubjectDAO.findSubjectID(subject.getName()));
+        selectProfesorsOfSubject.setInt(1,daoSubject.findSubjectID(subject.getName()));
         ArrayList<Profesor> result = new ArrayList<>();
         try {
 
             ResultSet resultSet = selectProfesorsOfSubject.executeQuery();
             while (resultSet.next()){
-                // System.out.println(findUserByID(resultSet.getInt(1)).toString()            );
                 if (UserDAO.findUserByID(resultSet.getInt(1)) instanceof Profesor)
                     result.add((Profesor) UserDAO.findUserByID(resultSet.getInt(1)));}
-            //  result.add(new User( findUserByID(resultSet.getInt(1))));
         }
         catch (SQLException e) {
             e.printStackTrace();

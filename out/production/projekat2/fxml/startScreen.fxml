@@ -11,7 +11,7 @@ kada se nesto prosljedjuje kao parametar u scenu, onda se fxml file ne povezuje 
 vec se on postavlja manuelno prilikom pokretanja scene
 fx:controller="fxml.StartScreenController"-->
 
-<AnchorPane  prefHeight="400.0" prefWidth="600.0" styleClass="backgroundImage" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="backgroundImage" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
 
     <stylesheets>
         <URL value="@/css/startScreen.css" />
@@ -40,7 +40,7 @@ fx:controller="fxml.StartScreenController"-->
                               <Label fx:id="laUsernameLogIn" text="Username" />
                               <TextField fx:id="tfUsernameLogIn" prefHeight="25.0" prefWidth="157.0" GridPane.columnIndex="1" />
                               <Label fx:id="laPasswordLogIn" text="Password" GridPane.rowIndex="1" />
-                               <Button mnemonicParsing="false" styleClass="buttonConfirm"  text="Confirm" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                               <Button mnemonicParsing="false" onAction="#LogIn" styleClass="buttonConfirm" text="Confirm" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
                               <PasswordField fx:id="tfPasswordLogIn" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
@@ -86,7 +86,7 @@ fx:controller="fxml.StartScreenController"-->
                               <TextField fx:id="tfEmailSignIn" layoutX="110.0" layoutY="73.0" prefHeight="25.0" prefWidth="171.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <Label fx:id="laCountrySignIn2" layoutX="10.0" layoutY="89.0" text="Date of birth" GridPane.rowIndex="2" />
                               <DatePicker fx:id="dpDateOfBirthSignIn" prefHeight="25.0" prefWidth="210.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                               <Button fx:id="btnConfrimSignIn" onAction="#SingIn" mnemonicParsing="false" styleClass="buttonConfirm" text="Confirm" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
+                               <Button fx:id="btnConfrimSignIn" mnemonicParsing="false" onAction="#SingIn" styleClass="buttonConfirm" text="Confirm" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
                               <HBox prefHeight="100.0" prefWidth="200.0" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <children>
                                     <ChoiceBox fx:id="cbCountrySignIn" prefHeight="26.0" prefWidth="134.0" />

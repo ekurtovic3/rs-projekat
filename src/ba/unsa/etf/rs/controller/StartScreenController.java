@@ -9,6 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -39,7 +40,7 @@ public class StartScreenController implements Initializable {
     public PasswordField tfPasswordSignUp;
 
 
-   // private TimetableDAO dao;
+    // private TimetableDAO dao;
     private CountryDAO countryDao;
     private ClassDAO daoClass;
     private ClassroomDAO daoClassroom;
@@ -62,11 +63,11 @@ public class StartScreenController implements Initializable {
     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        daoClass= ClassDAO.getInstance();
-        daoClassroom= ClassroomDAO.getInstance();
-        daoProfessorToSubjectDAO=ProfessorToSubjectDAO.getInstance();
-        daoSubject=SubjectDAO.getInstance();
-        daoUser=UserDAO.getInstance();
+        daoClass = ClassDAO.getInstance();
+        daoClassroom = ClassroomDAO.getInstance();
+        daoProfessorToSubjectDAO = ProfessorToSubjectDAO.getInstance();
+        daoSubject = SubjectDAO.getInstance();
+        daoUser = UserDAO.getInstance();
 
 
         cbCountrySignIn.setItems(countryDao.getAllCountries());
@@ -285,47 +286,62 @@ public class StartScreenController implements Initializable {
     }
 
     public void LogIn(ActionEvent actionEvent) {
-        if (isValidAllLogIn() && (UserDAO.findUserLogIn(tfUsernameLogIn.getText(),tfPasswordLogIn.getText()))!=-1) {
-int id=daoUser.findUserLogIn(tfUsernameLogIn.getText(),tfPasswordLogIn.getText());
+        if (isValidAllLogIn() && (UserDAO.findUserLogIn(tfUsernameLogIn.getText(), tfPasswordLogIn.getText())) != -1) {
+            int id = daoUser.findUserLogIn(tfUsernameLogIn.getText(), tfPasswordLogIn.getText());
 
             Parent root = null;
             try {
                 Stage myStage = new Stage();
                 FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/mainform.fxml"));
-                loader2.setController(new MainController(daoClass,daoClassroom,daoProfessorToSubjectDAO,daoSubject,daoUser, daoUser.findUserByID(id)));
+                loader2.setController(new MainController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, daoUser.findUserByID(id)));
                 root = loader2.load();
                 MainController = loader2.getController();
                 myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
                 myStage.setResizable(false);
                 myStage.show();
+                Node n = (Node) actionEvent.getSource();
+                Stage stage = (Stage) n.getScene().getWindow();
+                stage.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
 
-        }
-        else{
-            System.out.println("Izuzetak,netacan username ili password");
+        } else {
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Login failed");
+            alert.setHeaderText(null);
+            alert.setContentText("Sorry, login failed, plese check your username or password");
+            tfUsernameLogIn.setText("");
+            tfUsernameLogIn.setText("");
+            alert.showAndWait();
+
+
         }
     }
+
     public void SingIn(ActionEvent actionEvent) {
         if (isValidAllSignIn()) {
-            Student student =new Student(tfNameSignIn.getText(),tfSurnameSignIn.getText(),tfEmailSignIn.getText(),tfJMBGSignIn.getText(),tfUsernameSignIn.getText(), Date.valueOf(dpDateOfBirthSignIn.getValue()));
-            daoUser.addUser(new Student(tfNameSignIn.getText(),tfSurnameSignIn.getText(),tfEmailSignIn.getText(),tfJMBGSignIn.getText(),tfUsernameSignIn.getText(), Date.valueOf(dpDateOfBirthSignIn.getValue())),tfPasswordSignUp.getText());
+            Student student = new Student(tfNameSignIn.getText(), tfSurnameSignIn.getText(), tfEmailSignIn.getText(), tfJMBGSignIn.getText(), tfUsernameSignIn.getText(), Date.valueOf(dpDateOfBirthSignIn.getValue()));
+            daoUser.addUser(new Student(tfNameSignIn.getText(), tfSurnameSignIn.getText(), tfEmailSignIn.getText(), tfJMBGSignIn.getText(), tfUsernameSignIn.getText(), Date.valueOf(dpDateOfBirthSignIn.getValue())), tfPasswordSignUp.getText());
 
-                Parent root = null;
-                try {
-                    Stage myStage = new Stage();
-                    FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/mainform.fxml"));
-                    loader2.setController(new MainController(daoClass,daoClassroom,daoProfessorToSubjectDAO,daoSubject,daoUser, student));
-                    root = loader2.load();
-                    MainController = loader2.getController();
-                    myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
-                    myStage.setResizable(false);
-                    myStage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            Parent root = null;
+            try {
+                Stage myStage = new Stage();
+                FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/mainform.fxml"));
+                loader2.setController(new MainController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, student));
+                root = loader2.load();
+                MainController = loader2.getController();
+                myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+                myStage.setResizable(false);
+                myStage.show();
+                Node n = (Node) actionEvent.getSource();
+                Stage stage = (Stage) n.getScene().getWindow();
+                stage.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
 
         }

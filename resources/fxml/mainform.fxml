@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="427.0" prefWidth="666.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" >
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="427.0" prefWidth="666.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@/css/mainform.css" />
     </stylesheets>
@@ -13,7 +13,6 @@
         <HBox prefHeight="19.0" prefWidth="596.0" BorderPane.alignment="CENTER">
             <children>
                 <Label fx:id="statusMsg" />
-                <Label prefHeight="18.0" prefWidth="113.0" text="Program started." />
             </children>
         </HBox>
     </bottom>
@@ -86,16 +85,16 @@
                                             <items>
                                                 <HBox prefHeight="1.0" prefWidth="200.0" spacing="5.0">
                                                     <children>
-                                                        <Button mnemonicParsing="false" prefHeight="43.0" prefWidth="43.0" styleClass="tbAdd" />
+                                                        <Button fx:id="btnAddSubject" mnemonicParsing="false" onAction="#addSubject" prefHeight="43.0" prefWidth="43.0" styleClass="tbAdd" />
                                                         <Button mnemonicParsing="false" onAction="#btnSubjectChange" prefHeight="43.0" prefWidth="43.0" styleClass="tbChange" />
-                                                        <Button mnemonicParsing="false" prefHeight="43.0" prefWidth="43.0" styleClass="tbDelete" />
+                                                        <Button fx:id="dleteSubject" mnemonicParsing="false" onAction="#deleteSubject" prefHeight="43.0" prefWidth="43.0" styleClass="tbDelete" />
                                                     </children>
                                                 </HBox>
                                             </items>
                                         </ToolBar>
                                     </top>
                                     <center>
-                                        <ListView fx:id="listViewSubjects" prefHeight="292.0" prefWidth="653.0" BorderPane.alignment="CENTER" />
+                                        <ListView fx:id="listViewSubjects" prefHeight="284.0" prefWidth="666.0" BorderPane.alignment="CENTER" />
                                     </center>
                                 </BorderPane>
                             </children></AnchorPane>
@@ -105,7 +104,7 @@
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <BorderPane layoutX="1.0" prefHeight="359.0" prefWidth="666.0">
+                        <BorderPane layoutX="1.0" prefHeight="346.0" prefWidth="666.0">
                            <top>
                                         <ToolBar prefHeight="50.0" prefWidth="666.0" BorderPane.alignment="CENTER">
                                             <items>
@@ -120,7 +119,7 @@
                                         </ToolBar>
                            </top>
                            <center>
-                                    <GridPane alignment="center" hgap="10" prefHeight="319.0" prefWidth="632.0" vgap="10" BorderPane.alignment="CENTER">
+                                    <GridPane alignment="center" hgap="10" prefHeight="240.0" prefWidth="655.0" vgap="10" BorderPane.alignment="CENTER">
                                         <columnConstraints>
                                             <ColumnConstraints maxWidth="214.00000000000003" minWidth="198.4" prefWidth="198.4" />
                                             <ColumnConstraints maxWidth="102.39999999999998" minWidth="86.0" prefWidth="102.39999999999998" />
@@ -133,6 +132,7 @@
                                             <RowConstraints />
                                             <RowConstraints />
                                             <RowConstraints />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" />
                                             <RowConstraints />
                                             <RowConstraints />
                                             <RowConstraints minHeight="10.0" prefHeight="30.0" />
@@ -149,7 +149,7 @@
                                             <Label text="Username" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                             <TextField fx:id="fldUsername" GridPane.columnIndex="2" GridPane.rowIndex="5" />
             
-                                            <ButtonBar prefHeight="32.0" prefWidth="523.0" GridPane.columnSpan="3" GridPane.rowIndex="8">
+                                            <ButtonBar prefHeight="32.0" prefWidth="523.0" GridPane.columnSpan="3" GridPane.rowIndex="9">
                                                 <buttons>
                                                     <Button fx:id="btnCancelUser" mnemonicParsing="false" onAction="#cancelUser" style="-fx-background-color: lightpink; -fx-border-color: black; -fx-border-radius: 5px; -fx-background-radius: 5px;" text="Cancel" />
                                                     <Button fx:id="btnConfirmUser" mnemonicParsing="false" onAction="#confirmUser" style="-fx-border-color: black; -fx-background-color: greenyellow; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Confirm" />
@@ -158,9 +158,9 @@
                                     <Label text="JMBG" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                     <TextField fx:id="fldJmbg" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                     <DatePicker fx:id="dpBirthday" prefHeight="26.0" prefWidth="204.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                    <HBox prefHeight="25.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="7">
+                                    <HBox prefHeight="25.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="8">
                                        <children>
-                                          <RadioButton mnemonicParsing="false" fx:id="radioAllUsers" onAction="#AllUsers" text="All">
+                                          <RadioButton fx:id="radioAllUsers" mnemonicParsing="false" onAction="#AllUsers" text="All">
                                              <toggleGroup>
                                                 <ToggleGroup fx:id="group1" />
                                              </toggleGroup>
@@ -169,7 +169,7 @@
                                           <RadioButton mnemonicParsing="false" onAction="#Profesors" text="Profesors" toggleGroup="$group1" />
                                        </children>
                                     </HBox>
-                                            <HBox prefHeight="25.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="7">
+                                            <HBox prefHeight="25.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="8">
                                                 <children>
                                                     <RadioButton fx:id="radioStudent" mnemonicParsing="false" text="Student">
                                                         <toggleGroup>
@@ -179,6 +179,8 @@
                                                     <RadioButton fx:id="radioProfesor" mnemonicParsing="false" text="Profesor" toggleGroup="$group2" />
                                                 </children>
                                             </HBox>
+                                    <Label text="Password" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                    <PasswordField fx:id="fldPassword" GridPane.columnIndex="2" GridPane.rowIndex="6" />
             
                                         </children>
                                         <padding>

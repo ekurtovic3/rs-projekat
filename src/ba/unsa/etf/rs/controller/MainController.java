@@ -7,25 +7,29 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.w3c.dom.UserDataHandler;
 
 import java.io.IOException;
+import java.sql.Array;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.ArrayList;
 
 import static javafx.scene.control.PopupControl.USE_COMPUTED_SIZE;
 
 public class MainController {
 
-
+    public Label statusMsg;
     public ListView listViewSubjects;
     public ListView listViewUsers;
     public ListView listViewClassroom;
@@ -36,7 +40,6 @@ public class MainController {
     public TextField fldJmbg;
     public DatePicker dpBirthday;
     public PasswordField fldPassword;
-    public Button btnAddUser;
     public RadioButton radioStudent;
     public RadioButton radioProfesor;
     public RadioButton radioAllUsers;
@@ -51,28 +54,24 @@ public class MainController {
     private ProfessorToSubjectDAO daoProfessorToSubjectDAO;
     private SubjectDAO daoSubject;
     private UserDAO daoUser;
-   // private User pom = null;
-    //private TimetableDAO dao;
     private ObservableList<Subject> listSubjects;
     private ObservableList<User> listUsers;
     private ObservableList<Classroom> listClassrooms;
     private Object SubjectController;
-    private User user=null;
-    private Profesor profesor=null;
-    private Student student=null;
+    private User user = null;
 
     private SimpleObjectProperty<User> trenutniKorisnik = new SimpleObjectProperty<>();
-    private SimpleObjectProperty<User> trenutniSubject = new SimpleObjectProperty<>();
-
-
+    private SimpleObjectProperty<Subject> trenutniSubject = new SimpleObjectProperty<>();
+    private Object addSubjectController;
 
 
     public MainController() throws SQLException {
-          daoClass= ClassDAO.getInstance();
-          daoClassroom= ClassroomDAO.getInstance();
-          daoProfessorToSubjectDAO=ProfessorToSubjectDAO.getInstance();
-          daoSubject=SubjectDAO.getInstance();
-          daoUser=UserDAO.getInstance();
+
+        daoClass = ClassDAO.getInstance();
+        daoClassroom = ClassroomDAO.getInstance();
+        daoProfessorToSubjectDAO = ProfessorToSubjectDAO.getInstance();
+        daoSubject = SubjectDAO.getInstance();
+        daoUser = UserDAO.getInstance();
         //    dao = TimetableDAO.getInstance();
         //      listSubjects = FXCollections.observableArrayList(dao.getAllSubjects());
         //     listUsers = FXCollections.observableArrayList(dao.getAllUsers());
@@ -80,35 +79,38 @@ public class MainController {
     }
 
     public MainController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Student student) {
-        this.daoClass=daoClass;
-        this.daoClassroom=daoClassroom;
-        this.daoProfessorToSubjectDAO=daoProfessorToSubjectDAO;
-        this.daoSubject=daoSubject;
-        this.daoUser=daoUser;
-        this.user=student;
+        this.daoClass = daoClass;
+        this.daoClassroom = daoClassroom;
+        this.daoProfessorToSubjectDAO = daoProfessorToSubjectDAO;
+        this.daoSubject = daoSubject;
+        this.daoUser = daoUser;
+        this.user = student;
     }
+
     public MainController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Profesor profesor) {
-        this.daoClass=daoClass;
-        this.daoClassroom=daoClassroom;
-        this.daoProfessorToSubjectDAO=daoProfessorToSubjectDAO;
-        this.daoSubject=daoSubject;
-        this.daoUser=daoUser;
-        this.user=profesor;
+        this.daoClass = daoClass;
+        this.daoClassroom = daoClassroom;
+        this.daoProfessorToSubjectDAO = daoProfessorToSubjectDAO;
+        this.daoSubject = daoSubject;
+        this.daoUser = daoUser;
+        this.user = profesor;
     }
 
     public MainController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, User userByID) {
-        this.daoClass=daoClass;
-        this.daoClassroom=daoClassroom;
-        this.daoProfessorToSubjectDAO=daoProfessorToSubjectDAO;
-        this.daoSubject=daoSubject;
-        this.daoUser=daoUser;
-        this.user=userByID;
+        this.daoClass = daoClass;
+        this.daoClassroom = daoClassroom;
+        this.daoProfessorToSubjectDAO = daoProfessorToSubjectDAO;
+        this.daoSubject = daoSubject;
+        this.daoUser = daoUser;
+        this.user = userByID;
     }
 
     @FXML
     public void initialize() {
+        statusMsg.setText("Program started...");
         if (user instanceof Student) System.out.println("Logovan kao student");
         if (user instanceof Profesor) System.out.println("Logovan kao profesor");
+        if (user instanceof Admin) System.out.println("Logovan kao admin");
         btnCancelUser.setDisable(true);
         btnConfirmUser.setDisable(true);
         listViewSubjects.setItems(daoSubject.getAllSubjects());
@@ -239,17 +241,16 @@ public class MainController {
         });
 
 
-/*        fldPassword.textProperty().addListener((obs, oldIme, newIme) -> {
-            if (!newIme.isEmpty() || newIme.length()<3) {
+        fldPassword.textProperty().addListener((obs, oldIme, newIme) -> {
+            if (!newIme.isEmpty() || newIme.length() < 3) {
                 fldPassword.getStyleClass().removeAll("poljeNijeIspravno");
                 fldPassword.getStyleClass().add("poljeIspravno");
             } else {
                 fldPassword.getStyleClass().removeAll("poljeIspravno");
                 fldPassword.getStyleClass().add("poljeNijeIspravno");
             }
-        });*/
+        });
     }
-
 
 
     private boolean isJmbgValid(String s) {
@@ -313,6 +314,7 @@ public class MainController {
         fldUsername.setDisable(false);
         fldJmbg.setDisable(false);
         dpBirthday.setDisable(false);
+        fldPassword.setDisable(false);
         radioProfesor.setDisable(false);
         radioStudent.setDisable(false);
         listViewUsers.setDisable(true);
@@ -326,38 +328,74 @@ public class MainController {
         fldUsername.setDisable(true);
         fldJmbg.setDisable(true);
         dpBirthday.setDisable(true);
+        fldPassword.setDisable(true);
         radioProfesor.setDisable(true);
         radioStudent.setDisable(true);
         listViewUsers.setDisable(false);
     }
 
 
-    public void btnSubjectAdd(ActionEvent actionEvent) {
-    }
-
-    public void btnSubjectChange(ActionEvent actionEvent) {
-
-        if(user instanceof Student) System.out.println("Logiran kao studnet");
-
-        if(!listViewSubjects.getSelectionModel().isEmpty())  {Parent root = null;
+    public void addSubject(ActionEvent actionEvent) {
         try {
+            Parent root = null;
             Stage myStage = new Stage();
-            FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/subject.fxml"));
-            loader2.setController(new SubjectController(daoClass,daoClassroom,daoProfessorToSubjectDAO,daoSubject,daoUser, (Subject) listViewSubjects.getSelectionModel().getSelectedItem()));
-            root = loader2.load();
-            SubjectController = loader2.getController();
+            FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/addSubject.fxml"));
+            loader3.setController(new AddSubjectController(daoSubject));
+            root = loader3.load();
+            addSubjectController = loader3.getController();
             myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             myStage.setResizable(false);
             myStage.show();
-            myStage.setOnHidden(event -> {
-                listViewSubjects.setItems(daoSubject.getAllSubjects());
+            int s = daoSubject.getAllSubjects().size();
+            myStage.setOnHiding(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent windowEvent) {
+                    listViewSubjects.setItems(daoSubject.getAllSubjects());
+                    if (s != daoSubject.getAllSubjects().size()) {
+                        statusMsg.setText("Subject added.");
+                    } else {
+                        statusMsg.setText("Subject not added.");
+                    }
+                }
             });
+
         } catch (IOException e) {
             e.printStackTrace();
-        }}
+        }
     }
 
-    public void btnSubjectDelete(ActionEvent actionEvent) {
+
+    public void btnSubjectChange(ActionEvent actionEvent) {
+
+        if (!listViewSubjects.getSelectionModel().isEmpty()) {
+            Parent root = null;
+            try {
+                Stage myStage = new Stage();
+                FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/subject.fxml"));
+                loader2.setController(new SubjectController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, (Subject) listViewSubjects.getSelectionModel().getSelectedItem()));
+                root = loader2.load();
+                SubjectController = loader2.getController();
+                myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+                myStage.setResizable(false);
+                myStage.show();
+                myStage.setOnHidden(event -> {
+                    listViewSubjects.setItems(daoSubject.getAllSubjects());
+                    statusMsg.setText("Subject views/edited");
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void deleteSubject(ActionEvent actionEvent) {
+        if (getTrenutniSubject() != null) {
+            Subject pom = (Subject) listViewSubjects.getSelectionModel().getSelectedItem();
+            daoSubject.deleteSubject(((Subject) listViewSubjects.getSelectionModel().getSelectedItem()).getName());
+            listViewSubjects.setItems(daoSubject.getAllSubjects());
+            statusMsg.setText("Subject deleted.");
+
+        }
     }
 
     public void AllUsers(ActionEvent actionEvent) {
@@ -375,8 +413,18 @@ public class MainController {
     }
 
 
-
     public void cancelUser(ActionEvent actionEvent) {
+
+        if (getTrenutniKorisnik() != null && !btnUserDelete.isDisable()) {
+
+            statusMsg.setText("User not deleted.");
+
+        } else if (!btnUserEdit.isDisable()) {
+            statusMsg.setText("User not edited.");
+        } else if (!btnUserAdd.isDisable()) {
+            statusMsg.setText("User not added.");
+        }
+
         btnUserAdd.setDisable(false);
         btnUserDelete.setDisable(false);
         btnUserEdit.setDisable(false);
@@ -388,6 +436,7 @@ public class MainController {
         fldEmail.setText("");
         fldUsername.setText("");
         fldJmbg.setText("");
+        fldPassword.setText("");
         dpBirthday.setValue(LocalDate.now());
         disable();
     }
@@ -403,27 +452,30 @@ public class MainController {
             disable();
             daoUser.deleteUser(getTrenutniKorisnik().getJmbg());
             listViewUsers.setItems(daoUser.getAllUsers());
+            statusMsg.setText("User deleted.");
 
         } else if (getTrenutniKorisnik() == null && !btnUserDelete.isDisable()) {
             System.out.println("Nije oznacen ni jedan korisnik za brisanje");
         } else if (isValidAll() && getTrenutniKorisnik() != null && !btnUserEdit.isDisable()) {
             if (radioProfesor.isSelected()) {
-                daoUser.UpdateUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
-                System.out.println("Edit");
+                daoUser.UpdateUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), fldPassword.getText());
+                statusMsg.setText("User edited.");
+
             } else if (radioStudent.isSelected()) {
-                daoUser.UpdateUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
+                daoUser.UpdateUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), fldPassword.getText());
+                statusMsg.setText("User deleted.");
             }
         } else if (isValidAll() && !btnUserAdd.isDisable()) {
             if (radioProfesor.isSelected()) {
-                daoUser.addUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())),"Neki pass");
-                System.out.println("Dodan novi");
+                daoUser.addUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), "Neki pass");
+                statusMsg.setText("User added.");
             } else if (radioStudent.isSelected()) {
-                System.out.println("Dodan novi");
-                daoUser.addUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())),"Neki pass");
+                statusMsg.setText("User added.");
+                daoUser.addUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), "Neki pass");
             }
 
 
-        } else if(!isValidAll() && (!btnUserEdit.isDisable() || !btnUserAdd.isDisable())) {
+        } else if (!isValidAll() && (!btnUserEdit.isDisable() || !btnUserAdd.isDisable())) {
             System.out.println("Nije validno sve ili ima polje koje nije popunjeno");
         }
         if (isValidAll() && (!btnUserEdit.isDisabled() || !btnUserAdd.isDisabled())) {
@@ -433,7 +485,6 @@ public class MainController {
             btnUserDelete.setDisable(false);
             btnUserEdit.setDisable(false);
             listViewUsers.setDisable(false);
-           // listViewUsers.setItems(dao.getAllUsers());
             disable();
 
         }
@@ -455,6 +506,7 @@ public class MainController {
         fldUsername.setText("");
         fldJmbg.setText("");
         dpBirthday.setValue(LocalDate.now());
+        statusMsg.setText("Adding new user.");
 
     }
 
@@ -466,8 +518,9 @@ public class MainController {
         enable();
         if (getTrenutniKorisnik() == null) {
             System.out.println("ERROR nije izabran ni jedan korisnik");
-    disable();
+            disable();
         }
+        statusMsg.setText("Editing user.");
     }
 
     public void btnUserDelete(ActionEvent actionEvent) {
@@ -475,9 +528,10 @@ public class MainController {
         btnUserEdit.setDisable(true);
         btnConfirmUser.setDisable(false);
         btnCancelUser.setDisable(false);
+        statusMsg.setText("Deliting user.");
     }
 
-    public void setTrenutniSubject(Subject newKorisnik) {    }
+
     public User getTrenutniKorisnik() {
         return trenutniKorisnik.get();
     }
@@ -491,15 +545,15 @@ public class MainController {
     }
 
 
-    public User getTrenutniSubject() {
+    public Subject getTrenutniSubject() {
         return trenutniSubject.get();
     }
 
-    public SimpleObjectProperty<User> trenutniSubjectProperty() {
+    public SimpleObjectProperty<Subject> trenutniSubjectProperty() {
         return trenutniSubject;
     }
 
-    public void setTrenutniSubject(User trenutniSubject) {
+    public void setTrenutniSubject(Subject trenutniSubject) {
         this.trenutniSubject.set(trenutniSubject);
     }
 }

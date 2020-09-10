@@ -30,13 +30,6 @@ public class SubjectController {
     private UserDAO daoUser;
     private SimpleObjectProperty<User> trenutniProfesor = new SimpleObjectProperty<>();
 
-    /*
-
-    public SubjectController(TimetableDAO dao, Student student) {
-        this.dao=dao;
-        this.user=student;
-    }*/
-
     public SubjectController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Subject selectedItem) {
         this.subject=selectedItem;
         this.daoClass=daoClass;
@@ -60,11 +53,7 @@ public class SubjectController {
         });
          setProf();
     }
-/*
-    public SubjectController(TimetableDAO dao, Subject s) {
-        this.dao = dao;
-        this.subject = s;
-    }*/
+
 
     public SubjectController() {
     }
