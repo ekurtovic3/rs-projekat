@@ -51,7 +51,7 @@ public class ProfessorToSubjectDAO
             while (resultSet.next()){
                 // System.out.println(findUserByID(resultSet.getInt(1)).toString()            );
                 if (UserDAO.findUserByID(resultSet.getInt(1)) instanceof Profesor)
-                    result.add(UserDAO.findUserByID(resultSet.getInt(1)));}
+                    result.add((Profesor) UserDAO.findUserByID(resultSet.getInt(1)));}
             //  result.add(new User( findUserByID(resultSet.getInt(1))));
         }
         catch (SQLException e) {
@@ -64,12 +64,12 @@ public class ProfessorToSubjectDAO
         ObservableList<Profesor> allProfesors= UserDAO.getAllProfesors();
         ObservableList<Profesor> profesorsOfSubject= getProfesorsOfSubject(subject);
         // profesorsOfSubject.removeAll(allProfesors);
+        //List<Profesor> result=null;
         List<Profesor> result = allProfesors.stream().filter(aObject -> {return  profesorsOfSubject.contains(aObject); }).collect(Collectors.toList());
         for (int i=0;i<result.size();i++) {
             System.out.println("Profesor za dodavanje:"+result.get(i));
 
         }
-
         return  FXCollections.observableArrayList(result);
     }
 

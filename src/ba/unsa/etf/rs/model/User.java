@@ -16,7 +16,6 @@ public class User {
     private SimpleStringProperty username;
     private SimpleObjectProperty<LocalDate> dateOfBirth;
     private static User loggedInUser;
-    //lista predmeta
 
     public User(String name, String surname, String email, String jmbg, String username, Date dateOfBirth) {
         this.name = new SimpleStringProperty(name);
@@ -135,6 +134,4 @@ public class User {
     public String toString() {
         return this.getName()+" "+this.getSurname()+" "+this.getEmail();
     }
-
-    //equals
 }

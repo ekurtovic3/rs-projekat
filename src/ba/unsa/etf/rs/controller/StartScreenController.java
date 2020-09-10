@@ -284,7 +284,30 @@ public class StartScreenController implements Initializable {
         return false;
     }
 
+    public void LogIn(ActionEvent actionEvent) {
+        if (isValidAllLogIn() && (UserDAO.findUserLogIn(tfUsernameLogIn.getText(),tfPasswordLogIn.getText()))!=-1) {
+int id=daoUser.findUserLogIn(tfUsernameLogIn.getText(),tfPasswordLogIn.getText());
 
+            Parent root = null;
+            try {
+                Stage myStage = new Stage();
+                FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/mainform.fxml"));
+                loader2.setController(new MainController(daoClass,daoClassroom,daoProfessorToSubjectDAO,daoSubject,daoUser, daoUser.findUserByID(id)));
+                root = loader2.load();
+                MainController = loader2.getController();
+                myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+                myStage.setResizable(false);
+                myStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+        else{
+            System.out.println("Izuzetak,netacan username ili password");
+        }
+    }
     public void SingIn(ActionEvent actionEvent) {
         if (isValidAllSignIn()) {
             Student student =new Student(tfNameSignIn.getText(),tfSurnameSignIn.getText(),tfEmailSignIn.getText(),tfJMBGSignIn.getText(),tfUsernameSignIn.getText(), Date.valueOf(dpDateOfBirthSignIn.getValue()));
@@ -300,15 +323,10 @@ public class StartScreenController implements Initializable {
                     myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
                     myStage.setResizable(false);
                     myStage.show();
-                 /*   myStage.setOnHidden(event -> {
-                        listViewSubjects.setItems(dao.getAllSubjects());
-                    });*/
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-
-            System.out.println("Validno za Signin");
 
         }
     }

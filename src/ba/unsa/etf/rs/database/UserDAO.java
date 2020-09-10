@@ -1,5 +1,6 @@
 package ba.unsa.etf.rs.database;
 
+import ba.unsa.etf.rs.model.Admin;
 import ba.unsa.etf.rs.model.Profesor;
 import ba.unsa.etf.rs.model.Student;
 import ba.unsa.etf.rs.model.User;
@@ -35,11 +36,10 @@ public class UserDAO
             findMaxIDUser= datConn.getConnection().prepareStatement("SELECT max(id) FROM User");
             deleteUser = datConn.getConnection().prepareStatement("DELETE FROM User WHERE jmbg = ?");
             findUserByIDQuery = datConn.getConnection().prepareStatement("SELECT * FROM User WHERE id = ?");
-//            findUserLogIn= datConn.getConnection().prepareStatement("SELECT * FROM User WHERE username = ? and pass");
+           findUserLogIn= datConn.getConnection().prepareStatement("SELECT id FROM User WHERE username = ? and password=?");
             updateUser = datConn.getConnection().prepareStatement("update USER set name=?, surname= ?, email=?, jmbg=?,username =?,dateOfBirth=?,status=? where id = ?");
             findUserID =datConn.getConnection().prepareStatement("SELECT id from User where jmbg= ?");
             addUserQuery = datConn.getConnection().prepareStatement("Insert INTO User values(?,?,?,?,?,?,?,?,?)");
-
         }
         catch (SQLException e)
         {
@@ -60,12 +60,6 @@ public class UserDAO
         instance = null;
     }
 
-    //METHODS
-    public void TESTdeleteUser() {
-        //  deleteUser("0404888170254");
-        // deleteUser("18115615651");
-        deleteUser("15465464");
-    }
 
     public static ObservableList<Profesor> getAllProfesors() { // DODAT ADMINA i indeks
         ArrayList<Profesor> result = new ArrayList<>();
@@ -89,8 +83,8 @@ public class UserDAO
             updateUser.setString(4, user.getJmbg());
             updateUser.setString(5, user.getUsername());
             updateUser.setDate(6, user.getDateOfBirth());
-            if(user instanceof Student) updateUser.setInt(7,2 );
-            if(user instanceof Profesor) updateUser.setInt(7,1 );
+            if(user instanceof Student) updateUser.setInt(7, 1);
+            if(user instanceof Profesor) updateUser.setInt(7,2 );
             updateUser.setInt(8, findUserID(user.getJmbg()));
             updateUser.executeUpdate();
         } catch (SQLException e) {
@@ -112,10 +106,11 @@ public class UserDAO
                 addUserQuery.setString(5, s.getJmbg());
                 addUserQuery.setString(6, s.getUsername());
                 addUserQuery.setDate(7, s.getDateOfBirth());
-                addUserQuery.setString(8, pass);
+                addUserQuery.setString(9, pass);
                 if(s instanceof Profesor) {addUserQuery.setInt(8, 2);}
                 else if(s instanceof Student) {addUserQuery.setInt(8, 1);}
                 else {addUserQuery.setInt(8, 0);}
+
                 /*  UBACIT JOS ZA ADMINA*/
                 addUserQuery.executeUpdate();
                 // System.out.println(s.getName() + " "+ s.getSurname()+" "+s.getEmail());
@@ -157,13 +152,15 @@ public class UserDAO
         return result;
     }
 
-    public static User findUserLogIn(String userJmbg) {
-        User result = null;                 /* VRACA PROFESORA ILI STUDENTA A NE USER??????????*/
+    public static int findUserLogIn(String username,String pass) {
+        int result = -1;                 /* VRACA PROFESORA ILI STUDENTA A NE USER??????????*/
         try {
-            findUserQuery.setString(1,userJmbg);
-            ResultSet resultSet = findUserQuery.executeQuery();
+            findUserLogIn.setString(1,username);
+            findUserLogIn.setString(2,pass);
+            ResultSet resultSet = findUserLogIn.executeQuery();
             while (resultSet.next())
-                result = new User(resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6),resultSet.getDate(7));
+             result=resultSet.getInt(1);
+              //  result = new User(resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6),resultSet.getDate(7));
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -206,6 +203,7 @@ public class UserDAO
                 { result.add(new Profesor(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
                 else  if(resultSet.getInt(8) ==1)
                 { result.add(new Student(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
+else  if(resultSet.getInt(8) ==0) { result.add(new Admin(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
 
             //      else {addUserQuery.setInt(8, 0);}
         }
@@ -232,13 +230,40 @@ public class UserDAO
         return FXCollections.observableArrayList(result);
     }
 
-    public static Profesor findUserByID(int id) {
-        Profesor result = null;
+    public static  User findUserByID(int id) {
+        User result = null;
         try {
             findUserByIDQuery.setInt(1,id);
             ResultSet resultSet = findUserByIDQuery.executeQuery();
             while (resultSet.next())
-                result = new Profesor(resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6), Date.valueOf(LocalDate.now()));
+                if(resultSet.getInt(8) ==2)
+                { result=(new Profesor(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
+                else  if(resultSet.getInt(8) ==1)
+                { result=(new Student(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
+                else  if(resultSet.getInt(8) ==0)
+                { result=(new Admin(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
+
+            //result = new Profesor(resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6), Date.valueOf(LocalDate.now()));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public  User findUserByID2(int id) {
+        User result = null;
+        try {
+            findUserByIDQuery.setInt(1,id);
+            ResultSet resultSet = findUserByIDQuery.executeQuery();
+            while (resultSet.next())
+                if(resultSet.getInt(8) ==2)
+                { result=(new Profesor(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
+                else  if(resultSet.getInt(8) ==1)
+                { result=(new Student(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
+                else  if(resultSet.getInt(8) ==2)
+                { result=(new Admin(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getDate(7)));}
+
+            //result = new Profesor(resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6), Date.valueOf(LocalDate.now()));
         }
         catch (SQLException e) {
             e.printStackTrace();

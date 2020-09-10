@@ -57,7 +57,9 @@ public class MainController {
     private ObservableList<User> listUsers;
     private ObservableList<Classroom> listClassrooms;
     private Object SubjectController;
-    private User user;
+    private User user=null;
+    private Profesor profesor=null;
+    private Student student=null;
 
     private SimpleObjectProperty<User> trenutniKorisnik = new SimpleObjectProperty<>();
     private SimpleObjectProperty<User> trenutniSubject = new SimpleObjectProperty<>();
@@ -83,11 +85,30 @@ public class MainController {
         this.daoProfessorToSubjectDAO=daoProfessorToSubjectDAO;
         this.daoSubject=daoSubject;
         this.daoUser=daoUser;
+        this.user=student;
+    }
+    public MainController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Profesor profesor) {
+        this.daoClass=daoClass;
+        this.daoClassroom=daoClassroom;
+        this.daoProfessorToSubjectDAO=daoProfessorToSubjectDAO;
+        this.daoSubject=daoSubject;
+        this.daoUser=daoUser;
+        this.user=profesor;
+    }
+
+    public MainController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, User userByID) {
+        this.daoClass=daoClass;
+        this.daoClassroom=daoClassroom;
+        this.daoProfessorToSubjectDAO=daoProfessorToSubjectDAO;
+        this.daoSubject=daoSubject;
+        this.daoUser=daoUser;
+        this.user=userByID;
     }
 
     @FXML
     public void initialize() {
         if (user instanceof Student) System.out.println("Logovan kao student");
+        if (user instanceof Profesor) System.out.println("Logovan kao profesor");
         btnCancelUser.setDisable(true);
         btnConfirmUser.setDisable(true);
         listViewSubjects.setItems(daoSubject.getAllSubjects());
@@ -390,7 +411,6 @@ public class MainController {
                 daoUser.UpdateUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
                 System.out.println("Edit");
             } else if (radioStudent.isSelected()) {
-
                 daoUser.UpdateUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
             }
         } else if (isValidAll() && !btnUserAdd.isDisable()) {

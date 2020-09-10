@@ -1,0 +1,8 @@
+.buttonConfirm
+{
+    -fx-border-color: black;
+    -fx-background-color: greenyellow;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+}
+
