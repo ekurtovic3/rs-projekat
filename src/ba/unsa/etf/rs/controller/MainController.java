@@ -62,7 +62,11 @@ public class MainController {
 
     private SimpleObjectProperty<User> trenutniKorisnik = new SimpleObjectProperty<>();
     private SimpleObjectProperty<Subject> trenutniSubject = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<Classroom> trenutniClassroom = new SimpleObjectProperty<>();
+
     private Object addSubjectController;
+    private Object addClassroomController;
+    private Object CalendarController;
 
 
     public MainController() throws SQLException {
@@ -72,10 +76,7 @@ public class MainController {
         daoProfessorToSubjectDAO = ProfessorToSubjectDAO.getInstance();
         daoSubject = SubjectDAO.getInstance();
         daoUser = UserDAO.getInstance();
-        //    dao = TimetableDAO.getInstance();
-        //      listSubjects = FXCollections.observableArrayList(dao.getAllSubjects());
-        //     listUsers = FXCollections.observableArrayList(dao.getAllUsers());
-        //    listClassrooms = FXCollections.observableArrayList(dao.getAllClassrooms());
+
     }
 
     public MainController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Student student) {
@@ -123,6 +124,9 @@ public class MainController {
         });
         listViewSubjects.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             setTrenutniSubject((Subject) newKorisnik);
+        });
+        listViewClassroom.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
+            setTrenutniClassroom((Classroom) newKorisnik);
         });
         trenutniKorisnikProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             if (oldKorisnik != null) {
@@ -531,6 +535,73 @@ public class MainController {
         statusMsg.setText("Deliting user.");
     }
 
+    public void addClassroom(ActionEvent actionEvent) {
+        try {
+            Parent root = null;
+            Stage myStage = new Stage();
+            FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/classroom.fxml"));
+            loader3.setController(new addClassroomController(daoClassroom));
+            root = loader3.load();
+            addClassroomController = loader3.getController();
+            myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            myStage.setResizable(false);
+            myStage.show();
+            int s = daoClassroom.getAllClassrooms().size();
+            myStage.setOnHiding(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent windowEvent) {
+                    listViewClassroom.setItems(daoClassroom.getAllClassrooms());
+                    if (s != daoClassroom.getAllClassrooms().size()) {
+                        statusMsg.setText("Classroom added.");
+                    } else {
+                        statusMsg.setText("Classroom not added.");
+                    }
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void editClassroom(ActionEvent actionEvent) {
+        try {
+            Parent root = null;
+            Stage myStage = new Stage();
+            FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/calendar.fxml"));
+            loader3.setController(new CalendarController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, (Classroom) listViewClassroom.getSelectionModel().getSelectedItem()));
+            root = loader3.load();
+            CalendarController = loader3.getController();
+            myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            myStage.setResizable(false);
+            myStage.show();
+            int s = daoClassroom.getAllClassrooms().size();
+            myStage.setOnHiding(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent windowEvent) {
+                    listViewClassroom.setItems(daoClassroom.getAllClassrooms());
+                    if (s != daoClassroom.getAllClassrooms().size()) {
+                        statusMsg.setText("Classroom viewd/edited");
+                    } else {
+                        statusMsg.setText("Classroom not viewd/edited.");
+                    }
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteClassrom(ActionEvent actionEvent) {
+        if (getTrenutniClassroom() != null) {
+            Classroom pom = (Classroom) listViewClassroom.getSelectionModel().getSelectedItem();
+            daoClassroom.deleteClassroom(((Classroom) listViewClassroom.getSelectionModel().getSelectedItem()).getName());
+            listViewClassroom.setItems(daoClassroom.getAllClassrooms());
+            statusMsg.setText("Classroom deleted.");
+
+        }
+    }
 
     public User getTrenutniKorisnik() {
         return trenutniKorisnik.get();
@@ -555,5 +626,17 @@ public class MainController {
 
     public void setTrenutniSubject(Subject trenutniSubject) {
         this.trenutniSubject.set(trenutniSubject);
+    }
+
+    public Classroom getTrenutniClassroom() {
+        return trenutniClassroom.get();
+    }
+
+    public SimpleObjectProperty<Classroom> trenutniClassroomProperty() {
+        return trenutniClassroom;
+    }
+
+    public void setTrenutniClassroom(Classroom trenutniClassroom) {
+        this.trenutniClassroom.set(trenutniClassroom);
     }
 }

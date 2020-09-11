@@ -49,12 +49,13 @@ public class AddSubjectController {
 
     }
     public void confirmSubject(ActionEvent actionEvent) {
-        ok=true;
-        daoSubject.addSubject(new Subject(fldNameSubject.getText()));
-        Node n = (Node) actionEvent.getSource();
-        Stage stage = (Stage) n.getScene().getWindow();
-        stage.close();
-
+        if(fldNameSubject.getStyleClass().contains("poljeIspravno")) {
+            ok = true;
+            daoSubject.addSubject(new Subject(fldNameSubject.getText()));
+            Node n = (Node) actionEvent.getSource();
+            Stage stage = (Stage) n.getScene().getWindow();
+            stage.close();
+        }
 
     }
 

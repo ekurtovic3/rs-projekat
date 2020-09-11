@@ -146,7 +146,7 @@ public class ClassroomDAO
             e.printStackTrace();
         }
     }
-    public static ObservableList<Classroom> getAllClassrooms() {
+    public  ObservableList<Classroom> getAllClassrooms() {
         ArrayList<Classroom> result = new ArrayList<>();
         try {
             ResultSet resultSet = selectClassrooms.executeQuery();

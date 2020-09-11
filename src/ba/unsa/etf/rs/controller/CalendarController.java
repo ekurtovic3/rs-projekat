@@ -1,5 +1,7 @@
-package ba.unsa.etf.rs.model;
+package ba.unsa.etf.rs.controller;
 
+import ba.unsa.etf.rs.database.*;
+import ba.unsa.etf.rs.model.Classroom;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -7,11 +9,26 @@ import javafx.scene.control.ListView;
 
 import java.time.LocalDate;
 
-public class Calendar {
+public class CalendarController {
     public ListView lvCalendar;
     public Label lbYear;
     private int year = 2020;
+    private ClassDAO daoClass;
+    private ClassroomDAO daoClassroom;
+    private ProfessorToSubjectDAO daoProfessorToSubjectDAO;
+    private SubjectDAO daoSubject;
+    private UserDAO daoUser;
+    private Classroom classroom;
     int day = LocalDate.now().getDayOfYear();
+
+    public CalendarController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Classroom selectedItem) {
+        this.daoClass = daoClass;
+        this.daoClassroom = daoClassroom;
+        this.daoProfessorToSubjectDAO = daoProfessorToSubjectDAO;
+        this.daoSubject = daoSubject;
+        this.daoUser = daoUser;
+        this.classroom = selectedItem;
+    }
 
     @FXML
     public void initialize() {
@@ -71,4 +88,6 @@ public class Calendar {
             lvCalendar.getItems().add(LocalDate.ofYearDay(year, i));
         }
     }
+
+
 }

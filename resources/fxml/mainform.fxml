@@ -60,9 +60,9 @@
                                             <items>
                                                 <HBox prefHeight="1.0" prefWidth="200.0" spacing="5.0">
                                                     <children>
-                                                        <Button mnemonicParsing="false" prefHeight="43.0" prefWidth="43.0" styleClass="tbAdd" />
-                                                        <Button mnemonicParsing="false" prefHeight="43.0" prefWidth="43.0" styleClass="tbChange" />
-                                                        <Button mnemonicParsing="false" prefHeight="43.0" prefWidth="43.0" styleClass="tbDelete" />
+                                                        <Button fx:id="btnAddClassroom" mnemonicParsing="false" onAction="#addClassroom" prefHeight="43.0" prefWidth="43.0" styleClass="tbAdd" />
+                                                        <Button fx:id="btnEditClassroom" mnemonicParsing="false" onAction="#editClassroom" prefHeight="43.0" prefWidth="43.0" styleClass="tbChange" />
+                                                        <Button fx:id="btnDeleteClassrrom" mnemonicParsing="false" onAction="#deleteClassrom" prefHeight="43.0" prefWidth="43.0" styleClass="tbDelete" />
                                                     </children>
                                                 </HBox>
                                             </items>

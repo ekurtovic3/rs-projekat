@@ -28,7 +28,7 @@ public class ProfessorToSubjectDAO
     {
         try {
             selectProfesorsOfSubject = datConn.getConnection().prepareStatement("SELECT idp FROM ProfesorSubject Where ids=?");
-            selectProfesorsForAdd = datConn.getConnection().prepareStatement("SELECT idp FROM ProfesorSubject where  ids<>?");
+            selectProfesorsForAdd = datConn.getConnection().prepareStatement("SELECT idp FROM ProfesorSubject where  ids!=?");
             addProfesorToSubject = datConn.getConnection().prepareStatement("INSERT INTO ProfesorSubject VALUES(?,?)");
             deleteProfesorToSubject =datConn.getConnection().prepareStatement("DELETE FROM ProfesorSubject WHERE idp = ? and ids=?");
         } catch (SQLException e) {

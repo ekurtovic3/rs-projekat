@@ -81,7 +81,7 @@ public class StartScreenController implements Initializable {
 
         });
 
-
+/*
         tfPasswordLogIn.textProperty().addListener((obs, oldIme, newIme) -> {
             if (!newIme.isEmpty() && !(newIme.length() < 3)) {
                 tfPasswordLogIn.getStyleClass().removeAll("poljeNijeIspravno");
@@ -100,7 +100,7 @@ public class StartScreenController implements Initializable {
                 tfUsernameLogIn.getStyleClass().removeAll("poljeIspravno");
                 tfUsernameLogIn.getStyleClass().add("poljeNijeIspravno");
             }
-        });
+        });*/
 
         tfNameSignIn.textProperty().addListener((obs, oldIme, newIme) -> {
             if (!newIme.isEmpty()) {
@@ -286,7 +286,7 @@ public class StartScreenController implements Initializable {
     }
 
     public void LogIn(ActionEvent actionEvent) {
-        if (isValidAllLogIn() && (UserDAO.findUserLogIn(tfUsernameLogIn.getText(), tfPasswordLogIn.getText())) != -1) {
+        if ( (UserDAO.findUserLogIn(tfUsernameLogIn.getText(), tfPasswordLogIn.getText())) != -1) {
             int id = daoUser.findUserLogIn(tfUsernameLogIn.getText(), tfPasswordLogIn.getText());
 
             Parent root = null;

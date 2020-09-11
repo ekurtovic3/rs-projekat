@@ -66,7 +66,7 @@ public class SubjectController {
 
             for (int i = 0; i < profesors.size(); i++) {
                 Profesor p = profesors.get(i);
-                MenuItem i1 = new MenuItem(profesors.get(i).toString());
+                MenuItem i1 = new MenuItem("Profesor: "+profesors.get(i).toString());
                 i1.setOnAction(event -> {
                     daoProfessorToSubjectDAO.addProfesorToSubject(daoUser.findUserID(p.getJmbg()), daoSubject.findSubjectID(subject.getName()));
                     try {
