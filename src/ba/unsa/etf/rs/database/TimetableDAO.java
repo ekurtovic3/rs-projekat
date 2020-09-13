@@ -117,7 +117,8 @@ public class TimetableDAO
             ResultSet resultSet = findClassQuery.executeQuery();
             while (resultSet.next()) {
                 Class.Type vrsta = Class.Type.values()[resultSet.getInt(7)];
-                result = new Class(resultSet.getInt(1),resultSet.getTime(2), resultSet.getTime(3), resultSet.getInt(4), findClassroomByID(resultSet.getInt(5)), findSubjectByID(resultSet.getInt(6)),vrsta);
+                result = new Class(resultSet.getInt(1),resultSet.getTime(2), resultSet.getTime(3), resultSet.getInt(4), findClassroomByID(resultSet.getInt(5)), findSubjectByID(resultSet.getInt(6)),vrsta,
+                        resultSet.getDate(8));
             }}
         catch (SQLException e) {
             e.printStackTrace();
@@ -150,12 +151,6 @@ public class TimetableDAO
 
 //UserDAO
 
-
-    public void TESTdeleteUser() {
-        //  deleteUser("0404888170254");
-        // deleteUser("18115615651");
-        deleteUser("15465464");
-    }
     public void UpdateUser(User user){
         try {
             updateUser.setString(1, user.getName());

@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="404.0" prefWidth="663.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="404.0" prefWidth="663.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" >
+    <stylesheets>
+        <URL value="@/css/btnImgs.css" />
+    </stylesheets>
     <children>
         <BorderPane layoutX="1.0" prefHeight="403.0" prefWidth="666.0">
             <top>
@@ -12,9 +16,9 @@
                     <items>
                         <HBox prefHeight="1.0" prefWidth="200.0" spacing="5.0">
                             <children>
-                                <Button fx:id="btnUserAdd" mnemonicParsing="false" onAction="#btnUserAdd" prefHeight="43.0" prefWidth="43.0" styleClass="tbAdd" />
-                                <Button fx:id="btnUserEdit" mnemonicParsing="false" onAction="#btnUserEdit" prefHeight="43.0" prefWidth="43.0" styleClass="tbChange" />
-                                <Button fx:id="btnUserDelete" mnemonicParsing="false" onAction="#btnUserDelete" prefHeight="43.0" prefWidth="43.0" styleClass="tbDelete" />
+                                <Button fx:id="btnClassAdd" mnemonicParsing="false" onAction="#addClass" prefHeight="43.0" prefWidth="43.0" styleClass="tbAdd" />
+                                <Button fx:id="btnClassEdit" mnemonicParsing="false" onAction="#editClass" prefHeight="43.0" prefWidth="43.0" styleClass="tbChange" />
+                                <Button fx:id="btnClassDelete" mnemonicParsing="false" onAction="#deleteClass" prefHeight="43.0" prefWidth="43.0" styleClass="tbDelete" />
                             </children>
                         </HBox>
                     </items>
@@ -42,28 +46,26 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" />
                     </rowConstraints>
                     <children>
-                        <ListView fx:id="listViewUsers" prefHeight="291.0" prefWidth="224.0" GridPane.columnIndex="1" GridPane.rowSpan="9" />
-                        <Label text="Poceta:" GridPane.columnIndex="2" />
-                        <TextField fx:id="fldStart" GridPane.columnIndex="3" />
-                        <Label text="Kraj:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <TextField fx:id="fldEnd" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                        <Label text="Vrta časa:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                        <TextField fx:id="fldType" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                        <Label text="Periodican:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                        <Label text="Sala" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                        <TextField fx:id="fldUsername" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                        <ListView fx:id="listViewClass" prefHeight="291.0" prefWidth="224.0" GridPane.columnIndex="1" GridPane.rowSpan="9" />
+                        <Label text="Start" GridPane.columnIndex="2" />
+                        <Label text="Type:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Label text="Period" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label text="CLassroom:" GridPane.columnIndex="2" GridPane.rowIndex="4" />
 
-                        <ButtonBar prefHeight="32.0" prefWidth="523.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="9">
+                        <ButtonBar prefHeight="32.0" prefWidth="523.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="8">
                             <buttons>
-                                <Button fx:id="btnCancelUser" cancelButton="true" mnemonicParsing="false" onAction="#cancelUser" style="-fx-background-color: lightpink; -fx-border-color: black; -fx-border-radius: 5px; -fx-background-radius: 5px;" text="Cancel" />
-                                <Button fx:id="btnConfirmUser" defaultButton="true" mnemonicParsing="false" onAction="#confirmUser" style="-fx-border-color: black; -fx-background-color: greenyellow; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Confirm" />
+                                <Button fx:id="btnCancelClass" cancelButton="true" mnemonicParsing="false" onAction="#cancelClass" style="-fx-background-color: lightpink; -fx-border-color: black; -fx-border-radius: 5px; -fx-background-radius: 5px;" text="Cancel" />
+                                <Button fx:id="btnConfirmClass" defaultButton="true" mnemonicParsing="false" onAction="#confirmClass" style="-fx-border-color: black; -fx-background-color: greenyellow; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Confirm" />
                             </buttons>
                         </ButtonBar>
-                        <Label text="Predmet" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                        <TextField fx:id="fldClassroom" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                        <Label text="Subject:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                         <Label text="/" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                        <PasswordField fx:id="fldPassword" GridPane.columnIndex="3" GridPane.rowIndex="6" />
-                  <TextField fx:id="fldPeriod" promptText="0 ako nije periodican" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <Spinner fx:id="spStart" editable="true" max="20" min="8" GridPane.columnIndex="3" />
+                  <Label text="/" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                  <ChoiceBox fx:id="choiceSubject" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                  <ChoiceBox fx:id="choiceClassroom" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                  <ChoiceBox fx:id="choiceType" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <Spinner fx:id="spPeriod" min="0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
 
                     </children>
                     <padding>

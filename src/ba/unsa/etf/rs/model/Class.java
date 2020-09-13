@@ -41,6 +41,8 @@ public class Class {
     }
 
 
+
+
     public Date getDate() {
         return Date;
     }
@@ -103,5 +105,19 @@ public class Class {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
+    }
+
+    @Override
+    public String toString() {
+        return "Class{" +
+                "id=" + id +
+                ", start=" + start +
+                ", end=" + end +
+                ", period=" + period +
+                ", classroom=" + classroom +
+                ", subject=" + subject +
+                ", type=" + type +
+                ", Date=" + Date +
+                '}';
     }
 }

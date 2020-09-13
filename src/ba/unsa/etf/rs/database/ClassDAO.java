@@ -5,6 +5,7 @@ import ba.unsa.etf.rs.model.Class;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class ClassDAO
 {
@@ -23,7 +24,7 @@ public class ClassDAO
         {
             selectClass = datConn.getConnection().prepareStatement("SELECT * FROM Class");
             findMaxIDClass= datConn.getConnection().prepareStatement("SELECT max(id) FROM Class");
-            addClassQuery = datConn.getConnection().prepareStatement("Insert INTO Class values(?,?,?,?,?,?,?)");
+            addClassQuery = datConn.getConnection().prepareStatement("Insert INTO Class values(?,?,?,?,?,?,?,?)");
             findClassQuery= datConn.getConnection().prepareStatement("SELECT * FROM Class WHERE id = ?");
             deleteClass = datConn.getConnection().prepareStatement("DELETE FROM User WHERE id = ?");
         }
@@ -56,7 +57,7 @@ public class ClassDAO
                 Class.Type vrsta = Class.Type.values()[resultSet.getInt(7)];
                 result = new Class(resultSet.getInt(1),resultSet.getTime(2), resultSet.getTime(3),
                         resultSet.getInt(4), ClassroomDAO.findClassroomByID(resultSet.getInt(5)),
-                        SubjectDAO.findSubjectByID(resultSet.getInt(6)),vrsta);
+                        SubjectDAO.findSubjectByID(resultSet.getInt(6)), vrsta, resultSet.getDate(8));
             }}
         catch (SQLException e) {
             e.printStackTrace();

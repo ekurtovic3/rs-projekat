@@ -30,9 +30,11 @@ import static javafx.scene.control.PopupControl.USE_COMPUTED_SIZE;
 public class MainController {
 
     public Label statusMsg;
+    public Label lbYear;
     public ListView listViewSubjects;
     public ListView listViewUsers;
     public ListView listViewClassroom;
+    public ListView lvCalendar;
     public TextField fldName;
     public TextField fldSurname;
     public TextField fldEmail;
@@ -48,12 +50,17 @@ public class MainController {
     public Button btnUserAdd;
     public Button btnUserEdit;
     public Button btnUserDelete;
-
+    public ChoiceBox cbSubject;
+    public ChoiceBox cbClassroom;
+    public Tab timetable;
+     public Button  btnSreach;
     private ClassDAO daoClass;
     private ClassroomDAO daoClassroom;
     private ProfessorToSubjectDAO daoProfessorToSubjectDAO;
     private SubjectDAO daoSubject;
     private UserDAO daoUser;
+
+
     private ObservableList<Subject> listSubjects;
     private ObservableList<User> listUsers;
     private ObservableList<Classroom> listClassrooms;
@@ -66,7 +73,11 @@ public class MainController {
 
     private Object addSubjectController;
     private Object addClassroomController;
-    private Object CalendarController;
+    private Object ClassController;
+
+    int day = LocalDate.now().getDayOfYear();
+
+    private int year = 2020;
 
 
     public MainController() throws SQLException {
@@ -108,10 +119,20 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        cbSubject.setItems(daoSubject.getAllSubjects());
+        cbClassroom.setItems(daoClassroom.getAllClassrooms());
+      //  System.out.println(daoClass.findClass(1).toString());
+
+       // timetable.setDisable(true);
         statusMsg.setText("Program started...");
         if (user instanceof Student) System.out.println("Logovan kao student");
         if (user instanceof Profesor) System.out.println("Logovan kao profesor");
         if (user instanceof Admin) System.out.println("Logovan kao admin");
+
+        lbYear.setText(String.valueOf(year));
+        setLvCalendar();
+
+
         btnCancelUser.setDisable(true);
         btnConfirmUser.setDisable(true);
         listViewSubjects.setItems(daoSubject.getAllSubjects());
@@ -128,6 +149,7 @@ public class MainController {
         listViewClassroom.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             setTrenutniClassroom((Classroom) newKorisnik);
         });
+
         trenutniKorisnikProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             if (oldKorisnik != null) {
                 fldName.textProperty().unbindBidirectional(oldKorisnik.nameProperty());
@@ -565,32 +587,7 @@ public class MainController {
     }
 
     public void editClassroom(ActionEvent actionEvent) {
-        try {
-            Parent root = null;
-            Stage myStage = new Stage();
-            FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/calendar.fxml"));
-            loader3.setController(new CalendarController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, (Classroom) listViewClassroom.getSelectionModel().getSelectedItem()));
-            root = loader3.load();
-            CalendarController = loader3.getController();
-            myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
-            myStage.setResizable(false);
-            myStage.show();
-            int s = daoClassroom.getAllClassrooms().size();
-            myStage.setOnHiding(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent windowEvent) {
-                    listViewClassroom.setItems(daoClassroom.getAllClassrooms());
-                    if (s != daoClassroom.getAllClassrooms().size()) {
-                        statusMsg.setText("Classroom viewd/edited");
-                    } else {
-                        statusMsg.setText("Classroom not viewd/edited.");
-                    }
-                }
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    System.out.println("URADITI");
     }
 
     public void deleteClassrom(ActionEvent actionEvent) {
@@ -600,6 +597,58 @@ public class MainController {
             listViewClassroom.setItems(daoClassroom.getAllClassrooms());
             statusMsg.setText("Classroom deleted.");
 
+        }
+    }
+
+
+    public boolean isLeap(int year) {
+        boolean isLeap = false;
+
+        if (year % 4 == 0) {
+            if (year % 100 == 0) {
+                if (year % 400 == 0)
+                    isLeap = true;
+                else
+                    isLeap = false;
+            } else
+                isLeap = true;
+        } else {
+            isLeap = false;
+        }
+        return isLeap;
+    }
+
+    public void btnLeft(ActionEvent actionEvent) {
+        if (year > 2020) {
+            year -= 1;
+            lbYear.setText(String.valueOf(year));
+            boolean sa = isLeap(year);
+            setLvCalendar();
+        }
+    }
+
+    public void btnRight(ActionEvent actionEvent) {
+        year += 1;
+        lbYear.setText(String.valueOf(year));
+        setLvCalendar();
+
+    }
+
+    void setLvCalendar() {
+        lvCalendar.getItems().clear();
+        if (year != 2020) {
+            day = 1;
+        } else {
+            day = LocalDate.now().getDayOfYear();
+        }
+        int days = 0;
+        if (isLeap(year)) {
+            days = 366;
+        } else {
+            days = 365;
+        }
+        for (int i = day; i <= days; i++) {
+            lvCalendar.getItems().add(LocalDate.ofYearDay(year, i));
         }
     }
 
@@ -638,5 +687,34 @@ public class MainController {
 
     public void setTrenutniClassroom(Classroom trenutniClassroom) {
         this.trenutniClassroom.set(trenutniClassroom);
+    }
+
+    public void Sreach(ActionEvent actionEvent) {
+    try {
+            Parent root = null;
+            Stage myStage = new Stage();
+            FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/timetable.fxml"));
+            loader3.setController(new ClassController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser,(Classroom) cbClassroom.getValue(), (Subject) cbSubject.getValue()));
+            root = loader3.load();
+            ClassController = loader3.getController();
+            myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            myStage.setResizable(false);
+            myStage.show();
+        /*    int s = daoClassroom.getAllClassrooms().size();
+            myStage.setOnHiding(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent windowEvent) {
+                    listViewClassroom.setItems(daoClassroom.getAllClassrooms());
+                    if (s != daoClassroom.getAllClassrooms().size()) {
+                        statusMsg.setText("DODAJ PORUKU");
+                    } else {
+                        statusMsg.setText("DODAJ PORUKU");
+                    }
+
+            });
+}*/
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
