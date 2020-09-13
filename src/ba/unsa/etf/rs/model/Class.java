@@ -1,14 +1,10 @@
 package ba.unsa.etf.rs.model;
 
+import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 
 public class Class {
-    int id;
-    Time start,end;
-    int period;
-    Classroom classroom;
-    Subject subject;
-    Type type;
 
     public enum Type{
         Tutorijal("Tutorijal"), Exercises("Exercises"), Lectures("Lectures");
@@ -24,9 +20,16 @@ public class Class {
             return this.name;
         }
     }
+    int id;
+    Time start,end;
+    int period;
+    Classroom classroom;
+    Subject subject;
+    Type type;
+    Date Date;
 
 
-    public Class(int id, Time start, Time end, int period, Classroom classroom, Subject subject, Type type) {
+    public Class(int id, Time start, Time end, int period, Classroom classroom, Subject subject, Type type, Date date) {
         this.id = id;
         this.start = start;
         this.end = end;
@@ -34,6 +37,16 @@ public class Class {
         this.classroom = classroom;
         this.subject = subject;
         this.type = type;
+        this.Date = date;
+    }
+
+
+    public Date getDate() {
+        return Date;
+    }
+
+    public void setDate(java.sql.Date date) {
+        Date = date;
     }
 
     public int getId() {

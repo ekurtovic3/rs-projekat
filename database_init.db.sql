@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS "Class" (
 	"Classroom"	INTEGER,
 	"Subject"	INTEGER,
 	"Type"	INTEGER,
+	"Date" DATE,
 	PRIMARY KEY("id"),
 	FOREIGN KEY("Classroom") REFERENCES "Classroom"("id"),
 	FOREIGN KEY("Subject") REFERENCES "Subject"("id")
