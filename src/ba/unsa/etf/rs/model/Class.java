@@ -9,6 +9,7 @@ public class Class {
     public enum Type{
         Tutorijal("Tutorijal"), Exercises("Exercises"), Lectures("Lectures");
 
+
         private final String name;
 
         Type(String name) {
@@ -19,17 +20,23 @@ public class Class {
         public String toString() {
             return this.name;
         }
+
+        public String getName() {
+            return name;
+        }
     }
-    int id;
-    Time start,end;
+
+
+
+    int id=0;
+    int start,end;
     int period;
     Classroom classroom;
     Subject subject;
     Type type;
     Date Date;
 
-
-    public Class(int id, Time start, Time end, int period, Classroom classroom, Subject subject, Type type, Date date) {
+    public Class(int id, int start, int end, int period, Classroom classroom, Subject subject, Type type, java.sql.Date date) {
         this.id = id;
         this.start = start;
         this.end = end;
@@ -37,11 +44,18 @@ public class Class {
         this.classroom = classroom;
         this.subject = subject;
         this.type = type;
-        this.Date = date;
+        Date = date;
     }
 
-
-
+    public Class(int start, int end, int period, Classroom classroom, Subject subject, Type type, java.sql.Date date) {
+        this.start = start;
+        this.end = end;
+        this.period = period;
+        this.classroom = classroom;
+        this.subject = subject;
+        this.type = type;
+        Date = date;
+    }
 
     public Date getDate() {
         return Date;
@@ -67,19 +81,19 @@ public class Class {
         this.type = type;
     }
 
-    public Time getStart() {
+    public int getStart() {
         return start;
     }
 
-    public void setStart(Time start) {
+    public void setStart(int start) {
         this.start = start;
     }
 
-    public Time getEnd() {
+    public int getEnd() {
         return end;
     }
 
-    public void setEnd(Time end) {
+    public void setEnd(int end) {
         this.end = end;
     }
 
@@ -109,15 +123,6 @@ public class Class {
 
     @Override
     public String toString() {
-        return "Class{" +
-                "id=" + id +
-                ", start=" + start +
-                ", end=" + end +
-                ", period=" + period +
-                ", classroom=" + classroom +
-                ", subject=" + subject +
-                ", type=" + type +
-                ", Date=" + Date +
-                '}';
+        return  start+":00-"+end+":00"+" "+classroom.toString()+" "+type.name;
     }
 }

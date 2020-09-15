@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="404.0" prefWidth="663.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="404.0" prefWidth="663.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@/css/btnImgs.css" />
     </stylesheets>
@@ -27,9 +27,9 @@
             <center>
                 <GridPane alignment="center" hgap="10" prefHeight="344.0" prefWidth="660.0" vgap="10" BorderPane.alignment="CENTER">
                     <columnConstraints>
-                  <ColumnConstraints maxWidth="244.6" minWidth="65.6" prefWidth="65.6" />
-                        <ColumnConstraints maxWidth="300.8" minWidth="168.40001525878907" prefWidth="201.20000000000002" />
-                        <ColumnConstraints maxWidth="192.0" minWidth="67.39999999999998" prefWidth="85.80000000000001" />
+                  <ColumnConstraints maxWidth="244.6" minWidth="35.2" prefWidth="35.2" />
+                        <ColumnConstraints maxWidth="300.8" minWidth="168.40001525878907" prefWidth="225.2" />
+                        <ColumnConstraints maxWidth="192.0" minWidth="67.39999999999998" prefWidth="90.39999999999998" />
                         <ColumnConstraints maxWidth="249.0" minWidth="131.39999999999998" prefWidth="151.00000000000006" />
                   <ColumnConstraints maxWidth="241.0" minWidth="95.0" prefWidth="102.0" />
                     </columnConstraints>
@@ -59,9 +59,7 @@
                             </buttons>
                         </ButtonBar>
                         <Label text="Subject:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                        <Label text="/" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                   <Spinner fx:id="spStart" editable="true" max="20" min="8" GridPane.columnIndex="3" />
-                  <Label text="/" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                   <ChoiceBox fx:id="choiceSubject" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                   <ChoiceBox fx:id="choiceClassroom" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                   <ChoiceBox fx:id="choiceType" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />

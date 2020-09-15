@@ -170,7 +170,7 @@
                                           <RadioButton mnemonicParsing="false" onAction="#Profesors" text="Profesors" toggleGroup="$group1" />
                                        </children>
                                     </HBox>
-                                            <HBox prefHeight="25.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="8">
+                                            <HBox prefHeight="25.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="6">
                                                 <children>
                                                     <RadioButton fx:id="radioStudent" mnemonicParsing="false" text="Student">
                                                         <toggleGroup>
@@ -180,8 +180,6 @@
                                                     <RadioButton fx:id="radioProfesor" mnemonicParsing="false" text="Profesor" toggleGroup="$group2" />
                                                 </children>
                                             </HBox>
-                                    <Label text="Password" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                    <PasswordField fx:id="fldPassword" GridPane.columnIndex="2" GridPane.rowIndex="6" />
             
                                         </children>
                                         <padding>
@@ -214,7 +212,7 @@
                               <RowConstraints maxHeight="37.400000000000006" minHeight="10.0" prefHeight="37.400000000000006" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                                      <ListView fx:id="lvCalendar" prefHeight="254.0" prefWidth="277.0" GridPane.halignment="CENTER" GridPane.rowSpan="3" />
+                                      <ListView fx:id="listViewCalendar" prefHeight="254.0" prefWidth="277.0" GridPane.halignment="CENTER" GridPane.rowSpan="3" />
                               <HBox prefHeight="100.0" prefWidth="200.0" spacing="25.0" GridPane.columnIndex="2">
                                  <children>
                                     <Label prefHeight="18.0" prefWidth="101.0" text="Choose subject :" />

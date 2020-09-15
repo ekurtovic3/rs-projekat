@@ -77,7 +77,7 @@ public class SubjectDAO
         }
         return result;
     }
-    public static int findSubjectID(String subjectName) {
+    public  int findSubjectID(String subjectName) {
         int result=0;
         try {
             findSubjectQuery.setString(1,subjectName);

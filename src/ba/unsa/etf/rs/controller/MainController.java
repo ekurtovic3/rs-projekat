@@ -34,7 +34,7 @@ public class MainController {
     public ListView listViewSubjects;
     public ListView listViewUsers;
     public ListView listViewClassroom;
-    public ListView lvCalendar;
+    public ListView listViewCalendar;
     public TextField fldName;
     public TextField fldSurname;
     public TextField fldEmail;
@@ -59,7 +59,7 @@ public class MainController {
     private ProfessorToSubjectDAO daoProfessorToSubjectDAO;
     private SubjectDAO daoSubject;
     private UserDAO daoUser;
-
+    private String pw;
 
     private ObservableList<Subject> listSubjects;
     private ObservableList<User> listUsers;
@@ -70,6 +70,7 @@ public class MainController {
     private SimpleObjectProperty<User> trenutniKorisnik = new SimpleObjectProperty<>();
     private SimpleObjectProperty<Subject> trenutniSubject = new SimpleObjectProperty<>();
     private SimpleObjectProperty<Classroom> trenutniClassroom = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<Date> trenutniDate = new SimpleObjectProperty<>();
 
     private Object addSubjectController;
     private Object addClassroomController;
@@ -142,6 +143,7 @@ public class MainController {
         disable();
         listViewUsers.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             setTrenutniKorisnik((User) newKorisnik);
+
         });
         listViewSubjects.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             setTrenutniSubject((Subject) newKorisnik);
@@ -149,7 +151,9 @@ public class MainController {
         listViewClassroom.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             setTrenutniClassroom((Classroom) newKorisnik);
         });
-
+        listViewCalendar.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
+            setTrenutniDate((Date) Date.valueOf((LocalDate) newKorisnik));
+        });
         trenutniKorisnikProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             if (oldKorisnik != null) {
                 fldName.textProperty().unbindBidirectional(oldKorisnik.nameProperty());
@@ -267,15 +271,6 @@ public class MainController {
         });
 
 
-        fldPassword.textProperty().addListener((obs, oldIme, newIme) -> {
-            if (!newIme.isEmpty() || newIme.length() < 3) {
-                fldPassword.getStyleClass().removeAll("poljeNijeIspravno");
-                fldPassword.getStyleClass().add("poljeIspravno");
-            } else {
-                fldPassword.getStyleClass().removeAll("poljeIspravno");
-                fldPassword.getStyleClass().add("poljeNijeIspravno");
-            }
-        });
     }
 
 
@@ -306,6 +301,16 @@ public class MainController {
             return false;
         }
         return true;
+    }
+    private String generisiPassword(){
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
+        StringBuilder sb = new StringBuilder(8);
+        for (int i = 0; i < 8; i++) {
+            int index = (int)(AlphaNumericString.length() * Math.random());
+            sb.append(AlphaNumericString
+                    .charAt(index));
+        }
+        return sb.toString();
     }
 
     private boolean isDateValid(LocalDate s) {
@@ -340,7 +345,7 @@ public class MainController {
         fldUsername.setDisable(false);
         fldJmbg.setDisable(false);
         dpBirthday.setDisable(false);
-        fldPassword.setDisable(false);
+      //  fldPassword.setDisable(false);
         radioProfesor.setDisable(false);
         radioStudent.setDisable(false);
         listViewUsers.setDisable(true);
@@ -354,7 +359,7 @@ public class MainController {
         fldUsername.setDisable(true);
         fldJmbg.setDisable(true);
         dpBirthday.setDisable(true);
-        fldPassword.setDisable(true);
+//        fldPassword.setDisable(true);
         radioProfesor.setDisable(true);
         radioStudent.setDisable(true);
         listViewUsers.setDisable(false);
@@ -450,24 +455,30 @@ public class MainController {
         } else if (!btnUserAdd.isDisable()) {
             statusMsg.setText("User not added.");
         }
+        listViewUsers.getSelectionModel().selectFirst();
+        if(getTrenutniKorisnik()!=null){
+        fldName.setText(getTrenutniKorisnik().getName());
+        fldSurname.setText(getTrenutniKorisnik().getSurname());
+        fldEmail.setText(getTrenutniKorisnik().getEmail());
+        fldUsername.setText(getTrenutniKorisnik().getUsername());
+        fldJmbg.setText(getTrenutniKorisnik().getJmbg());}
 
+        dpBirthday.setValue(LocalDate.of(dpBirthday.getValue().getYear(), dpBirthday.getValue().getMonth(), dpBirthday.getValue().getDayOfMonth()));
         btnUserAdd.setDisable(false);
         btnUserDelete.setDisable(false);
         btnUserEdit.setDisable(false);
-        setTrenutniKorisnik(null);
+       // setTrenutniKorisnik(null);
         btnCancelUser.setDisable(true);
         btnConfirmUser.setDisable(true);
-        fldName.setText("");
-        fldSurname.setText("");
-        fldEmail.setText("");
-        fldUsername.setText("");
-        fldJmbg.setText("");
-        fldPassword.setText("");
-        dpBirthday.setValue(LocalDate.now());
+        //listViewUsers.getSelectionModel().selectFirst();
+       // dpBirthday.setValue(LocalDate.now());
         disable();
+        listViewUsers.setItems(daoUser.getAllUsers());
     }
 
     public void confirmUser(ActionEvent actionEvent) {
+
+
         if (getTrenutniKorisnik() != null && !btnUserDelete.isDisable()) {
             btnCancelUser.setDisable(true);
             btnConfirmUser.setDisable(true);
@@ -493,18 +504,33 @@ public class MainController {
             }
         } else if (isValidAll() && !btnUserAdd.isDisable()) {
             if (radioProfesor.isSelected()) {
-                daoUser.addUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), "Neki pass");
+                 pw=generisiPassword();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Password");
+                alert.setHeaderText(null);
+                alert.setContentText("SIFRA ZA KORISNIKA,"+pw+",poruka se nece vise prikazvati");
+
+                alert.showAndWait();
+
+                daoUser.addUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), pw);
                 statusMsg.setText("User added.");
             } else if (radioStudent.isSelected()) {
+              pw=generisiPassword();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Password");
+                alert.setHeaderText(null);
+                alert.setContentText("SIFRA ZA KORISNIKA,"+pw+",poruka se nece vise prikazvati");
+
+                alert.showAndWait();
                 statusMsg.setText("User added.");
-                daoUser.addUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), "Neki pass");
+                daoUser.addUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), pw);
             }
 
 
         } else if (!isValidAll() && (!btnUserEdit.isDisable() || !btnUserAdd.isDisable())) {
             System.out.println("Nije validno sve ili ima polje koje nije popunjeno");
         }
-        if (isValidAll() && (!btnUserEdit.isDisabled() || !btnUserAdd.isDisabled())) {
+        if (isValidAll()) {
             btnCancelUser.setDisable(true);
             btnConfirmUser.setDisable(true);
             btnUserAdd.setDisable(false);
@@ -519,13 +545,12 @@ public class MainController {
 
     public void btnUserAdd(ActionEvent actionEvent) {
         enable();
-        // btnUserAdd.setDisable(true);
+      //  btnUserAdd.setDisable(true);
         btnUserDelete.setDisable(true);
         btnUserEdit.setDisable(true);
         setTrenutniKorisnik(null);
         btnCancelUser.setDisable(false);
         btnConfirmUser.setDisable(false);
-        listViewSubjects.setSelectionModel(null);
         fldName.setText("");
         fldSurname.setText("");
         fldEmail.setText("");
@@ -635,7 +660,7 @@ public class MainController {
     }
 
     void setLvCalendar() {
-        lvCalendar.getItems().clear();
+        listViewCalendar.getItems().clear();
         if (year != 2020) {
             day = 1;
         } else {
@@ -648,7 +673,7 @@ public class MainController {
             days = 365;
         }
         for (int i = day; i <= days; i++) {
-            lvCalendar.getItems().add(LocalDate.ofYearDay(year, i));
+            listViewCalendar.getItems().add(LocalDate.ofYearDay(year, i));
         }
     }
 
@@ -689,17 +714,30 @@ public class MainController {
         this.trenutniClassroom.set(trenutniClassroom);
     }
 
+    public Date getTrenutniDate() {
+        return trenutniDate.get();
+    }
+
+    public SimpleObjectProperty<Date> trenutniDateProperty() {
+        return trenutniDate;
+    }
+
+    public void setTrenutniDate(Date trenutniDate) {
+        this.trenutniDate.set(trenutniDate);
+    }
+
     public void Sreach(ActionEvent actionEvent) {
-    try {
-            Parent root = null;
-            Stage myStage = new Stage();
-            FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/timetable.fxml"));
-            loader3.setController(new ClassController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser,(Classroom) cbClassroom.getValue(), (Subject) cbSubject.getValue()));
-            root = loader3.load();
-            ClassController = loader3.getController();
-            myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
-            myStage.setResizable(false);
-            myStage.show();
+        if (cbClassroom.getValue() != null && cbSubject.getValue() != null && getTrenutniDate()!= null) {
+            try {
+                Parent root = null;
+                Stage myStage = new Stage();
+                FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/timetable.fxml"));
+                loader3.setController(new ClassController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, (Classroom) cbClassroom.getValue(), (Subject) cbSubject.getValue(), Date.valueOf((LocalDate) listViewCalendar.getSelectionModel().getSelectedItem())));
+                root = loader3.load();
+                ClassController = loader3.getController();
+                myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+                myStage.setResizable(false);
+                myStage.show();
         /*    int s = daoClassroom.getAllClassrooms().size();
             myStage.setOnHiding(new EventHandler<WindowEvent>() {
                 @Override
@@ -713,8 +751,18 @@ public class MainController {
 
             });
 }*/
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("Not all fields are filled");
+            alert.setContentText("Check again, please!");
+
+            alert.showAndWait();
+
         }
+
     }
 }

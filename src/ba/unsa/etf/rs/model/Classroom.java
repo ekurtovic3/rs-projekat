@@ -1,5 +1,7 @@
 package ba.unsa.etf.rs.model;
 
+import java.util.Objects;
+
 public class Classroom {
      int id;
      String name;
@@ -46,5 +48,18 @@ public class Classroom {
         this.capacity = capacity;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Classroom classroom = (Classroom) o;
+        return id == classroom.id &&
+                capacity == classroom.capacity &&
+                Objects.equals(name, classroom.name);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, capacity);
+    }
 }
