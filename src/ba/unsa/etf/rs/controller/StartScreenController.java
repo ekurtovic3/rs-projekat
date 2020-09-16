@@ -57,10 +57,6 @@ public class StartScreenController implements Initializable {
         this.countryDao = countryDao;
     }
 
-    /*
-    pokrece se odmah pri kreiranju
-    ovi parametri metode moraju postojati, jer je obavezno preklopiti ovu metodu kada implementiramo "Initializable"
-    */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         daoClass = ClassDAO.getInstance();
@@ -288,7 +284,7 @@ public class StartScreenController implements Initializable {
     public void LogIn(ActionEvent actionEvent) {
         if ( (UserDAO.findUserLogIn(tfUsernameLogIn.getText(), tfPasswordLogIn.getText())) != -1) {
             int id = daoUser.findUserLogIn(tfUsernameLogIn.getText(), tfPasswordLogIn.getText());
-
+System.out.println(id);
             Parent root = null;
             try {
                 Stage myStage = new Stage();

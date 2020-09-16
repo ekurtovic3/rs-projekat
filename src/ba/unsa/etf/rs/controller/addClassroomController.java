@@ -15,15 +15,25 @@ public class addClassroomController {
     public TextField fldClassroomName;
     public TextField fldCapacity;
     private ClassroomDAO daoClassroom;
-    private boolean ok;
-
-
+    private boolean ok=false;
+public boolean edit=false;
+public Classroom classroom=null;
     public addClassroomController(ClassroomDAO daoClassroom) {
 this.daoClassroom=daoClassroom;
     }
+
+    public addClassroomController(ClassroomDAO daoClassroom, Classroom trenutniClassroom) {
+        this.daoClassroom=daoClassroom;
+        this.classroom=trenutniClassroom;
+        edit=true;
+    }
+
     @FXML
     public void initialize() {
-
+if(edit==true){
+    fldClassroomName.setText(classroom.getName());
+    fldCapacity.setText(String.valueOf(classroom.getCapacity()));
+}
         fldClassroomName.textProperty().addListener((obs, oldIme, newIme) -> {
             if (!newIme.isEmpty()) {
                 fldClassroomName.getStyleClass().removeAll("poljeNijeIspravno");
@@ -56,6 +66,14 @@ this.daoClassroom=daoClassroom;
             return true;
         }
 
+    public boolean isOk() {
+        return this.ok;
+    }
+
+    public  boolean isEdit() {
+        return this.edit;
+    }
+
     public void btnCancelClassroom(ActionEvent actionEvent) {
         Node n = (Node) actionEvent.getSource();
         Stage stage = (Stage) n.getScene().getWindow();
@@ -64,14 +82,15 @@ this.daoClassroom=daoClassroom;
 
     public void btnConfirmClassroom(ActionEvent actionEvent) {
         ok=true;
-        if(fldClassroomName.getStyleClass().contains("poljeIspravno") && fldCapacity.getStyleClass().contains("poljeIspravno") && !daoClassroom.getAllClassrooms().contains(new Classroom(fldClassroomName.getText(),Integer.parseInt(fldCapacity.getText()))))
+       // System.out.println(edit);
+        if(!edit && fldClassroomName.getStyleClass().contains("poljeIspravno") && fldCapacity.getStyleClass().contains("poljeIspravno") && !daoClassroom.getAllClassrooms().contains(new Classroom(fldClassroomName.getText(),Integer.parseInt(fldCapacity.getText()))))
         {
             daoClassroom.addClassroom(new Classroom(fldClassroomName.getText(), Integer.parseInt(fldCapacity.getText())));
             Node n = (Node) actionEvent.getSource();
             Stage stage = (Stage) n.getScene().getWindow();
             stage.close();
         }
-         else if (fldClassroomName.getStyleClass().contains("poljeIspravno") && fldCapacity.getStyleClass().contains("poljeIspravno"))
+         else if (!edit  && fldClassroomName.getStyleClass().contains("poljeIspravno") && fldCapacity.getStyleClass().contains("poljeIspravno"))
         {
             System.out.println("Eror ");
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -80,6 +99,15 @@ this.daoClassroom=daoClassroom;
             alert.setContentText("This classroom already exists");
 
             alert.showAndWait();
+        }
+         else if(edit   && fldClassroomName.getStyleClass().contains("poljeIspravno") && fldCapacity.getStyleClass().contains("poljeIspravno"))
+        {
+            int pom=daoClassroom.findClassroomID(classroom.getName());
+            daoClassroom.updateClassrom(new Classroom(fldClassroomName.getText(),Integer.parseInt(fldCapacity.getText())),pom);
+            Node n = (Node) actionEvent.getSource();
+            Stage stage = (Stage) n.getScene().getWindow();
+            stage.close();
+
         }
     }
 }

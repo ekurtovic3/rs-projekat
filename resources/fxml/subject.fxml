@@ -4,9 +4,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="290.0" prefWidth="337.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="320.0" prefWidth="374.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+
    <children>
-      <GridPane layoutX="34.0" layoutY="14.0" prefHeight="270.0" prefWidth="288.0">
+      <GridPane layoutX="14.0" layoutY="14.0" prefHeight="301.0" prefWidth="344.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="114.4" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="201.0" minWidth="10.0" prefWidth="174.4" />
@@ -27,10 +28,16 @@
             <Label text="Subject name" />
             <Label prefHeight="18.0" prefWidth="105.0" text="Profesor/Students:" GridPane.rowIndex="1" />
             <ListView fx:id="profesorsOfSubject" prefHeight="160.0" prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <HBox prefHeight="51.0" prefWidth="181.0" spacing="15.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
+            <HBox prefHeight="51.0" prefWidth="181.0" spacing="15.0" GridPane.columnSpan="3" GridPane.rowIndex="2">
                <children>
-                  <Button fx:id="btnDeleteProfesor" mnemonicParsing="false" onAction="#btnDeleteProf" prefHeight="26.0" prefWidth="91.0" text="Delete" />
-                  <MenuButton fx:id="mbtnAddProfesor" mnemonicParsing="false" prefHeight="26.0" prefWidth="106.0" text="Add">
+                  <Button fx:id="btnDeleteProfesor" mnemonicParsing="false" onAction="#btnDeleteProf" prefHeight="26.0" prefWidth="106.0" text="Delete" />
+                  <MenuButton fx:id="mbtnAddStudent" mnemonicParsing="false" prefHeight="26.0" prefWidth="159.0" text="Add student">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                    </items>
+                  </MenuButton>
+                  <MenuButton fx:id="mbtnAddProfesor" mnemonicParsing="false" prefHeight="26.0" prefWidth="152.0" text="Add profesor">
                     <items>
                       <MenuItem mnemonicParsing="false" text="Action 1" />
                       <MenuItem mnemonicParsing="false" text="Action 2" />
@@ -44,7 +51,7 @@
                   <Insets left="35.0" top="10.0" />
                </padding>
             </HBox>
-            <TextField fx:id="fldSubjectName" GridPane.columnIndex="1" />
+            <Label fx:id="fldSubjectName" GridPane.columnIndex="1" />
          </children>
 
       </GridPane>

@@ -15,15 +15,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.w3c.dom.UserDataHandler;
 
 import java.io.IOException;
-import java.sql.Array;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
 
 import static javafx.scene.control.PopupControl.USE_COMPUTED_SIZE;
 
@@ -53,7 +50,10 @@ public class MainController {
     public ChoiceBox cbSubject;
     public ChoiceBox cbClassroom;
     public Tab timetable;
-     public Button  btnSreach;
+    public Button  btnSreach;
+    public Tab tbUsers;
+    public Tab tbClassrooms;
+    public Tab tbSubjects;
     private ClassDAO daoClass;
     private ClassroomDAO daoClassroom;
     private ProfessorToSubjectDAO daoProfessorToSubjectDAO;
@@ -117,17 +117,31 @@ public class MainController {
         this.daoUser = daoUser;
         this.user = userByID;
     }
+    public MainController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Admin admin) {
+        this.daoClass = daoClass;
+        this.daoClassroom = daoClassroom;
+        this.daoProfessorToSubjectDAO = daoProfessorToSubjectDAO;
+        this.daoSubject = daoSubject;
+        this.daoUser = daoUser;
+        this.user = admin;
+    }
 
     @FXML
     public void initialize() {
         cbSubject.setItems(daoSubject.getAllSubjects());
         cbClassroom.setItems(daoClassroom.getAllClassrooms());
-      //  System.out.println(daoClass.findClass(1).toString());
 
        // timetable.setDisable(true);
         statusMsg.setText("Program started...");
-        if (user instanceof Student) System.out.println("Logovan kao student");
-        if (user instanceof Profesor) System.out.println("Logovan kao profesor");
+        if (user instanceof Student) {
+            tbClassrooms.setDisable(true);
+            tbSubjects.setDisable(true);
+            tbUsers.setDisable(true);
+        }
+        if (user instanceof Profesor){
+            tbClassrooms.setDisable(true);
+            tbUsers.setDisable(true);
+        }
         if (user instanceof Admin) System.out.println("Logovan kao admin");
 
         lbYear.setText(String.valueOf(year));
@@ -409,9 +423,14 @@ public class MainController {
                 myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
                 myStage.setResizable(false);
                 myStage.show();
+                ObservableList<Subject> s=daoSubject.getAllSubjects();
                 myStage.setOnHidden(event -> {
                     listViewSubjects.setItems(daoSubject.getAllSubjects());
-                    statusMsg.setText("Subject views/edited");
+                    if (s.equals(daoSubject.getAllSubjects())) {
+                        statusMsg.setText("Subject not edited.");
+                    } else {
+                        statusMsg.setText("Subject edited.");
+                    }
                 });
             } catch (IOException e) {
                 e.printStackTrace();
@@ -611,7 +630,32 @@ public class MainController {
     }
 
     public void editClassroom(ActionEvent actionEvent) {
-    System.out.println("URADITI");
+        try {
+            Parent root = null;
+            Stage myStage = new Stage();
+            FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/classroom.fxml"));
+            loader3.setController(new addClassroomController(daoClassroom,getTrenutniClassroom()));
+            root = loader3.load();
+            addClassroomController = loader3.getController();
+            myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            myStage.setResizable(false);
+            myStage.show();
+            ObservableList<Classroom> s = daoClassroom.getAllClassrooms();
+            myStage.setOnHiding(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent windowEvent) {
+                    listViewClassroom.setItems(daoClassroom.getAllClassrooms());
+                    if (s.equals(daoClassroom.getAllClassrooms())) {
+                        statusMsg.setText("Classroom not edited.");
+                    } else {
+                        statusMsg.setText("Classroom edited.");
+                    }
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteClassrom(ActionEvent actionEvent) {

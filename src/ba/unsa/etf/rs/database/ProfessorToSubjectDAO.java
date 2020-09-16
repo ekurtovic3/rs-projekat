@@ -2,6 +2,7 @@ package ba.unsa.etf.rs.database;
 
 import ba.unsa.etf.rs.model.Profesor;
 import ba.unsa.etf.rs.model.Subject;
+import ba.unsa.etf.rs.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -53,35 +54,34 @@ public class ProfessorToSubjectDAO
     }
 
     //METHODS
-    public ObservableList<Profesor> getProfesorsOfSubject(Subject subject) throws SQLException {
+    public ObservableList<User> getProfesorsOfSubject(Subject subject) throws SQLException {
         selectProfesorsOfSubject.setInt(1,daoSubject.findSubjectID(subject.getName()));
-        ArrayList<Profesor> result = new ArrayList<>();
+        ArrayList<User> result = new ArrayList<>();
         try {
 
             ResultSet resultSet = selectProfesorsOfSubject.executeQuery();
             while (resultSet.next()){
-                if (UserDAO.findUserByID(resultSet.getInt(1)) instanceof Profesor)
-                    result.add((Profesor) UserDAO.findUserByID(resultSet.getInt(1)));}
+                    result.add(UserDAO.findUserByID(resultSet.getInt(1)));}
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
         return FXCollections.observableArrayList(result);
-    }
+    }/*
     public ObservableList<Profesor> getProfesorsForAdd(Subject subject) throws SQLException {
         //  ArrayList<Profesor> result = new ArrayList<>();
         ObservableList<Profesor> allProfesors= UserDAO.getAllProfesors();
-        ObservableList<Profesor> profesorsOfSubject= getProfesorsOfSubject(subject);
+       // ObservableList<Profesor> profesorsOfSubject= getProfesorsOfSubject(subject);
         // profesorsOfSubject.removeAll(allProfesors);
         //List<Profesor> result=null;
-        List<Profesor> result = allProfesors.stream().filter(aObject -> {return  profesorsOfSubject.contains(aObject); }).collect(Collectors.toList());
+        //List<Profesor> result = allProfesors.stream().filter(aObject -> {return  profesorsOfSubject.contains(aObject); }).collect(Collectors.toList());
         for (int i=0;i<result.size();i++) {
             System.out.println("Profesor za dodavanje:"+result.get(i));
 
         }
         return  FXCollections.observableArrayList(result);
     }
-
+*/
     public  void addProfesorToSubject(int id1,int id2){
         try {
             addProfesorToSubject.setInt(1,id1);

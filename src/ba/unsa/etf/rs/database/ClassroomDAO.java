@@ -1,6 +1,9 @@
 package ba.unsa.etf.rs.database;
 
 import ba.unsa.etf.rs.model.Classroom;
+import ba.unsa.etf.rs.model.Profesor;
+import ba.unsa.etf.rs.model.Student;
+import ba.unsa.etf.rs.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -19,7 +22,7 @@ public class ClassroomDAO
     }
 
     private static PreparedStatement selectClassrooms, findClassroomQuery, addClassroomQuery, findMaxIDClassroom, deleteClassroom,
-            findClassroomByIDQuery;
+            findClassroomByIDQuery,updateClassroom;
 
     private static int ID;
 
@@ -27,7 +30,7 @@ public class ClassroomDAO
     {
         try
         {
-            //nadjiDrzavuPoIdu = datConn.getConnection().prepareStatement("SELECT * FROM drzava WHERE id = ?");
+            updateClassroom = datConn.getConnection().prepareStatement("update Classroom set name=?, capacity= ? where id = ?");
             selectClassrooms = datConn.getConnection().prepareStatement("SELECT * FROM Classroom");
             findClassroomQuery = datConn.getConnection().prepareStatement("SELECT * FROM Classroom WHERE name =?");
             addClassroomQuery = datConn.getConnection().prepareStatement("INSERT INTO Classroom values (?,?,?)");
@@ -56,11 +59,6 @@ public class ClassroomDAO
     }
 
     //METHODS
-    public void TESTdeleteClassroom() {
-        deleteClassroom("2-0");
-        deleteClassroom("2-a");
-        deleteClassroom("asd");
-    }
 
     public static boolean addClassroom(Classroom room) {
         try  {
@@ -82,6 +80,19 @@ public class ClassroomDAO
             e.printStackTrace();
         }
         return false;
+    }
+
+
+    public  void updateClassrom(Classroom classroom,int id){
+        try {
+            updateClassroom.setString(1, classroom.getName());
+            updateClassroom.setInt(2, classroom.getCapacity());
+            updateClassroom.setInt(3,id);
+            updateClassroom.executeUpdate();
+            System.out.println(classroom.toString()+" "+id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private static int findMaxIDClassroom() {
@@ -111,7 +122,7 @@ public class ClassroomDAO
         return result;
     }
 
-    public static int findClassroomID(String classroomName) {
+    public  int findClassroomID(String classroomName) {
         int result = 0;
         try {
             findClassroomQuery.setString(1,classroomName);
