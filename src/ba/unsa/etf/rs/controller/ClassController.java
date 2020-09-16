@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -33,6 +34,7 @@ public class ClassController {
     public Button btnCancelClass;
     public Button btnConfirmClass;
     public Label msgStatus;
+    public Label lbPeriod;
 
 
     private ClassDAO daoClass;
@@ -45,6 +47,7 @@ public class ClassController {
     private Date date;
 
     private SimpleObjectProperty<Class> trenutniClass = new SimpleObjectProperty<>();
+    Calendar cal = Calendar.getInstance();
 
     public ClassController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Classroom classroom, Subject subject, Date selectedItem) {
         this.daoClass = daoClass;
@@ -61,15 +64,13 @@ public class ClassController {
     @FXML
     public void initialize() {
 
-
+spPeriod.setVisible(false);
+        lbPeriod.setVisible(false);
         ObservableList<Class> result = daoClass.initializeClass(date, classroom, subject);
         listViewClass.setItems(result);
         choiceSubject.setItems(daoSubject.getAllSubjects());
         choiceClassroom.setItems(daoClassroom.getAllClassrooms());
-        for (Class c : result) {
-            System.out.println("ID casa" + c.getId());
 
-        }
         choiceType.getItems().setAll(Class.Type.values());
         disable();
         listViewClass.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
@@ -99,13 +100,15 @@ public class ClassController {
                 choiceSubject.setValue(newKorisnik.getSubject());
                 choiceClassroom.setValue(newKorisnik.getClassroom());
                 choiceType.setValue(newKorisnik.getType());
-                System.out.println("Pocetak: " + newKorisnik.getStart() + ",period " + newKorisnik.getPeriod());
             }
 
         });
     }
 
     public void addClass(ActionEvent actionEvent) {
+        spPeriod.setVisible(true);
+        lbPeriod.setVisible(true);
+
         enable();
         btnClassDelete.setDisable(true);
         btnClassEdit.setDisable(true);
@@ -141,6 +144,8 @@ public class ClassController {
         } else if (!btnClassEdit.isDisable()) {
             msgStatus.setText("Class not edited.");
         } else if (!btnClassAdd.isDisable()) {
+            spPeriod.setVisible(false);
+            lbPeriod.setVisible(false);
             msgStatus.setText("Class not added.");
         }
 
@@ -159,7 +164,7 @@ public class ClassController {
             btnClassAdd.setDisable(false);
             btnClassEdit.setDisable(false);
             daoClass.deleteClass(getTrenutniClass().getId());
-            System.out.println(getTrenutniClass().getId());
+
             listViewClass.setItems(daoClass.initializeClass(date, classroom, subject));
             msgStatus.setText("Class deleted.");
 
@@ -167,18 +172,27 @@ public class ClassController {
             System.out.println("Nije oznacen ni jedan cas za brisanje");
         } else if (getTrenutniClass() != null && !btnClassEdit.isDisable()) {
             daoClass.UpdateClass(new Class(spStart.getValue(), spStart.getValue() + 1, spPeriod.getValue(), classroom, subject, choiceType.getValue(), date),getTrenutniClass().getId());
-            System.out.println(new Class(spStart.getValue(), spStart.getValue() + 1, spPeriod.getValue(), classroom, subject, choiceType.getValue(), date));            msgStatus.setText("Class edited.");
             disable();
             btnClassAdd.setDisable(false);
             btnClassDelete.setDisable(false);
 
         } else if (!btnClassAdd.isDisable()) {
-            daoClass.addClass(new Class(spStart.getValue(), spStart.getValue() + 1, spPeriod.getValue(), classroom, subject, choiceType.getValue(), date));
             msgStatus.setText("Class added.");
             btnClassDelete.setDisable(false);
             btnClassEdit.setDisable(false);
+            spPeriod.setVisible(false);
+            lbPeriod.setVisible(false);
             disable();
+            int i=0;
+            cal.setTime(date);
+            for (i=0;i<=spPeriod.getValue();i++){
+                LocalDate today = LocalDate.now();
+                today = today.plus(i, ChronoUnit.WEEKS);
+                //System.out.println("Next week: " + today);
+                daoClass.addClass(new Class(spStart.getValue(), spStart.getValue() + 1, spPeriod.getValue(), classroom, subject, choiceType.getValue(),Date.valueOf(today) ));
 
+
+            }
         }
 
         listViewClass.setItems(daoClass.initializeClass(date, classroom, subject));

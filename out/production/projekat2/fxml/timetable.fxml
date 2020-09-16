@@ -48,9 +48,9 @@
                     <children>
                         <ListView fx:id="listViewClass" prefHeight="291.0" prefWidth="224.0" GridPane.columnIndex="1" GridPane.rowSpan="9" />
                         <Label text="Start" GridPane.columnIndex="2" />
-                        <Label text="Type:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                        <Label text="Period" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <Label text="CLassroom:" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <Label text="Type:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label fx:id="lbPeriod" text="Period" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <Label text="CLassroom:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
 
                         <ButtonBar prefHeight="32.0" prefWidth="523.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="8">
                             <buttons>
@@ -58,12 +58,12 @@
                                 <Button fx:id="btnConfirmClass" defaultButton="true" mnemonicParsing="false" onAction="#confirmClass" style="-fx-border-color: black; -fx-background-color: greenyellow; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Confirm" />
                             </buttons>
                         </ButtonBar>
-                        <Label text="Subject:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <Label text="Subject:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                   <Spinner fx:id="spStart" editable="true" max="20" min="8" GridPane.columnIndex="3" />
-                  <ChoiceBox fx:id="choiceSubject" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                  <ChoiceBox fx:id="choiceClassroom" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                  <ChoiceBox fx:id="choiceType" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                  <Spinner fx:id="spPeriod" editable="true" max="99" min="0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <ChoiceBox fx:id="choiceSubject" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <ChoiceBox fx:id="choiceClassroom" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                  <ChoiceBox fx:id="choiceType" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <Spinner fx:id="spPeriod" editable="true" max="99" min="0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                   <Label GridPane.rowIndex="9" />
 
                     </children>
