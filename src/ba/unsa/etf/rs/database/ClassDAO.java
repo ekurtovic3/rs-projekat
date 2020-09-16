@@ -25,7 +25,7 @@ public class ClassDAO
         instance = new ClassDAO();
     }
 
-    private  static PreparedStatement initializeClassQuery,selectClass, findMaxIDClass, addClassQuery, findClassQuery, deleteClass,updateClass;
+    private  static PreparedStatement initializeClassQuery,selectClass, findMaxIDClass, addClassQuery, findClassQuery, deleteClass,updateClass,isClassFree;
 
     private ClassDAO()
     {
@@ -39,6 +39,8 @@ public class ClassDAO
             findClassQuery= datConn.getConnection().prepareStatement("SELECT * FROM Class WHERE id = ?");
             deleteClass = datConn.getConnection().prepareStatement("DELETE FROM Class WHERE id = ?");
             updateClass = datConn.getConnection().prepareStatement("update Class set start=?, end= ?, period=?,Classroom =?,Subject=?,Type=?,Date =? where id = ?");
+            isClassFree=datConn.getConnection().prepareStatement("SELECT * FROM Class WHERE date=? AND Classroom=? AND Subject=? AND start=?");
+
         }
         catch (SQLException e)
         {
@@ -131,6 +133,26 @@ public class ClassDAO
             e.printStackTrace();
         }
         return FXCollections.observableArrayList(result);
+    }
+    public boolean isClassFree(Date date, Classroom classroom, Subject subject,int start) {
+        ArrayList<Class> result = new ArrayList<>();
+        try {
+            isClassFree.setDate(1,date);
+            isClassFree.setInt(2,classroom.getId());
+            isClassFree.setInt(3,daoSubject.findSubjectID(subject.getName()));
+            isClassFree.setInt(4,start);
+            ResultSet resultSet = isClassFree.executeQuery();
+            while (resultSet.next()) {
+                Class.Type vrsta = Class.Type.values()[resultSet.getInt(7)];
+                result.add( new Class(resultSet.getInt(1),resultSet.getInt(2), resultSet.getInt(3),
+                        resultSet.getInt(4), classroom,
+                        subject, vrsta, resultSet.getDate(8))) ;
+            }}
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (result.isEmpty()) return true;
+        return false;
     }
 
     private int findMaxIDClass() {

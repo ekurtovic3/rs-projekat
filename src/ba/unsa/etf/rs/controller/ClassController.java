@@ -188,11 +188,22 @@ spPeriod.setVisible(false);
             for (i=0;i<=spPeriod.getValue();i++){
                 LocalDate today = LocalDate.now();
                 today = today.plus(i, ChronoUnit.WEEKS);
-                //System.out.println("Next week: " + today);
-                daoClass.addClass(new Class(spStart.getValue(), spStart.getValue() + 1, spPeriod.getValue(), classroom, subject, choiceType.getValue(),Date.valueOf(today) ));
+                if(daoClass.isClassFree(Date.valueOf(today),classroom,subject,spStart.getValue())) {
+                    //1System.out.println("Next week: " + today);
+                    daoClass.addClass(new Class(spStart.getValue(), spStart.getValue() + 1, spPeriod.getValue(), classroom, subject, choiceType.getValue(), Date.valueOf(today)));
 
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information Dialog");
+                    alert.setHeaderText(null);
+                    alert.setContentText("This classrom is busy on "+today+" at "+spStart.getValue()+":00");
+                    alert.showAndWait();
+                    msgStatus.setText("Class not added.");
 
+                }
             }
+
         }
 
         listViewClass.setItems(daoClass.initializeClass(date, classroom, subject));

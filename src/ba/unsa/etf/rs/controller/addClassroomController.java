@@ -7,6 +7,7 @@ import ba.unsa.etf.rs.model.Subject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -63,11 +64,22 @@ this.daoClassroom=daoClassroom;
 
     public void btnConfirmClassroom(ActionEvent actionEvent) {
         ok=true;
-        if(fldClassroomName.getStyleClass().contains("poljeIspravno") && fldCapacity.getStyleClass().contains("poljeIspravno"))
-        daoClassroom.addClassroom(new Classroom(fldClassroomName.getText(),Integer.parseInt(fldCapacity.getText())));
-        Node n = (Node) actionEvent.getSource();
-        Stage stage = (Stage) n.getScene().getWindow();
-        stage.close();
+        if(fldClassroomName.getStyleClass().contains("poljeIspravno") && fldCapacity.getStyleClass().contains("poljeIspravno") && !daoClassroom.getAllClassrooms().contains(new Classroom(fldClassroomName.getText(),Integer.parseInt(fldCapacity.getText()))))
+        {
+            daoClassroom.addClassroom(new Classroom(fldClassroomName.getText(), Integer.parseInt(fldCapacity.getText())));
+            Node n = (Node) actionEvent.getSource();
+            Stage stage = (Stage) n.getScene().getWindow();
+            stage.close();
+        }
+         else if (fldClassroomName.getStyleClass().contains("poljeIspravno") && fldCapacity.getStyleClass().contains("poljeIspravno"))
+        {
+            System.out.println("Eror ");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information dialog");
+            alert.setHeaderText(null);
+            alert.setContentText("This classroom already exists");
 
+            alert.showAndWait();
+        }
     }
 }

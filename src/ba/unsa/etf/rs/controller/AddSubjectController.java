@@ -5,6 +5,7 @@ import ba.unsa.etf.rs.model.Subject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -49,12 +50,21 @@ public class AddSubjectController {
 
     }
     public void confirmSubject(ActionEvent actionEvent) {
-        if(fldNameSubject.getStyleClass().contains("poljeIspravno")) {
+        if(fldNameSubject.getStyleClass().contains("poljeIspravno") && !daoSubject.getAllSubjects().contains(new Subject(fldNameSubject.getText()))) {
             ok = true;
             daoSubject.addSubject(new Subject(fldNameSubject.getText()));
             Node n = (Node) actionEvent.getSource();
             Stage stage = (Stage) n.getScene().getWindow();
             stage.close();
+        }
+        else if(fldNameSubject.getStyleClass().contains("poljeIspravno")) {
+            System.out.println("Eror ");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information dialog");
+            alert.setHeaderText(null);
+            alert.setContentText("This subject already exists");
+
+            alert.showAndWait();
         }
 
     }
