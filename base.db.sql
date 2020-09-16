@@ -7,12 +7,13 @@ CREATE TABLE IF NOT EXISTS "ProfesorSubject" (
 );
 CREATE TABLE IF NOT EXISTS "Class" (
 	"id"	INTEGER,
-	"start"	TIME,
-	"end"	TIME,
+	"start"	INTEGER,
+	"end"	INTEGER,
 	"period"	INTEGER,
 	"Classroom"	INTEGER,
 	"Subject"	INTEGER,
 	"Type"	INTEGER,
+	"Date"  DATE ,
 	PRIMARY KEY("id"),
 	FOREIGN KEY("Classroom") REFERENCES "Classroom"("id"),
 	FOREIGN KEY("Subject") REFERENCES "Subject"("id")

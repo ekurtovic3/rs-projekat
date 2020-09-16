@@ -1,8 +1,7 @@
 package ba.unsa.etf.rs.database;
 
+import ba.unsa.etf.rs.model.*;
 import ba.unsa.etf.rs.model.Class;
-import ba.unsa.etf.rs.model.Classroom;
-import ba.unsa.etf.rs.model.Subject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -17,7 +16,7 @@ public class ClassDAO
     private static  int ID =0 ;
     private static ClassDAO instance = null;
     private DatabaseConnection datConn;
-    private SubjectDAO daoSubject=SubjectDAO.getInstance();
+    private static SubjectDAO daoSubject=SubjectDAO.getInstance();
     private ClassroomDAO daoClassroom=ClassroomDAO.getInstance();
 
 
@@ -26,7 +25,7 @@ public class ClassDAO
         instance = new ClassDAO();
     }
 
-    private PreparedStatement initializeClassQuery,selectClass, findMaxIDClass, addClassQuery, findClassQuery, deleteClass;
+    private  static PreparedStatement initializeClassQuery,selectClass, findMaxIDClass, addClassQuery, findClassQuery, deleteClass,updateClass;
 
     private ClassDAO()
     {
@@ -38,7 +37,8 @@ public class ClassDAO
             findMaxIDClass= datConn.getConnection().prepareStatement("SELECT max(id) FROM Class");
             addClassQuery = datConn.getConnection().prepareStatement("Insert INTO Class values(?,?,?,?,?,?,?,?)");
             findClassQuery= datConn.getConnection().prepareStatement("SELECT * FROM Class WHERE id = ?");
-            deleteClass = datConn.getConnection().prepareStatement("DELETE FROM User WHERE id = ?");
+            deleteClass = datConn.getConnection().prepareStatement("DELETE FROM Class WHERE id = ?");
+            updateClass = datConn.getConnection().prepareStatement("update Class set start=?, end= ?, period=?,Classroom =?,Subject=?,Type=?,Date =? where id = ?");
         }
         catch (SQLException e)
         {
@@ -82,7 +82,21 @@ public class ClassDAO
         return false;
     }
 
-
+    public void UpdateClass(Class clas, int id){
+        try {
+            updateClass.setInt(1, clas.getStart());
+            updateClass.setInt(2, clas.getEnd());
+            updateClass.setInt(3, clas.getPeriod());
+            updateClass.setInt(4, clas.getClassroom().getId());
+            updateClass.setInt(5, daoSubject.findSubjectID(clas.getSubject().getName()));
+            updateClass.setInt(6, clas.getType().ordinal());
+            updateClass.setDate(7, clas.getDate());
+            updateClass.setInt(8,id);
+            updateClass.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Class findClass(int id) {
         Class result = null;
@@ -133,8 +147,8 @@ public class ClassDAO
     }
     public void deleteClass(int id) {
         try {
-            Class pc = findClass(id);
-            deleteClass.setInt(1,pc.getId());
+          //  Class pc = findClass(id);
+            deleteClass.setInt(1,id);
             deleteClass.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

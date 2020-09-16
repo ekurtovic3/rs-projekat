@@ -1,0 +1,15 @@
+.tbAdd{
+    -fx-background-image:  url("/img/add.png") ;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+.tbChange{
+    -fx-background-image:  url("/img/edit.png") ;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+.tbDelete{
+    -fx-background-image:  url("/img/exit.png") ;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}

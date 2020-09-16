@@ -438,7 +438,6 @@ public class MainController {
 
     }
 
-
     public void Profesors(ActionEvent actionEvent) {
         listViewUsers.setItems(daoUser.getAllSpecificUsers(2));
     }
