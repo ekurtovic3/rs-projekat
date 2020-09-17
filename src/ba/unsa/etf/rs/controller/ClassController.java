@@ -189,6 +189,10 @@ spPeriod.setVisible(false);
                 LocalDate today = LocalDate.now();
                 today = today.plus(i, ChronoUnit.WEEKS);
                 if(daoClass.isClassFree(Date.valueOf(today),classroom,subject,spStart.getValue())) {
+
+                    //ako imas nekog usera trenutno ulgovanog
+                    //if user instance of Student -> zabrani mu ovo tj izbaci prozor na kojem pise da on nema privilegije
+
                     //1System.out.println("Next week: " + today);
                     daoClass.addClass(new Class(spStart.getValue(), spStart.getValue() + 1, spPeriod.getValue(), classroom, subject, choiceType.getValue(), Date.valueOf(today)));
 

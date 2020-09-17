@@ -15,12 +15,23 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Scanner;
 
 import static javafx.scene.control.PopupControl.USE_COMPUTED_SIZE;
 
@@ -66,6 +77,7 @@ public class MainController {
     private ObservableList<Classroom> listClassrooms;
     private Object SubjectController;
     private User user = null;
+    //int tip usera
 
     private SimpleObjectProperty<User> trenutniKorisnik = new SimpleObjectProperty<>();
     private SimpleObjectProperty<Subject> trenutniSubject = new SimpleObjectProperty<>();
@@ -124,10 +136,13 @@ public class MainController {
         this.daoSubject = daoSubject;
         this.daoUser = daoUser;
         this.user = admin;
+
+
     }
 
     @FXML
     public void initialize() {
+
         cbSubject.setItems(daoSubject.getAllSubjects());
         cbClassroom.setItems(daoClassroom.getAllClassrooms());
 
@@ -335,9 +350,10 @@ public class MainController {
     }
 
     private boolean style(TextField polje) {
-        for (String s : polje.getStyleClass())
+        return polje.getStyleClass().stream().anyMatch(s -> s.equals("poljeIspravno"));
+        /*for (String s : polje.getStyleClass())
             if (s.equals("poljeIspravno")) return true;
-        return false;
+        return false;*/
     }
 
     private boolean style(DatePicker polje) {
@@ -716,6 +732,7 @@ public class MainController {
             days = 365;
         }
         for (int i = day; i <= days; i++) {
+      //      listViewCalendar.getItems().replaceAll(LocalDate.ofYearDay(year));
             listViewCalendar.getItems().add(LocalDate.ofYearDay(year, i));
         }
     }
@@ -804,8 +821,40 @@ public class MainController {
             alert.setContentText("Check again, please!");
 
             alert.showAndWait();
-
+          //  setLvCalendar();
         }
+
+    }
+
+    private boolean checkEmail(String email){
+        try {
+
+            String urlString = "http://apilayer.net/api/check?access_key=9bacc9cdc053432c2be20bb07dbc07bd&email=" + email;
+
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            String inline = "";
+            Scanner sc = new Scanner(url.openStream());
+
+            while(sc.hasNext())
+            {
+                inline+=sc.nextLine();
+            }
+            //string odgovor u inline
+            sc.close();
+
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(inline);
+            return json.get("format_valid").equals("true");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return true;
 
     }
 }

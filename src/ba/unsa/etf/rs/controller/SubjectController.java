@@ -20,9 +20,7 @@ public class SubjectController {
     public Label fldSubjectName;
     public Button btnDeleteProfesor;
 
-
     private Subject subject;
-   // private TimetableDAO dao;
     private User user;
     private ClassDAO daoClass;
     private ClassroomDAO daoClassroom;
@@ -52,6 +50,7 @@ public class SubjectController {
         }
         profesorsOfSubject.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             setTrenutniProfesor((User) newKorisnik);
+
         });
          setProf();
          setStud();
