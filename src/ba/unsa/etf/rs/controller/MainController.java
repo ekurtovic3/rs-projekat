@@ -351,15 +351,12 @@ public class MainController {
 
     private boolean style(TextField polje) {
         return polje.getStyleClass().stream().anyMatch(s -> s.equals("poljeIspravno"));
-        /*for (String s : polje.getStyleClass())
-            if (s.equals("poljeIspravno")) return true;
-        return false;*/
+
     }
 
     private boolean style(DatePicker polje) {
-        for (String s : polje.getStyleClass())
-            if (s.equals("poljeIspravno")) return true;
-        return false;
+        return polje.getStyleClass().stream().anyMatch(s -> s.equals("poljeIspravno"));
+
     }
 
     private boolean isValidAll() {
@@ -501,11 +498,8 @@ public class MainController {
         btnUserAdd.setDisable(false);
         btnUserDelete.setDisable(false);
         btnUserEdit.setDisable(false);
-       // setTrenutniKorisnik(null);
         btnCancelUser.setDisable(true);
         btnConfirmUser.setDisable(true);
-        //listViewUsers.getSelectionModel().selectFirst();
-       // dpBirthday.setValue(LocalDate.now());
         disable();
         listViewUsers.setItems(daoUser.getAllUsers());
     }
@@ -542,7 +536,7 @@ public class MainController {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Password");
                 alert.setHeaderText(null);
-                alert.setContentText("SIFRA ZA KORISNIKA,"+pw+",poruka se nece vise prikazvati");
+                alert.setContentText("Password of user is, "+pw+"," + " this message will no longer be displayed once closed.");
 
                 alert.showAndWait();
 
@@ -553,8 +547,7 @@ public class MainController {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Password");
                 alert.setHeaderText(null);
-                alert.setContentText("SIFRA ZA KORISNIKA,"+pw+",poruka se nece vise prikazvati");
-
+                alert.setContentText("Password of user is, "+pw+"," + " this message will no longer be displayed once closed.");
                 alert.showAndWait();
                 statusMsg.setText("User added.");
                 daoUser.addUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), pw);
@@ -562,7 +555,11 @@ public class MainController {
 
 
         } else if (!isValidAll() && (!btnUserEdit.isDisable() || !btnUserAdd.isDisable())) {
-            System.out.println("Nije validno sve ili ima polje koje nije popunjeno");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Invalid form");
+            alert.setHeaderText(null);
+            alert.setContentText("There is a field that is invalid or empty.");
+            alert.showAndWait();
         }
         if (isValidAll()) {
             btnCancelUser.setDisable(true);
@@ -579,7 +576,6 @@ public class MainController {
 
     public void btnUserAdd(ActionEvent actionEvent) {
         enable();
-      //  btnUserAdd.setDisable(true);
         btnUserDelete.setDisable(true);
         btnUserEdit.setDisable(true);
         setTrenutniKorisnik(null);
@@ -732,9 +728,66 @@ public class MainController {
             days = 365;
         }
         for (int i = day; i <= days; i++) {
-      //      listViewCalendar.getItems().replaceAll(LocalDate.ofYearDay(year));
             listViewCalendar.getItems().add(LocalDate.ofYearDay(year, i));
         }
+    }
+
+    public void Sreach(ActionEvent actionEvent) {
+        if (cbClassroom.getValue() != null && cbSubject.getValue() != null && getTrenutniDate()!= null) {
+            try {
+                Parent root = null;
+                Stage myStage = new Stage();
+                FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/timetable.fxml"));
+                loader3.setController(new ClassController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, (Classroom) cbClassroom.getValue(), (Subject) cbSubject.getValue(), Date.valueOf((LocalDate) listViewCalendar.getSelectionModel().getSelectedItem())));
+                root = loader3.load();
+                ClassController = loader3.getController();
+                myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+                myStage.setResizable(false);
+                myStage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("Not all fields are filled");
+            alert.setContentText("Check again, please!");
+
+            alert.showAndWait();
+            setLvCalendar();
+        }
+
+    }
+
+    private boolean checkEmail(String email){
+        try {
+
+            String urlString = "http://apilayer.net/api/check?access_key=9bacc9cdc053432c2be20bb07dbc07bd&email=" + email;
+
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            String inline = "";
+            Scanner sc = new Scanner(url.openStream());
+
+            while(sc.hasNext())
+            {
+                inline+=sc.nextLine();
+            }
+            sc.close();
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(inline);
+            return json.get("format_valid").equals("true");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return true;
+
     }
 
     public User getTrenutniKorisnik() {
@@ -786,75 +839,5 @@ public class MainController {
         this.trenutniDate.set(trenutniDate);
     }
 
-    public void Sreach(ActionEvent actionEvent) {
-        if (cbClassroom.getValue() != null && cbSubject.getValue() != null && getTrenutniDate()!= null) {
-            try {
-                Parent root = null;
-                Stage myStage = new Stage();
-                FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/timetable.fxml"));
-                loader3.setController(new ClassController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, (Classroom) cbClassroom.getValue(), (Subject) cbSubject.getValue(), Date.valueOf((LocalDate) listViewCalendar.getSelectionModel().getSelectedItem())));
-                root = loader3.load();
-                ClassController = loader3.getController();
-                myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
-                myStage.setResizable(false);
-                myStage.show();
-        /*    int s = daoClassroom.getAllClassrooms().size();
-            myStage.setOnHiding(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent windowEvent) {
-                    listViewClassroom.setItems(daoClassroom.getAllClassrooms());
-                    if (s != daoClassroom.getAllClassrooms().size()) {
-                        statusMsg.setText("DODAJ PORUKU");
-                    } else {
-                        statusMsg.setText("DODAJ PORUKU");
-                    }
 
-            });
-}*/
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning");
-            alert.setHeaderText("Not all fields are filled");
-            alert.setContentText("Check again, please!");
-
-            alert.showAndWait();
-          //  setLvCalendar();
-        }
-
-    }
-
-    private boolean checkEmail(String email){
-        try {
-
-            String urlString = "http://apilayer.net/api/check?access_key=9bacc9cdc053432c2be20bb07dbc07bd&email=" + email;
-
-            URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-            String inline = "";
-            Scanner sc = new Scanner(url.openStream());
-
-            while(sc.hasNext())
-            {
-                inline+=sc.nextLine();
-            }
-            //string odgovor u inline
-            sc.close();
-
-            JSONParser parser = new JSONParser();
-            JSONObject json = (JSONObject) parser.parse(inline);
-            return json.get("format_valid").equals("true");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return true;
-
-    }
 }

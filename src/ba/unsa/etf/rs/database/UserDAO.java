@@ -1,5 +1,6 @@
 package ba.unsa.etf.rs.database;
 
+import ba.unsa.etf.rs.exceptions.InvalidParam;
 import ba.unsa.etf.rs.model.Admin;
 import ba.unsa.etf.rs.model.Profesor;
 import ba.unsa.etf.rs.model.Student;
@@ -150,7 +151,7 @@ public class UserDAO
         return result;
     }
 
-    public static int findUserLogIn(String username,String pass) {
+    public static int findUserLogIn(String username,String pass) throws InvalidParam {
         int result = -1;                 /* VRACA PROFESORA ILI STUDENTA A NE USER??????????*/
         try {
             findUserLogIn.setString(1,username);
@@ -161,6 +162,9 @@ public class UserDAO
         }
         catch (SQLException e) {
             e.printStackTrace();
+        }
+        if(result == -1){
+            throw new InvalidParam("Username and password did not match");
         }
         return result;
     }

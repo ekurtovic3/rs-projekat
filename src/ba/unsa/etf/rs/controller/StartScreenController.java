@@ -1,6 +1,7 @@
 package ba.unsa.etf.rs.controller;
 
 import ba.unsa.etf.rs.database.*;
+import ba.unsa.etf.rs.exceptions.InvalidParam;
 import ba.unsa.etf.rs.model.Country;
 
 import ba.unsa.etf.rs.model.Student;
@@ -38,9 +39,6 @@ public class StartScreenController implements Initializable {
     public TextField tfUsernameLogIn;
     public PasswordField tfPasswordLogIn;
     public PasswordField tfPasswordSignUp;
-
-
-    // private TimetableDAO dao;
     private CountryDAO countryDao;
     private ClassDAO daoClass;
     private ClassroomDAO daoClassroom;
@@ -77,26 +75,6 @@ public class StartScreenController implements Initializable {
 
         });
 
-/*
-        tfPasswordLogIn.textProperty().addListener((obs, oldIme, newIme) -> {
-            if (!newIme.isEmpty() && !(newIme.length() < 3)) {
-                tfPasswordLogIn.getStyleClass().removeAll("poljeNijeIspravno");
-                tfPasswordLogIn.getStyleClass().add("poljeIspravno");
-            } else {
-                tfPasswordLogIn.getStyleClass().removeAll("poljeIspravno");
-                tfPasswordLogIn.getStyleClass().add("poljeNijeIspravno");
-            }
-        });
-
-        tfUsernameLogIn.textProperty().addListener((obs, oldIme, newIme) -> {
-            if (!newIme.isEmpty()) {
-                tfUsernameLogIn.getStyleClass().removeAll("poljeNijeIspravno");
-                tfUsernameLogIn.getStyleClass().add("poljeIspravno");
-            } else {
-                tfUsernameLogIn.getStyleClass().removeAll("poljeIspravno");
-                tfUsernameLogIn.getStyleClass().add("poljeNijeIspravno");
-            }
-        });*/
 
         tfNameSignIn.textProperty().addListener((obs, oldIme, newIme) -> {
             if (!newIme.isEmpty()) {
@@ -258,15 +236,13 @@ public class StartScreenController implements Initializable {
     }
 
     private boolean style(TextField polje) {
-        for (String s : polje.getStyleClass())
-            if (s.equals("poljeIspravno")) return true;
-        return false;
+        return polje.getStyleClass().stream().anyMatch(s -> s.equals("poljeIspravno"));
+
     }
 
     private boolean style(DatePicker polje) {
-        for (String s : polje.getStyleClass())
-            if (s.equals("poljeIspravno")) return true;
-        return false;
+        return polje.getStyleClass().stream().anyMatch(s -> s.equals("poljeIspravno"));
+
     }
 
     private boolean isValidAllSignIn() {
@@ -282,29 +258,26 @@ public class StartScreenController implements Initializable {
     }
 
     public void LogIn(ActionEvent actionEvent) {
-        if ( (UserDAO.findUserLogIn(tfUsernameLogIn.getText(), tfPasswordLogIn.getText())) != -1) {
+
+        try {
+            UserDAO.findUserLogIn(tfUsernameLogIn.getText(), tfPasswordLogIn.getText());
+
             int id = daoUser.findUserLogIn(tfUsernameLogIn.getText(), tfPasswordLogIn.getText());
-System.out.println(id);
+            System.out.println(id);
             Parent root = null;
-            try {
-                Stage myStage = new Stage();
-                FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/mainform.fxml"));
-                loader2.setController(new MainController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, daoUser.findUserByID(id)));
-                root = loader2.load();
-                MainController = loader2.getController();
-                myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
-                myStage.setResizable(false);
-                myStage.show();
-                Node n = (Node) actionEvent.getSource();
-                Stage stage = (Stage) n.getScene().getWindow();
-                stage.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Stage myStage = new Stage();
+            FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/mainform.fxml"));
+            loader2.setController(new MainController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, daoUser.findUserByID(id)));
+            root = loader2.load();
+            MainController = loader2.getController();
+            myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            myStage.setResizable(false);
+            myStage.show();
+            Node n = (Node) actionEvent.getSource();
+            Stage stage = (Stage) n.getScene().getWindow();
+            stage.close();
 
-
-        } else {
-
+            } catch (InvalidParam invalidParam) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Login failed");
             alert.setHeaderText(null);
@@ -312,9 +285,12 @@ System.out.println(id);
             tfUsernameLogIn.setText("");
             tfUsernameLogIn.setText("");
             alert.showAndWait();
-
-
         }
+
+        catch (IOException e) {
+                e.printStackTrace();
+            }
+
     }
 
     public void SingIn(ActionEvent actionEvent) {

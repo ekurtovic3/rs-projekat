@@ -75,9 +75,6 @@ public class SubjectController {
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                    //       mbtnDeleteProfesor.getItems().add(i1);
-                  //    mbtnAddProfesor.getItems().remove(i1);
-
 
                 });
                 mbtnAddProfesor.getItems().add(i1);
@@ -88,7 +85,6 @@ public class SubjectController {
 
         mbtnAddStudent.getItems().clear();
         ObservableList<User> students = daoUser.getAllSpecificUsers(1);
-        //profesors = daoProfessorToSubjectDAO.getProfesorsForAdd(subject);
         for (int i = 0; i < students.size(); i++) {
             User p = students.get(i);
             MenuItem i1 = new MenuItem(students.get(i).toString());
@@ -99,9 +95,6 @@ public class SubjectController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-                //       mbtnDeleteProfesor.getItems().add(i1);
-                //    mbtnAddProfesor.getItems().remove(i1);
-
 
             });
             mbtnAddStudent.getItems().add(i1);
