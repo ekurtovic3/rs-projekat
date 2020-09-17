@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="427.0" prefWidth="666.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="427.0" prefWidth="666.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@/css/mainform.css" />
     </stylesheets>
@@ -96,7 +96,7 @@
                                               <Button fx:id="btnRight" mnemonicParsing="false" onAction="#btnRight" prefHeight="30.0" prefWidth="50.0" />
                                           </children>
                                       </HBox>
-                              <Button fx:id="btnSreach" alignment="CENTER" mnemonicParsing="false" onAction="#Sreach" text="Sreach" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <Button fx:id="btnSreach" alignment="CENTER" mnemonicParsing="false" onAction="#Sreach" text="Search" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                             </children>
@@ -242,7 +242,7 @@
                             </children></AnchorPane>
                     </content>
                 </Tab>
-                <Tab  text="Profil">
+                <Tab text="Profil">
 
 
                     <content>

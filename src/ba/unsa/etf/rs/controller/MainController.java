@@ -1,6 +1,7 @@
 package ba.unsa.etf.rs.controller;
 
 import ba.unsa.etf.rs.database.*;
+import ba.unsa.etf.rs.exceptions.EmptyField;
 import ba.unsa.etf.rs.model.*;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -181,7 +182,7 @@ public class MainController {
             setTrenutniClassroom((Classroom) newKorisnik);
         });
         listViewCalendar.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
-            setTrenutniDate((Date) Date.valueOf((LocalDate) newKorisnik));
+           if(newKorisnik!=null)  setTrenutniDate((Date) Date.valueOf((LocalDate) newKorisnik));
         });
         trenutniKorisnikProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
             if (oldKorisnik != null) {
@@ -372,7 +373,6 @@ public class MainController {
         fldUsername.setDisable(false);
         fldJmbg.setDisable(false);
         dpBirthday.setDisable(false);
-      //  fldPassword.setDisable(false);
         radioProfesor.setDisable(false);
         radioStudent.setDisable(false);
         listViewUsers.setDisable(true);
@@ -386,7 +386,6 @@ public class MainController {
         fldUsername.setDisable(true);
         fldJmbg.setDisable(true);
         dpBirthday.setDisable(true);
-//        fldPassword.setDisable(true);
         radioProfesor.setDisable(true);
         radioStudent.setDisable(true);
         listViewUsers.setDisable(false);
@@ -555,11 +554,16 @@ public class MainController {
 
 
         } else if (!isValidAll() && (!btnUserEdit.isDisable() || !btnUserAdd.isDisable())) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Invalid form");
-            alert.setHeaderText(null);
-            alert.setContentText("There is a field that is invalid or empty.");
-            alert.showAndWait();
+            try {
+                throw new EmptyField("There is a filed that is invalid or empty");
+            } catch (EmptyField emptyField) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Invalid form");
+                alert.setHeaderText(null);
+                alert.setContentText("There is a field that is invalid or empty.");
+                alert.showAndWait();
+            }
+
         }
         if (isValidAll()) {
             btnCancelUser.setDisable(true);
@@ -753,9 +757,8 @@ public class MainController {
             alert.setTitle("Warning");
             alert.setHeaderText("Not all fields are filled");
             alert.setContentText("Check again, please!");
-
             alert.showAndWait();
-            setLvCalendar();
+
         }
 
     }

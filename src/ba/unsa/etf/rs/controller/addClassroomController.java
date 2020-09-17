@@ -82,7 +82,6 @@ if(edit==true){
 
     public void btnConfirmClassroom(ActionEvent actionEvent) {
         ok=true;
-       // System.out.println(edit);
         if(!edit && fldClassroomName.getStyleClass().contains("poljeIspravno") && fldCapacity.getStyleClass().contains("poljeIspravno") && !daoClassroom.getAllClassrooms().contains(new Classroom(fldClassroomName.getText(),Integer.parseInt(fldCapacity.getText()))))
         {
             daoClassroom.addClassroom(new Classroom(fldClassroomName.getText(), Integer.parseInt(fldCapacity.getText())));
