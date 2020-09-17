@@ -24,18 +24,10 @@
                     <menus>
                         <Menu text="_File">
                             <items>
-                                <MenuItem text="_Open" />
-                                <MenuItem text="_Save" />
                                 <MenuItem text="_Print" />
+                                <MenuItem text="_LogOut" />
                                 <MenuItem text="_Exit" />
 
-                            </items>
-                        </Menu>
-                        <Menu text="_Edit">
-                            <items>
-                                <MenuItem text="_Add" />
-                                <MenuItem text="_Change" />
-                                <MenuItem text="_Delete" />
                             </items>
                         </Menu>
                         <Menu text="_Help">

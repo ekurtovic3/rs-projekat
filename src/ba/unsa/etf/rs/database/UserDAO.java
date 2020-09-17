@@ -7,6 +7,7 @@ import ba.unsa.etf.rs.model.Student;
 import ba.unsa.etf.rs.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -38,7 +39,7 @@ public class UserDAO
             deleteUser = datConn.getConnection().prepareStatement("DELETE FROM User WHERE jmbg = ?");
             findUserByIDQuery = datConn.getConnection().prepareStatement("SELECT * FROM User WHERE id = ?");
            findUserLogIn= datConn.getConnection().prepareStatement("SELECT id FROM User WHERE username = ? and password=?");
-            updateUser = datConn.getConnection().prepareStatement("update USER set name=?, surname= ?, email=?, jmbg=?,username =?,dateOfBirth=?,status=?,password=? where id = ?");
+            updateUser = datConn.getConnection().prepareStatement("update USER set name=?, surname= ?, email=?, jmbg=?,username =?,dateOfBirth=?,status=? where id = ?");
             findUserID =datConn.getConnection().prepareStatement("SELECT id from User where jmbg= ?");
             addUserQuery = datConn.getConnection().prepareStatement("Insert INTO User values(?,?,?,?,?,?,?,?,?)");
         }
@@ -76,8 +77,9 @@ public class UserDAO
         return FXCollections.observableArrayList(result);
     }
 
-    public static void UpdateUser(User user,String pass){
+    public static void UpdateUser(@NotNull User user){
         try {
+            System.out.println("Dosao u fun update");
             updateUser.setString(1, user.getName());
             updateUser.setString(2, user.getSurname());
             updateUser.setString(3, user.getEmail());
@@ -86,8 +88,9 @@ public class UserDAO
             updateUser.setDate(6, user.getDateOfBirth());
             if(user instanceof Student) updateUser.setInt(7, 1);
             if(user instanceof Profesor) updateUser.setInt(7,2 );
-            updateUser.setString(8, pass);
-            updateUser.setInt(9, findUserID(user.getJmbg()));
+            if(user instanceof Admin) updateUser.setInt(7,0 );
+            //updateUser.setString(8, pass);
+            updateUser.setInt(8, findUserID(user.getJmbg()));
             updateUser.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

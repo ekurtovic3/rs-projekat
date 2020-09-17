@@ -23,14 +23,13 @@
 
 .backgroundImage
 {
-    -fx-background-image: url("/img/scheduleAppBackground.png");
-
+    -fx-background-image: url("/img/login.png");
     -fx-border-width: 1px;
     -fx-border-style: solid;
     -fx-border-color: white;
 
     -fx-background-repeat: no-repeat;
-    -fx-background-size: cover, auto;
+    -fx-background-size: 30cm,30cm,30cm;
     -fx-background-position: center;
 }
 

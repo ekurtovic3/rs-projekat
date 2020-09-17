@@ -27,10 +27,7 @@ public class Classroom {
         this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return name+" "+capacity;
-    }
+
 
     public String getName() {
         return name;
@@ -46,6 +43,12 @@ public class Classroom {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "Name: " + name + ", Capacity: " +capacity;
     }
 
     @Override

@@ -17,14 +17,19 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 import static javafx.scene.control.PopupControl.USE_COMPUTED_SIZE;
 
@@ -96,25 +101,7 @@ public class StartScreenController implements Initializable {
             }
         });
 
-        tfEmailSignIn.textProperty().addListener((obs, oldIme, newIme) -> {
-            if (!newIme.isEmpty()) {
-                if (newIme.contains(".com") && newIme.contains("@") && newIme.length() >= 3) {
-                    if (Character.isLetter(newIme.charAt(0)) && Character.isLetter(newIme.charAt(newIme.length() - 1))) {
-                        tfEmailSignIn.getStyleClass().removeAll("poljeNijeIspravno");
-                        tfEmailSignIn.getStyleClass().add("poljeIspravno");
-                    } else {
-                        tfEmailSignIn.getStyleClass().removeAll("poljeIspravno");
-                        tfEmailSignIn.getStyleClass().add("poljeNijeIspravno");
-                    }
-                } else {
-                    tfEmailSignIn.getStyleClass().removeAll("poljeIspravno");
-                    tfEmailSignIn.getStyleClass().add("poljeNijeIspravno");
-                }
-            } else {
-                tfEmailSignIn.getStyleClass().removeAll("poljeIspravno");
-                tfEmailSignIn.getStyleClass().add("poljeNijeIspravno");
-            }
-        });
+
         tfPasswordSignUp.textProperty().addListener((obs, oldIme, newIme) -> {
             if (!newIme.isEmpty() && !(newIme.length() < 3)) {
                 tfPasswordSignUp.getStyleClass().removeAll("poljeNijeIspravno");
@@ -246,8 +233,17 @@ public class StartScreenController implements Initializable {
     }
 
     private boolean isValidAllSignIn() {
-        if (style(tfNameSignIn) && style(tfSurnameSignIn) && style(tfJMBGSignIn) && style(tfEmailSignIn) && style(tfUsernameSignIn) && style(dpDateOfBirthSignIn) && style(tfPasswordSignUp))
+
+        if (checkEmail(tfEmailSignIn.getText())) {
+            tfEmailSignIn.getStyleClass().removeAll("poljeNijeIspravno");
+            tfEmailSignIn.getStyleClass().add("poljeIspravno");
+        } else {
+            tfEmailSignIn.getStyleClass().removeAll("poljeIspravno");
+            tfEmailSignIn.getStyleClass().add("poljeNijeIspravno");
+}
+        if (style(tfNameSignIn) && style(tfSurnameSignIn) && style(tfJMBGSignIn) && checkEmail(tfEmailSignIn.getText()) && style(tfUsernameSignIn) && style(dpDateOfBirthSignIn) && style(tfPasswordSignUp))
             return true;
+
         return false;
     }
 
@@ -281,7 +277,7 @@ public class StartScreenController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Login failed");
             alert.setHeaderText(null);
-            alert.setContentText("Sorry, login failed, plese check your username or password");
+            alert.setContentText("Sorry, login failed, please check your username or password");
             tfUsernameLogIn.setText("");
             tfUsernameLogIn.setText("");
             alert.showAndWait();
@@ -317,5 +313,33 @@ public class StartScreenController implements Initializable {
 
 
         }
+    }
+    private boolean checkEmail(String email){
+        try {
+
+            String urlString = "http://apilayer.net/api/check?access_key=9bacc9cdc053432c2be20bb07dbc07bd&email=" + email;
+
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            String inline = "";
+            Scanner sc = new Scanner(url.openStream());
+
+            while(sc.hasNext())
+            {
+                inline+=sc.nextLine();
+            }
+            sc.close();
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(inline);
+            return Boolean.valueOf(json.get("format_valid").toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return true;
+
     }
 }

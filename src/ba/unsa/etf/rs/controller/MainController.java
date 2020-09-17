@@ -138,12 +138,10 @@ public class MainController {
         this.daoUser = daoUser;
         this.user = admin;
 
-
     }
 
     @FXML
     public void initialize() {
-
         cbSubject.setItems(daoSubject.getAllSubjects());
         cbClassroom.setItems(daoClassroom.getAllClassrooms());
 
@@ -162,8 +160,6 @@ public class MainController {
 
         lbYear.setText(String.valueOf(year));
         setLvCalendar();
-
-
         btnCancelUser.setDisable(true);
         btnConfirmUser.setDisable(true);
         listViewSubjects.setItems(daoSubject.getAllSubjects());
@@ -195,6 +191,7 @@ public class MainController {
                 if (getTrenutniKorisnik() instanceof Student) radioStudent.setSelected(true);
                 if (getTrenutniKorisnik() instanceof Profesor) radioProfesor.setSelected(true);
 
+
             }
             if (newKorisnik == null) {
                 fldName.setText("");
@@ -212,6 +209,10 @@ public class MainController {
                 dpBirthday.valueProperty().bindBidirectional(newKorisnik.dateOfBirthProperty());
                 if (getTrenutniKorisnik() instanceof Student) radioStudent.setSelected(true);
                 if (getTrenutniKorisnik() instanceof Profesor) radioProfesor.setSelected(true);
+                if (getTrenutniKorisnik() instanceof Admin) {
+                    btnUserEdit.setDisable(true);
+                }
+                else btnUserEdit.setDisable(false);
 
             }
         });
@@ -234,27 +235,6 @@ public class MainController {
                 fldSurname.getStyleClass().add("poljeNijeIspravno");
             }
         });
-
-        fldEmail.textProperty().addListener((obs, oldIme, newIme) -> {
-            if (!newIme.isEmpty()) {
-                if (newIme.contains(".com") && newIme.contains("@") && newIme.length() >= 3) {
-                    if (Character.isLetter(newIme.charAt(0)) && Character.isLetter(newIme.charAt(newIme.length() - 1))) {
-                        fldEmail.getStyleClass().removeAll("poljeNijeIspravno");
-                        fldEmail.getStyleClass().add("poljeIspravno");
-                    } else {
-                        fldEmail.getStyleClass().removeAll("poljeIspravno");
-                        fldEmail.getStyleClass().add("poljeNijeIspravno");
-                    }
-                } else {
-                    fldEmail.getStyleClass().removeAll("poljeIspravno");
-                    fldEmail.getStyleClass().add("poljeNijeIspravno");
-                }
-            } else {
-                fldEmail.getStyleClass().removeAll("poljeIspravno");
-                fldEmail.getStyleClass().add("poljeNijeIspravno");
-            }
-        });
-
 
         fldUsername.textProperty().addListener((obs, oldIme, newIme) -> {
             if (!newIme.isEmpty()) {
@@ -361,8 +341,16 @@ public class MainController {
     }
 
     private boolean isValidAll() {
-        if (style(fldName) && style(fldSurname) && style(fldJmbg) && style(fldEmail) && style(fldUsername) && style(dpBirthday) && (radioProfesor.isSelected() || radioStudent.isSelected()))
+        /*if (checkEmail(fldEmail.getText())) {
+            fldEmail.getStyleClass().removeAll("poljeNijeIspravno");
+            fldEmail.getStyleClass().add("poljeIspravno");
+        } else {
+            fldEmail.getStyleClass().removeAll("poljeIspravno");
+            fldEmail.getStyleClass().add("poljeNijeIspravno");
+        }*/
+        if (  style(fldName) && style(fldSurname) && style(fldJmbg)  && style(fldUsername) && style(dpBirthday) && (radioProfesor.isSelected() || radioStudent.isSelected()))
             return true;
+
         return false;
     }
 
@@ -521,16 +509,21 @@ public class MainController {
         } else if (getTrenutniKorisnik() == null && !btnUserDelete.isDisable()) {
             System.out.println("Nije oznacen ni jedan korisnik za brisanje");
         } else if (isValidAll() && getTrenutniKorisnik() != null && !btnUserEdit.isDisable()) {
+            if(checkEmail(fldEmail.getText())){
             if (radioProfesor.isSelected()) {
-                daoUser.UpdateUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), fldPassword.getText());
+                daoUser.UpdateUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
                 statusMsg.setText("User edited.");
 
             } else if (radioStudent.isSelected()) {
-                daoUser.UpdateUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), fldPassword.getText());
-                statusMsg.setText("User deleted.");
+                daoUser.UpdateUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
+                statusMsg.setText("User edited.");
             }
+            else {
+                daoUser.UpdateUser(new Admin(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
+                statusMsg.setText("User edited.");
+            }}
         } else if (isValidAll() && !btnUserAdd.isDisable()) {
-            if (radioProfesor.isSelected()) {
+            if (radioProfesor.isSelected() && checkEmail(fldEmail.getText())) {
                  pw=generisiPassword();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Password");
@@ -541,7 +534,7 @@ public class MainController {
 
                 daoUser.addUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), pw);
                 statusMsg.setText("User added.");
-            } else if (radioStudent.isSelected()) {
+            } else if (radioStudent.isSelected() && checkEmail(fldEmail.getText())) {
               pw=generisiPassword();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Password");
@@ -553,7 +546,8 @@ public class MainController {
             }
 
 
-        } else if (!isValidAll() && (!btnUserEdit.isDisable() || !btnUserAdd.isDisable())) {
+        }
+        if (!isValidAll() || !checkEmail(fldEmail.getText()) && (!btnUserAdd.isDisable() || !btnUserEdit.isDisable())){
             try {
                 throw new EmptyField("There is a filed that is invalid or empty");
             } catch (EmptyField emptyField) {
@@ -562,19 +556,18 @@ public class MainController {
                 alert.setHeaderText(null);
                 alert.setContentText("There is a field that is invalid or empty.");
                 alert.showAndWait();
+            }}
+            else{
+                btnCancelUser.setDisable(true);
+                btnConfirmUser.setDisable(true);
+                btnUserAdd.setDisable(false);
+                btnUserDelete.setDisable(false);
+                btnUserEdit.setDisable(false);
+                listViewUsers.setDisable(false);
+                disable();
             }
 
-        }
-        if (isValidAll()) {
-            btnCancelUser.setDisable(true);
-            btnConfirmUser.setDisable(true);
-            btnUserAdd.setDisable(false);
-            btnUserDelete.setDisable(false);
-            btnUserEdit.setDisable(false);
-            listViewUsers.setDisable(false);
-            disable();
 
-        }
         listViewUsers.setItems(daoUser.getAllUsers());
     }
 
@@ -764,6 +757,7 @@ public class MainController {
     }
 
     private boolean checkEmail(String email){
+
         try {
 
             String urlString = "http://apilayer.net/api/check?access_key=9bacc9cdc053432c2be20bb07dbc07bd&email=" + email;
@@ -782,8 +776,8 @@ public class MainController {
             sc.close();
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(inline);
-            return json.get("format_valid").equals("true");
-
+            return true;
+         //   return Boolean.valueOf(json.get("format_valid").toString());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -804,7 +798,6 @@ public class MainController {
     public void setTrenutniKorisnik(User trenutniKorisnik) {
         this.trenutniKorisnik.set(trenutniKorisnik);
     }
-
 
     public Subject getTrenutniSubject() {
         return trenutniSubject.get();

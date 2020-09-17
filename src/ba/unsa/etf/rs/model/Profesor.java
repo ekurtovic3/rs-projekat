@@ -23,4 +23,6 @@ public class Profesor extends User {
     public int hashCode() {
         return Objects.hash(titula);
     }
+
+
 }
