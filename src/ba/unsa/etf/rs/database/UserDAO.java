@@ -1,6 +1,7 @@
 package ba.unsa.etf.rs.database;
 
 import ba.unsa.etf.rs.exceptions.InvalidParam;
+import ba.unsa.etf.rs.exceptions.ObjectAlredyExist;
 import ba.unsa.etf.rs.model.Admin;
 import ba.unsa.etf.rs.model.Profesor;
 import ba.unsa.etf.rs.model.Student;
@@ -27,7 +28,7 @@ public class UserDAO
     private static int ID;
 
     private static PreparedStatement selectUsers, findUserQuery, findMaxIDUser, deleteUser, findUserByIDQuery, findUserLogIn,
-            updateUser, findUserID, addUserQuery;
+            updateUser, findUserID, addUserQuery,EditUserExistQuery,AddUserExistQuery;
 
     private UserDAO()
     {
@@ -42,6 +43,8 @@ public class UserDAO
             updateUser = datConn.getConnection().prepareStatement("update USER set name=?, surname= ?, email=?, jmbg=?,username =?,dateOfBirth=?,status=? where id = ?");
             findUserID =datConn.getConnection().prepareStatement("SELECT id from User where jmbg= ?");
             addUserQuery = datConn.getConnection().prepareStatement("Insert INTO User values(?,?,?,?,?,?,?,?,?)");
+            EditUserExistQuery= datConn.getConnection().prepareStatement("SELECT id FROM User WHERE (username = ? OR jmbg=?) and id<>?");
+            AddUserExistQuery= datConn.getConnection().prepareStatement("SELECT id FROM User WHERE (username = ? OR jmbg=?)");
         }
         catch (SQLException e)
         {
@@ -155,7 +158,7 @@ public class UserDAO
     }
 
     public static int findUserLogIn(String username,String pass) throws InvalidParam {
-        int result = -1;                 /* VRACA PROFESORA ILI STUDENTA A NE USER??????????*/
+        int result = -1;
         try {
             findUserLogIn.setString(1,username);
             findUserLogIn.setString(2,pass);
@@ -171,7 +174,58 @@ public class UserDAO
         }
         return result;
     }
+
+    public  int EditUserExist(String username,String jmbg,int id) throws ObjectAlredyExist {
+        int result = -1;
+        try {
+            EditUserExistQuery.setString(1,username);
+            EditUserExistQuery.setString(2,jmbg);
+            EditUserExistQuery.setInt(3,id);
+            ResultSet resultSet = EditUserExistQuery.executeQuery();
+            while (resultSet.next())
+                result=resultSet.getInt(1);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if(result != -1){
+            throw new ObjectAlredyExist("Username or password alredy exist.");
+        }
+        return result;
+    }
+    public  int AddUserExist(String username,String jmbg) throws  ObjectAlredyExist {
+        int result = -1;
+        try {
+            AddUserExistQuery.setString(1,username);
+            AddUserExistQuery.setString(2,jmbg);
+            ResultSet resultSet = AddUserExistQuery.executeQuery();
+            while (resultSet.next())
+                result=resultSet.getInt(1);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if(result != -1){
+            throw new ObjectAlredyExist("Username or password alredy exist.");
+        }
+        return result;
+    }
     public static int findUserID(String userJmbg) {
+        int id=0;
+        try {
+            findUserID.setString(1, userJmbg);
+            ResultSet resultSet = findUserID.executeQuery();
+            id=resultSet.getInt(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return id;
+    }
+    public  int findUserID2(String userJmbg) {
         int id=0;
         try {
             findUserID.setString(1, userJmbg);

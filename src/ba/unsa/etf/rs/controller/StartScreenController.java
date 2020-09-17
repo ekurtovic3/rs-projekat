@@ -2,6 +2,7 @@ package ba.unsa.etf.rs.controller;
 
 import ba.unsa.etf.rs.database.*;
 import ba.unsa.etf.rs.exceptions.InvalidParam;
+import ba.unsa.etf.rs.exceptions.ObjectAlredyExist;
 import ba.unsa.etf.rs.model.Country;
 
 import ba.unsa.etf.rs.model.Student;
@@ -279,7 +280,7 @@ public class StartScreenController implements Initializable {
             alert.setHeaderText(null);
             alert.setContentText("Sorry, login failed, please check your username or password");
             tfUsernameLogIn.setText("");
-            tfUsernameLogIn.setText("");
+            tfPasswordLogIn.setText("");
             alert.showAndWait();
         }
 
@@ -290,12 +291,12 @@ public class StartScreenController implements Initializable {
     }
 
     public void SingIn(ActionEvent actionEvent) {
+        Parent root = null;
         if (isValidAllSignIn()) {
-            Student student = new Student(tfNameSignIn.getText(), tfSurnameSignIn.getText(), tfEmailSignIn.getText(), tfJMBGSignIn.getText(), tfUsernameSignIn.getText(), Date.valueOf(dpDateOfBirthSignIn.getValue()));
-            daoUser.addUser(new Student(tfNameSignIn.getText(), tfSurnameSignIn.getText(), tfEmailSignIn.getText(), tfJMBGSignIn.getText(), tfUsernameSignIn.getText(), Date.valueOf(dpDateOfBirthSignIn.getValue())), tfPasswordSignUp.getText());
-
-            Parent root = null;
             try {
+                int o=daoUser.AddUserExist(tfUsernameSignIn.getText(),tfJMBGSignIn.getText());
+                Student student = new Student(tfNameSignIn.getText(), tfSurnameSignIn.getText(), tfEmailSignIn.getText(), tfJMBGSignIn.getText(), tfUsernameSignIn.getText(), Date.valueOf(dpDateOfBirthSignIn.getValue()));
+                daoUser.addUser(new Student(tfNameSignIn.getText(), tfSurnameSignIn.getText(), tfEmailSignIn.getText(), tfJMBGSignIn.getText(), tfUsernameSignIn.getText(), Date.valueOf(dpDateOfBirthSignIn.getValue())), tfPasswordSignUp.getText());
                 Stage myStage = new Stage();
                 FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/mainform.fxml"));
                 loader2.setController(new MainController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, student));
@@ -307,6 +308,12 @@ public class StartScreenController implements Initializable {
                 Node n = (Node) actionEvent.getSource();
                 Stage stage = (Stage) n.getScene().getWindow();
                 stage.close();
+            } catch (ObjectAlredyExist objectAlredyExist) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Edit failed");
+                alert.setHeaderText(null);
+                alert.setContentText("Sorry, register failed, this username or JMBG alredy exist, please try again");
+                alert.showAndWait();
             } catch (IOException e) {
                 e.printStackTrace();
             }

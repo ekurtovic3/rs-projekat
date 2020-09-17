@@ -2,6 +2,8 @@ package ba.unsa.etf.rs.controller;
 
 import ba.unsa.etf.rs.database.*;
 import ba.unsa.etf.rs.exceptions.EmptyField;
+import ba.unsa.etf.rs.exceptions.InvalidParam;
+import ba.unsa.etf.rs.exceptions.ObjectAlredyExist;
 import ba.unsa.etf.rs.model.*;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -509,44 +511,65 @@ public class MainController {
         } else if (getTrenutniKorisnik() == null && !btnUserDelete.isDisable()) {
             System.out.println("Nije oznacen ni jedan korisnik za brisanje");
         } else if (isValidAll() && getTrenutniKorisnik() != null && !btnUserEdit.isDisable()) {
-            if(checkEmail(fldEmail.getText())){
-            if (radioProfesor.isSelected()) {
-                daoUser.UpdateUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
-                statusMsg.setText("User edited.");
+            try {
+                int pom=daoUser.EditUserExist(fldUsername.getText(),fldJmbg.getText(),daoUser.findUserID2(fldJmbg.getText()));
+                if(checkEmail(fldEmail.getText())){
+                    if (radioProfesor.isSelected()) {
+                        daoUser.UpdateUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
+                        statusMsg.setText("User edited.");
 
-            } else if (radioStudent.isSelected()) {
-                daoUser.UpdateUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
-                statusMsg.setText("User edited.");
+                    } else if (radioStudent.isSelected()) {
+                        daoUser.UpdateUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
+                        statusMsg.setText("User edited.");
+                    }
+                    else {
+                        daoUser.UpdateUser(new Admin(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
+                        statusMsg.setText("User edited.");
+                    }}
+            }  catch (ObjectAlredyExist objectAlredyExist) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Edit failed");
+                alert.setHeaderText(null);
+                alert.setContentText("Sorry, edit failed, this username or JMBG alredy exist");
+                alert.showAndWait();
             }
-            else {
-                daoUser.UpdateUser(new Admin(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
-                statusMsg.setText("User edited.");
-            }}
+
         } else if (isValidAll() && !btnUserAdd.isDisable()) {
-            if (radioProfesor.isSelected() && checkEmail(fldEmail.getText())) {
-                 pw=generisiPassword();
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Password");
-                alert.setHeaderText(null);
-                alert.setContentText("Password of user is, "+pw+"," + " this message will no longer be displayed once closed.");
+            try {
+                int a=daoUser.AddUserExist(fldUsername.getText(),fldJmbg.getText());
+                if (radioProfesor.isSelected() && checkEmail(fldEmail.getText())) {
+                    pw=generisiPassword();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Password");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Password of user is, "+pw+"," + " this message will no longer be displayed once closed.");
 
-                alert.showAndWait();
+                    alert.showAndWait();
 
-                daoUser.addUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), pw);
-                statusMsg.setText("User added.");
-            } else if (radioStudent.isSelected() && checkEmail(fldEmail.getText())) {
-              pw=generisiPassword();
+                    daoUser.addUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), pw);
+                    statusMsg.setText("User added.");
+                } else if (radioStudent.isSelected() && checkEmail(fldEmail.getText())) {
+                    pw=generisiPassword();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Password");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Password of user is, "+pw+"," + " this message will no longer be displayed once closed.");
+                    alert.showAndWait();
+                    statusMsg.setText("User added.");
+                    daoUser.addUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), pw);
+                }
+            } catch (ObjectAlredyExist objectAlredyExist) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Password");
+                alert.setTitle("Edit failed");
                 alert.setHeaderText(null);
-                alert.setContentText("Password of user is, "+pw+"," + " this message will no longer be displayed once closed.");
+                alert.setContentText("Sorry, add failed, this username or JMBG alredy exist");
                 alert.showAndWait();
-                statusMsg.setText("User added.");
-                daoUser.addUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), pw);
             }
+
 
 
         }
+
         if (!isValidAll() || !checkEmail(fldEmail.getText()) && (!btnUserAdd.isDisable() || !btnUserEdit.isDisable())){
             try {
                 throw new EmptyField("There is a filed that is invalid or empty");
