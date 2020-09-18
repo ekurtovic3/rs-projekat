@@ -1,13 +1,15 @@
 package ba.unsa.etf.rs.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Classroom {
+public class Classroom  implements Serializable {
      int id;
      String name;
     int capacity;
 
-
+    public Classroom() {
+    }
 
     public Classroom(int id, String name, int capacity) {
         this.id = id;

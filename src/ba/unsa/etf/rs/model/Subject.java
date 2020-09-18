@@ -1,12 +1,15 @@
 package ba.unsa.etf.rs.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Subject {
+public class Subject implements Serializable {
+
     String name;
 
-
+    public Subject() {
+    }
 
     public Subject(String name) {
         this.name = name;

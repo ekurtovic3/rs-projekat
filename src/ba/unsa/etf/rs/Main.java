@@ -42,11 +42,17 @@ public class Main extends Application {
 
 import ba.unsa.etf.rs.controller.StartScreenController;
 import ba.unsa.etf.rs.database.CountryDAO;
+import ba.unsa.etf.rs.database.XMLFormat;
+import ba.unsa.etf.rs.model.Subject;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
@@ -64,6 +70,11 @@ public class Main extends Application
         primaryStage.setTitle("Aplikacija za raspored casova");
         primaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
         primaryStage.show();
+
+
+
+
+
     }
 
 

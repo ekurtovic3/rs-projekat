@@ -58,7 +58,6 @@ public class AddSubjectController {
             stage.close();
         }
         else if(fldNameSubject.getStyleClass().contains("poljeIspravno")) {
-            System.out.println("Eror ");
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information dialog");
             alert.setHeaderText(null);

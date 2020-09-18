@@ -91,7 +91,7 @@ if(edit==true){
         }
          else if (!edit  && fldClassroomName.getStyleClass().contains("poljeIspravno") && fldCapacity.getStyleClass().contains("poljeIspravno"))
         {
-            System.out.println("Eror ");
+
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information dialog");
             alert.setHeaderText(null);

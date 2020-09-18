@@ -24,15 +24,24 @@
                     <menus>
                         <Menu text="_File">
                             <items>
-                                <MenuItem text="_Print" />
-                                <MenuItem text="_LogOut" />
+
+                                <Menu mnemonicParsing="true" text="_Print">
+
+                                    <items>
+                                        <MenuItem text="_Subject" />
+                                        <MenuItem text="Class_room" />
+
+                                    </items>
+                                </Menu>
+
                                 <MenuItem text="_Exit" />
 
                             </items>
                         </Menu>
+
                         <Menu text="_Help">
                             <items>
-                                <MenuItem text="_About" />
+                                <MenuItem onAction="#about" text="_About" />
                             </items>
                         </Menu>
                     </menus>

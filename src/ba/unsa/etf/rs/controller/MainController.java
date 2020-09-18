@@ -13,9 +13,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.json.simple.JSONObject;
@@ -42,6 +44,7 @@ public class MainController {
 
     public Label statusMsg;
     public Label lbYear;
+    public Menu menuLogOut;
     public ListView listViewSubjects;
     public ListView listViewUsers;
     public ListView listViewClassroom;
@@ -94,6 +97,7 @@ public class MainController {
     int day = LocalDate.now().getDayOfYear();
 
     private int year = 2020;
+    private Object StartScreenController;
 
 
     public MainController() throws SQLException {
@@ -809,7 +813,31 @@ public class MainController {
         return true;
 
     }
+    public void about(ActionEvent actionEvent) {
+        System.out.println("About");
+    }
+    public void logOut(ActionEvent actionEvent) {
 
+        Node n = (Node) actionEvent.getSource();
+        Stage stage = (Stage) n.getScene().getWindow();
+        Parent rootp = null;
+        try {
+            Stage myStage = new Stage();
+            FXMLLoader loader4 = new FXMLLoader(getClass().getResource("/fxml/startScreen.fxml"));
+            loader4.setController(new StartScreenController());
+            rootp = loader4.load();
+            StartScreenController = loader4.getController();
+            myStage.setScene(new Scene(rootp, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            myStage.setResizable(false);
+            myStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        stage.close();
+
+    }
     public User getTrenutniKorisnik() {
         return trenutniKorisnik.get();
     }

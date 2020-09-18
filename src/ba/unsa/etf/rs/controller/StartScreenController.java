@@ -61,6 +61,9 @@ public class StartScreenController implements Initializable {
         this.countryDao = countryDao;
     }
 
+    public StartScreenController() {
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         daoClass = ClassDAO.getInstance();
@@ -68,12 +71,11 @@ public class StartScreenController implements Initializable {
         daoProfessorToSubjectDAO = ProfessorToSubjectDAO.getInstance();
         daoSubject = SubjectDAO.getInstance();
         daoUser = UserDAO.getInstance();
-
+        countryDao=CountryDAO.getInstance();
 
         cbCountrySignIn.setItems(countryDao.getAllCountries());
         cbCountrySignIn.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue ov, Number value, Number new_value) {
-                System.out.println(cbCountrySignIn.getItems().get(new Integer(new_value.toString())));
                 Country currentlySelectedCountry = cbCountrySignIn.getItems().get(new Integer(new_value.toString()));
                 setCountriesIcon(currentlySelectedCountry);
 
@@ -260,7 +262,6 @@ public class StartScreenController implements Initializable {
             UserDAO.findUserLogIn(tfUsernameLogIn.getText(), tfPasswordLogIn.getText());
 
             int id = daoUser.findUserLogIn(tfUsernameLogIn.getText(), tfPasswordLogIn.getText());
-            System.out.println(id);
             Parent root = null;
             Stage myStage = new Stage();
             FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/mainform.fxml"));

@@ -4,7 +4,6 @@ import java.sql.Date;
 
 public class Student extends User {
     int index;
-    //ArrayList<Subject> predmeti;
 
     public Student(String name, String surname, String email, String jmbg, String username, Date dateOfBirth, int index) {
         super(name, surname, email, jmbg, username, dateOfBirth);
@@ -15,4 +14,5 @@ public class Student extends User {
 
         super(name, surname, email, jmbg, username, dateOfBirth);
     }
+
 }
