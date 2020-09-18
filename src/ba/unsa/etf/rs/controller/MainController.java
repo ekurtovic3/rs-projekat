@@ -895,7 +895,25 @@ public class MainController {
         this.trenutniDate.set(trenutniDate);
     }
 
-
+    public void setSubjectsTimetable(){
+        if(user instanceof Profesor){
+            try {
+                cbSubject.setItems(daoProfessorToSubjectDAO.getSubjectOfProfesor(daoUser.findUserID2(user.getJmbg())));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(user instanceof Student){
+            try {
+                cbSubject.setItems(daoProfessorToSubjectDAO.getSubjectsOfStudent(daoUser.findUserID2(user.getJmbg())));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            cbSubject.setItems(daoSubject.getAllSubjects());
+        }
+    }
 
 public void setSubjects(){
         if(user instanceof Profesor){
