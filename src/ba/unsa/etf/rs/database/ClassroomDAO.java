@@ -169,4 +169,18 @@ public class ClassroomDAO
         }
         return FXCollections.observableArrayList(result);
     }
+
+
+    public  ArrayList<Classroom> getAllClassroomsXML() {
+        ArrayList<Classroom> result = new ArrayList<>();
+        try {
+            ResultSet resultSet = selectClassrooms.executeQuery();
+            while (resultSet.next())
+                result.add(new Classroom(resultSet.getString(2), resultSet.getInt(3)));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

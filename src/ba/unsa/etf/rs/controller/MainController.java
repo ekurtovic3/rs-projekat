@@ -148,6 +148,8 @@ public class MainController {
 
     @FXML
     public void initialize() {
+
+
         cbSubject.setItems(daoSubject.getAllSubjects());
         cbClassroom.setItems(daoClassroom.getAllClassrooms());
 
@@ -347,13 +349,7 @@ public class MainController {
     }
 
     private boolean isValidAll() {
-        /*if (checkEmail(fldEmail.getText())) {
-            fldEmail.getStyleClass().removeAll("poljeNijeIspravno");
-            fldEmail.getStyleClass().add("poljeIspravno");
-        } else {
-            fldEmail.getStyleClass().removeAll("poljeIspravno");
-            fldEmail.getStyleClass().add("poljeNijeIspravno");
-        }*/
+
         if (  style(fldName) && style(fldSurname) && style(fldJmbg)  && style(fldUsername) && style(dpBirthday) && (radioProfesor.isSelected() || radioStudent.isSelected()))
             return true;
 
@@ -432,11 +428,9 @@ public class MainController {
                 ObservableList<Subject> s=daoSubject.getAllSubjects();
                 myStage.setOnHidden(event -> {
                     listViewSubjects.setItems(daoSubject.getAllSubjects());
-                    if (s.equals(daoSubject.getAllSubjects())) {
-                        statusMsg.setText("Subject not edited.");
-                    } else {
+
                         statusMsg.setText("Subject edited.");
-                    }
+
                 });
             } catch (IOException e) {
                 e.printStackTrace();
@@ -812,6 +806,16 @@ public class MainController {
         }
         return true;
 
+    }
+    public void printClassrooms(ActionEvent actionEvent) {
+
+        XMLFormat xml = new XMLFormat();
+        xml.zapisiXmlClassroom(daoClassroom.getAllClassroomsXML());
+    }
+    public void printSubjects(ActionEvent actionEvent) {
+
+        XMLFormat xml = new XMLFormat();
+        xml.zapisiXmlSuject(daoSubject.getAllSubjectsXML());
     }
     public void about(ActionEvent actionEvent) {
         System.out.println("About");

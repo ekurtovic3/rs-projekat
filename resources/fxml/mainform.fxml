@@ -28,8 +28,8 @@
                                 <Menu mnemonicParsing="true" text="_Print">
 
                                     <items>
-                                        <MenuItem text="_Subject" />
-                                        <MenuItem text="Class_room" />
+                                        <MenuItem text="_Subject" onAction="#printSubjects" />
+                                        <MenuItem text="Class_room" onAction="#printClassrooms"/>
 
                                     </items>
                                 </Menu>

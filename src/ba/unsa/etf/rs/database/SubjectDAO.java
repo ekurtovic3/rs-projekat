@@ -134,6 +134,20 @@ public class SubjectDAO
         }
         return FXCollections.observableArrayList(result);
     }
+
+
+    public ArrayList<Subject> getAllSubjectsXML() {
+        ArrayList<Subject> result = new ArrayList<>();
+        try {
+            ResultSet resultSet = selectSubjects.executeQuery();
+            while (resultSet.next())
+                result.add(new Subject(resultSet.getString(2)));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     public void deleteSubject(String s) {
         try {
             Subject ps= findSubject(s);
