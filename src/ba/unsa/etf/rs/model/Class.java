@@ -36,6 +36,9 @@ public class Class {
     Type type;
     Date Date;
 
+    public Class() {
+    }
+
     public Class(int id, int start, int end, int period, Classroom classroom, Subject subject, Type type, java.sql.Date date) {
         this.id = id;
         this.start = start;
