@@ -154,7 +154,7 @@ public class MainController {
     public void initialize() {
 
 
-      //  setSubjectsTimetable();
+        setSubjectsTimetable();
         cbClassroom.setItems(daoClassroom.getAllClassrooms());
         statusMsg.setText("Program started...");
         if (user instanceof Student) {
@@ -761,7 +761,7 @@ public class MainController {
                 Parent root = null;
                 Stage myStage = new Stage();
                 FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/timetable.fxml"));
-                loader3.setController(new ClassController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, (Classroom) cbClassroom.getValue(), (Subject) cbSubject.getValue(), Date.valueOf((LocalDate) listViewCalendar.getSelectionModel().getSelectedItem())));
+                loader3.setController(new ClassController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, (Classroom) cbClassroom.getValue(), (Subject) cbSubject.getValue(), Date.valueOf((LocalDate) listViewCalendar.getSelectionModel().getSelectedItem()),user));
                 root = loader3.load();
                 ClassController = loader3.getController();
                 myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));

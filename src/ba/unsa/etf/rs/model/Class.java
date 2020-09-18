@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public class Class {
 
     public enum Type{
-        Tutorijal("Tutorijal"), Exercises("Exercises"), Lectures("Lectures");
+        Tutorial("Tutorial"), Exercises("Exercises"), Lectures("Lectures");
 
 
         private final String name;
@@ -123,6 +123,6 @@ public class Class {
 
     @Override
     public String toString() {
-        return  start+":00-"+end+":00"+" "+classroom.toString()+" "+type.name;
+        return  subject.getName()+" "+start+":00-"+end+":00"+" "+classroom.getName()+" "+type.name;
     }
 }

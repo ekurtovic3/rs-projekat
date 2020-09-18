@@ -3,23 +3,17 @@ package ba.unsa.etf.rs.controller;
 import ba.unsa.etf.rs.database.*;
 import ba.unsa.etf.rs.model.*;
 import ba.unsa.etf.rs.model.Class;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Calendar;
-
-import static ba.unsa.etf.rs.model.Class.Type.Lectures;
-import static ba.unsa.etf.rs.model.Class.Type.Tutorijal;
 
 public class ClassController {
     public ListView<Class> listViewClass;
@@ -45,11 +39,12 @@ public class ClassController {
     private Classroom classroom;
     private Subject subject;
     private Date date;
+    private User user=null;
 
     private SimpleObjectProperty<Class> trenutniClass = new SimpleObjectProperty<>();
     Calendar cal = Calendar.getInstance();
 
-    public ClassController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Classroom classroom, Subject subject, Date selectedItem) {
+    public ClassController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Classroom classroom, Subject subject, Date selectedItem,User user) {
         this.daoClass = daoClass;
         this.daoClassroom = daoClassroom;
         this.daoProfessorToSubjectDAO = daoProfessorToSubjectDAO;
@@ -58,12 +53,21 @@ public class ClassController {
         this.classroom = classroom;
         this.subject = subject;
         this.date = selectedItem;
+        this.user=user;
     }
 
 
     @FXML
-    public void initialize() {
-
+    public void initialize() throws SQLException {
+        if (user instanceof Profesor){
+            choiceSubject.setItems(daoProfessorToSubjectDAO.getSubjectOfProfesor(daoUser.findUserID2(user.getJmbg())));
+        }
+        else if   (user instanceof Student){
+            btnClassAdd.setDisable(true);
+            btnClassDelete.setDisable(true);
+            btnClassEdit.setDisable(true);
+       }
+           else if (user instanceof Admin) System.out.println("Logovao se admin");
 spPeriod.setVisible(false);
         lbPeriod.setVisible(false);
         ObservableList<Class> result = daoClass.initializeClass(date, classroom, subject);
@@ -172,7 +176,7 @@ spPeriod.setVisible(false);
             btnClassAdd.setDisable(false);
             btnClassDelete.setDisable(false);
 
-        } else if (!btnClassAdd.isDisable()) {
+        } else if (!btnClassAdd.isDisable() ) {
             msgStatus.setText("Class added.");
             btnClassDelete.setDisable(false);
             btnClassEdit.setDisable(false);
@@ -184,8 +188,16 @@ spPeriod.setVisible(false);
             for (i=0;i<=spPeriod.getValue();i++){
                 LocalDate today = LocalDate.now();
                 today = today.plus(i, ChronoUnit.WEEKS);
-                if(daoClass.isClassFree(Date.valueOf(today),classroom,subject,spStart.getValue())) {
-                    daoClass.addClass(new Class(spStart.getValue(), spStart.getValue() + 1, spPeriod.getValue(), classroom, subject, choiceType.getValue(), Date.valueOf(today)));
+                if(choiceSubject.getSelectionModel().getSelectedItem()==null || choiceType.getSelectionModel().getSelectedItem()==null || choiceClassroom.getSelectionModel().getSelectedItem()==null){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information Dialog");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Some fields are empty, please try again!");
+                    alert.showAndWait();
+                    msgStatus.setText("Class not added.");
+                }
+               else if(daoClass.isClassFree(Date.valueOf(today),choiceClassroom.getValue(),choiceSubject.getValue(),spStart.getValue())) {
+                    daoClass.addClass(new Class(spStart.getValue(), spStart.getValue() + 1, spPeriod.getValue(), choiceClassroom.getValue(), choiceSubject.getValue(), choiceType.getValue(), Date.valueOf(today)));
 
                 }
                 else {
