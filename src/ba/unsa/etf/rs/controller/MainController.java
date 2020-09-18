@@ -64,13 +64,17 @@ public class MainController {
     public Button btnUserAdd;
     public Button btnUserEdit;
     public Button btnUserDelete;
+    public Button btnSubjectAdd;
+    public Button btnSubjectEdit;
+    public Button btnSubjectDelete;
+    public Button  btnSreach;
     public ChoiceBox cbSubject;
     public ChoiceBox cbClassroom;
     public Tab timetable;
-    public Button  btnSreach;
     public Tab tbUsers;
     public Tab tbClassrooms;
     public Tab tbSubjects;
+
     private ClassDAO daoClass;
     private ClassroomDAO daoClassroom;
     private ProfessorToSubjectDAO daoProfessorToSubjectDAO;
@@ -150,10 +154,8 @@ public class MainController {
     public void initialize() {
 
 
-        cbSubject.setItems(daoSubject.getAllSubjects());
+      //  setSubjectsTimetable();
         cbClassroom.setItems(daoClassroom.getAllClassrooms());
-
-       // timetable.setDisable(true);
         statusMsg.setText("Program started...");
         if (user instanceof Student) {
             tbClassrooms.setDisable(true);
@@ -163,14 +165,17 @@ public class MainController {
         if (user instanceof Profesor){
             tbClassrooms.setDisable(true);
             tbUsers.setDisable(true);
+          btnSubjectAdd.setDisable(true);
+          btnSubjectDelete.setDisable(true);
         }
-        if (user instanceof Admin) System.out.println("Logovan kao admin");
+        if (user instanceof Admin)
+        {System.out.println("Logovan kao admin");}
 
         lbYear.setText(String.valueOf(year));
         setLvCalendar();
         btnCancelUser.setDisable(true);
         btnConfirmUser.setDisable(true);
-        listViewSubjects.setItems(daoSubject.getAllSubjects());
+        setSubjects();// listViewSubjects.setItems(daoSubject.getAllSubjects());
         listViewUsers.setItems(daoUser.getAllUsers());
         radioAllUsers.setSelected(true);
         listViewClassroom.setItems(daoClassroom.getAllClassrooms());
@@ -397,7 +402,7 @@ public class MainController {
             myStage.setOnHiding(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent windowEvent) {
-                    listViewSubjects.setItems(daoSubject.getAllSubjects());
+                    setSubjects();// listViewSubjects.setItems(daoSubject.getAllSubjects());
                     if (s != daoSubject.getAllSubjects().size()) {
                         statusMsg.setText("Subject added.");
                     } else {
@@ -427,7 +432,7 @@ public class MainController {
                 myStage.show();
                 ObservableList<Subject> s=daoSubject.getAllSubjects();
                 myStage.setOnHidden(event -> {
-                    listViewSubjects.setItems(daoSubject.getAllSubjects());
+                 setSubjects();//   listViewSubjects.setItems(daoSubject.getAllSubjects());
 
                         statusMsg.setText("Subject edited.");
 
@@ -442,7 +447,7 @@ public class MainController {
         if (getTrenutniSubject() != null) {
             Subject pom = (Subject) listViewSubjects.getSelectionModel().getSelectedItem();
             daoSubject.deleteSubject(((Subject) listViewSubjects.getSelectionModel().getSelectedItem()).getName());
-            listViewSubjects.setItems(daoSubject.getAllSubjects());
+           setSubjects();// listViewSubjects.setItems(daoSubject.getAllSubjects());
             statusMsg.setText("Subject deleted.");
 
         }
@@ -891,4 +896,24 @@ public class MainController {
     }
 
 
+
+public void setSubjects(){
+        if(user instanceof Profesor){
+            try {
+                listViewSubjects.setItems(daoProfessorToSubjectDAO.getSubjectOfProfesor(daoUser.findUserID2(user.getJmbg())));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(user instanceof Student){
+            try {
+                listViewSubjects.setItems(daoProfessorToSubjectDAO.getSubjectsOfStudent(daoUser.findUserID2(user.getJmbg())));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            listViewSubjects.setItems(daoSubject.getAllSubjects());
+        }
+}
 }

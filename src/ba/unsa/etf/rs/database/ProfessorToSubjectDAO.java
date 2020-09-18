@@ -23,11 +23,12 @@ public class ProfessorToSubjectDAO
         instance = new ProfessorToSubjectDAO();
     }
 
-    private PreparedStatement addProfesorToSubject,deleteProfesorToSubject,selectProfesorsForAdd,selectProfesorsOfSubject;
+    private PreparedStatement addProfesorToSubject,deleteProfesorToSubject,selectProfesorsForAdd,selectProfesorsOfSubject,selectProfesorsSubject;
 
     private ProfessorToSubjectDAO()
     {
         try {
+            selectProfesorsSubject= datConn.getConnection().prepareStatement("SELECT ids FROM ProfesorSubject Where idp=?");
             selectProfesorsOfSubject = datConn.getConnection().prepareStatement("SELECT idp FROM ProfesorSubject Where ids=?");
             selectProfesorsForAdd = datConn.getConnection().prepareStatement("SELECT idp FROM ProfesorSubject where  ids!=?");
             addProfesorToSubject = datConn.getConnection().prepareStatement("INSERT INTO ProfesorSubject VALUES(?,?)");
@@ -54,7 +55,7 @@ public class ProfessorToSubjectDAO
     }
 
     //METHODS
-    public ObservableList<User> getProfesorsOfSubject(Subject subject) throws SQLException {
+    public ObservableList<User> getUsersOfSubject(Subject subject) throws SQLException {
         selectProfesorsOfSubject.setInt(1,daoSubject.findSubjectID(subject.getName()));
         ArrayList<User> result = new ArrayList<>();
         try {
@@ -67,7 +68,35 @@ public class ProfessorToSubjectDAO
             e.printStackTrace();
         }
         return FXCollections.observableArrayList(result);
-    }/*
+    }
+    public ObservableList<Subject> getSubjectsOfStudent(int ids) throws SQLException {
+        selectProfesorsOfSubject.setInt(1,ids);
+        ArrayList<Subject> result = new ArrayList<>();
+        try {
+            ResultSet resultSet = selectProfesorsOfSubject.executeQuery();
+            while (resultSet.next()){
+                result.add(daoSubject.findSubjectByID2(resultSet.getInt(1)));}
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return FXCollections.observableArrayList(result);
+    }
+    public ObservableList<Subject> getSubjectOfProfesor(int idp) throws SQLException {
+        selectProfesorsSubject.setInt(1,idp);
+        ArrayList<Subject> result = new ArrayList<>();
+        try {
+            ResultSet resultSet = selectProfesorsSubject.executeQuery();
+            while (resultSet.next()){
+                System.out.println(daoSubject.findSubjectByID2(resultSet.getInt(1)));
+                result.add(daoSubject.findSubjectByID2(resultSet.getInt(1)));}
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return FXCollections.observableArrayList(result);
+    }
+    /*
     public ObservableList<Profesor> getProfesorsForAdd(Subject subject) throws SQLException {
         //  ArrayList<Profesor> result = new ArrayList<>();
         ObservableList<Profesor> allProfesors= UserDAO.getAllProfesors();

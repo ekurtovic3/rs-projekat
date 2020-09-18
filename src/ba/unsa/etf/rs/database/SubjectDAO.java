@@ -20,12 +20,12 @@ public class SubjectDAO
         instance = new SubjectDAO();
     }
 
-    private static PreparedStatement selectSubjects, addSubjectQuery, findSubjectQuery, findMaxIDSubject, deleteSubject;
+    private static PreparedStatement selectSubjects, addSubjectQuery, findSubjectQuery, findMaxIDSubject, deleteSubject,findSubjectByIDQuery;
 
     private SubjectDAO()
     {
         try
-        {
+        {   findSubjectByIDQuery= datConn.getConnection().prepareStatement("SELECT name FROM Subject WHERE id = ?");
             selectSubjects = datConn.getConnection().prepareStatement("SELECT * FROM Subject");
             addSubjectQuery = datConn.getConnection().prepareStatement("INSERT INTO Subject values (?,?)");
             findSubjectQuery = datConn.getConnection().prepareStatement("SELECT * FROM Subject WHERE name = ?");
@@ -53,30 +53,21 @@ public class SubjectDAO
     }
 
     //METHODS
-    public void defaultSubject() {
-        addSubject(new Subject("Fizika"));
-        addSubject(new Subject("Matematika"));
-        addSubject(new Subject("asd"));
 
-    }
-    public void TESTdeleteSubject() {
-        deleteSubject("Fizika");
-        deleteSubject("Matematika");
-        deleteSubject("asd");
-    }
     public Subject findSubject(String subjectName) {
-        Subject result = null;
-        try {
-            findSubjectQuery.setString(1,subjectName);
-            ResultSet resultSet = findSubjectQuery.executeQuery();
-            while (resultSet.next())
-                result = new Subject(resultSet.getString(2));
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return result;
+    Subject result = null;
+    try {
+        findSubjectQuery.setString(1,subjectName);
+        ResultSet resultSet = findSubjectQuery.executeQuery();
+        while (resultSet.next())
+            result = new Subject(resultSet.getString(2));
     }
+    catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return result;
+}
+
     public  int findSubjectID(String subjectName) {
         int result=0;
         try {
@@ -106,14 +97,11 @@ public class SubjectDAO
 
     public boolean addSubject(Subject sub) {
         try  {
-            //Subject s = findSubject(sub.getName());
             ID = findMaxIDSubject() + 1;
             int subjectID = ID;
-            //   sub.setId(subjectID);
             addSubjectQuery.setInt(1,subjectID);
             addSubjectQuery.setString(2, sub.getName());
             addSubjectQuery.executeUpdate();
-            //    System.out.println(sub.getName() + " " + ID);
             return true;
         }
         catch (SQLException e) {
@@ -166,6 +154,19 @@ public class SubjectDAO
             ResultSet resultSet = findSubjectQuery.executeQuery();
             while (resultSet.next())
                 result = new Subject(resultSet.getString(2));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public  Subject findSubjectByID2(int id) {
+        Subject result = null;
+        try {
+            findSubjectByIDQuery.setInt(1,id);
+            ResultSet resultSet = findSubjectByIDQuery.executeQuery();
+            while (resultSet.next())
+                result = new Subject(resultSet.getString(1));
         }
         catch (SQLException e) {
             e.printStackTrace();

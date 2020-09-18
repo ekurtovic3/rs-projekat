@@ -1,8 +1,6 @@
 package ba.unsa.etf.rs.controller;
 
 import ba.unsa.etf.rs.database.*;
-import ba.unsa.etf.rs.model.Profesor;
-import ba.unsa.etf.rs.model.Student;
 import ba.unsa.etf.rs.model.Subject;
 import ba.unsa.etf.rs.model.User;
 import javafx.beans.property.SimpleObjectProperty;
@@ -42,7 +40,7 @@ public class SubjectController {
     @FXML
     public void initialize() {
         try {
-            profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getProfesorsOfSubject(subject));
+            profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getUsersOfSubject(subject));
             fldSubjectName.setText(subject.toString());
 
         } catch (SQLException e) {
@@ -69,7 +67,7 @@ public class SubjectController {
                 i1.setOnAction(event -> {
                     try {
                         daoProfessorToSubjectDAO.addProfesorToSubject(daoUser.findUserID(p.getJmbg()), daoSubject.findSubjectID(subject.getName()));
-                        profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getProfesorsOfSubject(subject));
+                        profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getUsersOfSubject(subject));
                         mbtnAddProfesor.getItems().remove(i1);
 
                     } catch (SQLException e) {
@@ -78,7 +76,7 @@ public class SubjectController {
 
                 });
                     if(!profesorsOfSubject.getItems().contains(p)) {
-                        System.out.println("OVOG nema "+p);
+
                     mbtnAddProfesor.getItems().add(i1);}
 
             }
@@ -94,14 +92,14 @@ public class SubjectController {
             i1.setOnAction(event -> {
                 try {
                     daoProfessorToSubjectDAO.addProfesorToSubject(daoUser.findUserID(p.getJmbg()), daoSubject.findSubjectID(subject.getName()));
-                    profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getProfesorsOfSubject(subject));
+                    profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getUsersOfSubject(subject));
                     mbtnAddStudent.getItems().remove(i1);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             });
             try {
-                if(!daoProfessorToSubjectDAO.getProfesorsOfSubject(subject).contains(p)) {
+                if(!daoProfessorToSubjectDAO.getUsersOfSubject(subject).contains(p)) {
                     mbtnAddStudent.getItems().add(i1);}
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -119,7 +117,7 @@ public class SubjectController {
             setTrenutniProfesor(null);
             setProf();
             try {
-                profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getProfesorsOfSubject(subject));
+                profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getUsersOfSubject(subject));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
