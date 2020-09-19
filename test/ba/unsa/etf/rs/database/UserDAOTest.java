@@ -3,6 +3,7 @@ package ba.unsa.etf.rs.database;
 import ba.unsa.etf.rs.model.Profesor;
 import ba.unsa.etf.rs.model.Subject;
 import ba.unsa.etf.rs.model.User;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Date;
@@ -62,7 +63,7 @@ class UserDAOTest {
         assertEquals("ekurtovic3@gmail.com",m.getAllUsers().get(2).getEmail());
         assertEquals(3,m.findUserID2("0404998170021"));
     }
-    @Test
+     @Test
     void findUserByID() {
         UserDAO m = UserDAO.getInstance();
         m.clearAll();

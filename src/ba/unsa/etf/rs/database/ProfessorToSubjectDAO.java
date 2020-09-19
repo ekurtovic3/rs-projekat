@@ -1,13 +1,17 @@
 package ba.unsa.etf.rs.database;
 
+import ba.unsa.etf.rs.model.Class;
+import ba.unsa.etf.rs.model.Classroom;
 import ba.unsa.etf.rs.model.Subject;
 import ba.unsa.etf.rs.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class ProfessorToSubjectDAO
@@ -15,6 +19,8 @@ public class ProfessorToSubjectDAO
     private static ProfessorToSubjectDAO instance = null;
     private DatabaseConnection datConn;
     private SubjectDAO daoSubject=SubjectDAO.getInstance();
+    private ClassroomDAO daoClassroom=ClassroomDAO.getInstance();
+
     private static void initialize()
     {
         instance = new ProfessorToSubjectDAO();
@@ -126,5 +132,27 @@ public class ProfessorToSubjectDAO
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void clearAll() {
+        try {
+            PreparedStatement DeleteAll = datConn.getConnection().prepareStatement("Delete FROM ProfesorSubject ");
+            DeleteAll.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    public void defaultData() {
+        daoSubject.clearAll();
+        daoSubject.defaultData();
+        daoClassroom.clearAll();
+        daoClassroom.defaultData();
+        addProfesorToSubject(2,1);
+        addProfesorToSubject(2,2);
+        addProfesorToSubject(3,1);
+        addProfesorToSubject(3,2);
+
     }
 }

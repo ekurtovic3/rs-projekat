@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class ClassDAO
@@ -25,13 +26,12 @@ public class ClassDAO
         instance = new ClassDAO();
     }
 
-    private  static PreparedStatement initializeClassQuery,selectClass, findMaxIDClass, addClassQuery, findClassQuery, deleteClass,updateClass,isClassFree;
+    private  static PreparedStatement selectClass,initializeClassQuery, findMaxIDClass, addClassQuery, findClassQuery, deleteClass,updateClass,isClassFree;
 
     private ClassDAO()
     {
         try
         {
-
             initializeClassQuery=datConn.getConnection().prepareStatement("SELECT * FROM Class WHERE date=? AND Classroom=? AND Subject=?");
             selectClass = datConn.getConnection().prepareStatement("SELECT * FROM Class");
             findMaxIDClass= datConn.getConnection().prepareStatement("SELECT max(id) FROM Class");
@@ -100,7 +100,7 @@ public class ClassDAO
         }
     }
 
-    public Class findClass(int id) {
+    public  Class findClass(int id) {
         Class result = null;
         try {
             findClassQuery.setInt(1,id);
@@ -108,8 +108,8 @@ public class ClassDAO
             while (resultSet.next()) {
                 Class.Type vrsta = Class.Type.values()[resultSet.getInt(7)];
                 result = new Class(resultSet.getInt(1),resultSet.getInt(2), resultSet.getInt(3),
-                        resultSet.getInt(4), ClassroomDAO.findClassroomByID(resultSet.getInt(5)),
-                        SubjectDAO.findSubjectByID(resultSet.getInt(6)), vrsta, resultSet.getDate(8));
+                        resultSet.getInt(4), daoClassroom.findClassroomByID(resultSet.getInt(5)),
+                        daoSubject.findSubjectByID(resultSet.getInt(6)), vrsta, resultSet.getDate(8));
             }}
         catch (SQLException e) {
             e.printStackTrace();
@@ -128,6 +128,22 @@ public class ClassDAO
                 result.add( new Class(resultSet.getInt(1),resultSet.getInt(2), resultSet.getInt(3),
                         resultSet.getInt(4), classroom,
                         subject, vrsta, resultSet.getDate(8))) ;
+            }}
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return FXCollections.observableArrayList(result);
+    }
+    public ObservableList<Class> getAllClass() {
+        ArrayList<Class> result = new ArrayList<>();
+        try {
+
+            ResultSet resultSet = selectClass.executeQuery();
+            while (resultSet.next()) {
+                Class.Type vrsta = Class.Type.values()[resultSet.getInt(7)];
+                result.add( new Class(resultSet.getInt(1),resultSet.getInt(2), resultSet.getInt(3),
+                        resultSet.getInt(4), daoClassroom.findClassroomByID(resultSet.getInt(5)),
+                        daoSubject.findSubjectByID2(resultSet.getInt(6)), vrsta, resultSet.getDate(8))) ;
             }}
         catch (SQLException e) {
             e.printStackTrace();
@@ -177,5 +193,34 @@ public class ClassDAO
         }
 
 
+    }
+
+    public void clearAll() {
+        try {
+            PreparedStatement DeleteAll = datConn.getConnection().prepareStatement("Delete FROM Class ");
+            DeleteAll.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    public void defaultData() {
+        daoSubject.clearAll();
+        daoClassroom.clearAll();
+        daoSubject.addSubject(new Subject("UUP"));
+        daoSubject.addSubject(new Subject("RPR"));
+        daoSubject.addSubject(new Subject("RS"));
+
+       daoClassroom.addClassroom(new Classroom("0-1",10));
+        daoClassroom.addClassroom(new Classroom("0-2",10));
+        daoClassroom.addClassroom(new Classroom("VA",50));
+        Class aclass1=new Class(12,13,0,new Classroom("0-1",10),new Subject("UUP"), Class.Type.Exercises, Date.valueOf(LocalDate.now()));
+        Class aclass2=new Class(13,14,0,new Classroom("0-2",10),new Subject("UUP"), Class.Type.Lectures, Date.valueOf(LocalDate.now()));
+        Class aclass3=new Class(8,9,0,new Classroom("VA",10),new Subject("RS"), Class.Type.Tutorial, Date.valueOf(LocalDate.now()));
+
+        addClass(aclass1);
+        addClass(aclass2);
+        addClass(aclass3);
     }
 }
