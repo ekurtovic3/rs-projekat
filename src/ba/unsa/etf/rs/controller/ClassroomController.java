@@ -11,18 +11,18 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class addClassroomController {
+public class ClassroomController {
     public TextField fldClassroomName;
     public TextField fldCapacity;
     private ClassroomDAO daoClassroom;
     private boolean ok=false;
 public boolean edit=false;
 public Classroom classroom=null;
-    public addClassroomController(ClassroomDAO daoClassroom) {
+    public ClassroomController(ClassroomDAO daoClassroom) {
 this.daoClassroom=daoClassroom;
     }
 
-    public addClassroomController(ClassroomDAO daoClassroom, Classroom trenutniClassroom) {
+    public ClassroomController(ClassroomDAO daoClassroom, Classroom trenutniClassroom) {
         this.daoClassroom=daoClassroom;
         this.classroom=trenutniClassroom;
         edit=true;

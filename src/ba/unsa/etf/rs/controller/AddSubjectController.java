@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -17,7 +18,9 @@ public class AddSubjectController {
 
     public  boolean ok=false;
     public TextField fldNameSubject;
-  private SubjectDAO daoSubject;
+    public Button btnCancelSubject;
+    public Button btnConfirmSubject;
+    private SubjectDAO daoSubject;
 
 
     public AddSubjectController() {

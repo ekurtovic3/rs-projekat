@@ -2,7 +2,6 @@ package ba.unsa.etf.rs.controller;
 
 import ba.unsa.etf.rs.database.*;
 import ba.unsa.etf.rs.exceptions.EmptyField;
-import ba.unsa.etf.rs.exceptions.InvalidParam;
 import ba.unsa.etf.rs.exceptions.ObjectAlredyExist;
 import ba.unsa.etf.rs.model.*;
 import javafx.beans.property.SimpleObjectProperty;
@@ -17,21 +16,15 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -640,7 +633,7 @@ public class MainController {
             Parent root = null;
             Stage myStage = new Stage();
             FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/classroom.fxml"));
-            loader3.setController(new addClassroomController(daoClassroom));
+            loader3.setController(new ClassroomController(daoClassroom));
             root = loader3.load();
             addClassroomController = loader3.getController();
             myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
@@ -669,7 +662,7 @@ public class MainController {
             Parent root = null;
             Stage myStage = new Stage();
             FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/classroom.fxml"));
-            loader3.setController(new addClassroomController(daoClassroom,getTrenutniClassroom()));
+            loader3.setController(new ClassroomController(daoClassroom,getTrenutniClassroom()));
             root = loader3.load();
             addClassroomController = loader3.getController();
             myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
