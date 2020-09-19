@@ -2,10 +2,7 @@ package ba.unsa.etf.rs.database;
 
 import ba.unsa.etf.rs.exceptions.InvalidParam;
 import ba.unsa.etf.rs.exceptions.ObjectAlredyExist;
-import ba.unsa.etf.rs.model.Admin;
-import ba.unsa.etf.rs.model.Profesor;
-import ba.unsa.etf.rs.model.Student;
-import ba.unsa.etf.rs.model.User;
+import ba.unsa.etf.rs.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
@@ -80,9 +77,8 @@ public class UserDAO
         return FXCollections.observableArrayList(result);
     }
 
-    public static void UpdateUser(@NotNull User user){
+    public  void UpdateUser(@NotNull User user){
         try {
-            System.out.println("Dosao u fun update");
             updateUser.setString(1, user.getName());
             updateUser.setString(2, user.getSurname());
             updateUser.setString(3, user.getEmail());
@@ -99,6 +95,7 @@ public class UserDAO
             e.printStackTrace();
         }
     }
+
 
     public static boolean addUser(User s,String pass) {
         try  {
@@ -323,5 +320,21 @@ else  if(resultSet.getInt(8) ==0) { result.add(new Admin(resultSet.getString(2),
             e.printStackTrace();
         }
         return result;
+    }
+    public void clearAll() {
+        try {
+            PreparedStatement DeleteAll = datConn.getConnection().prepareStatement("Delete FROM User ");
+            DeleteAll.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+public void defaultData() {
+        addUser(new Admin("Vedran","Ljubovic","evedram@gmail.com","0202995170029","admin", Date.valueOf(LocalDate.of(1995,2,2))),"admin");
+    addUser(new Profesor("Dzan","Tabakovic","tabak@gmail.com","0505995170021","profesor", Date.valueOf(LocalDate.of(1995,5,5))),"profesor");
+    addUser(new Profesor("Emir","Kurtovic","ekurtovic3@etf.unsa.ba","0404998170021","student", Date.valueOf(LocalDate.of(1998,4,4))),"student");
+
     }
 }

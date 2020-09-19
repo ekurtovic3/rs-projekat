@@ -1,9 +1,6 @@
 package ba.unsa.etf.rs.database;
 
-import ba.unsa.etf.rs.model.Classroom;
-import ba.unsa.etf.rs.model.Profesor;
-import ba.unsa.etf.rs.model.Student;
-import ba.unsa.etf.rs.model.User;
+import ba.unsa.etf.rs.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -182,5 +179,22 @@ public class ClassroomDAO
             e.printStackTrace();
         }
         return result;
+    }
+    public void clearAll() {
+        try {
+            PreparedStatement DeleteAll = datConn.getConnection().prepareStatement("Delete FROM Classroom ");
+            DeleteAll.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public void defaultData() {
+        addClassroom(new Classroom("0-1",10));
+        addClassroom(new Classroom("0-2",10));
+        addClassroom(new Classroom("VA",50));
+
     }
 }

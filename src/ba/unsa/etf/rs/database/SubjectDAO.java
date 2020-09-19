@@ -173,4 +173,21 @@ public class SubjectDAO
         }
         return result;
     }
+    public void clearAll() {
+        try {
+            PreparedStatement DeleteAll = datConn.getConnection().prepareStatement("Delete FROM Subject ");
+            DeleteAll.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public void defaultData() {
+        addSubject(new Subject("UUP"));
+        addSubject(new Subject("RPR"));
+        addSubject(new Subject("RS"));
+
+    }
 }
