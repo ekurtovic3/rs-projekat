@@ -67,7 +67,7 @@ public class Main extends Application
 
         loader.setController(new StartScreenController(countryDao));
         Parent root = loader.load();
-        primaryStage.setTitle("Aplikacija za raspored casova");
+        primaryStage.setTitle("");
         primaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
         primaryStage.show();
 
