@@ -431,7 +431,7 @@ public class MainController {
             try {
                 Stage myStage = new Stage();
                 FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/subject.fxml"));
-                loader2.setController(new SubjectController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, (Subject) listViewSubjects.getSelectionModel().getSelectedItem()));
+                loader2.setController(new SubjectController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, (Subject) listViewSubjects.getSelectionModel().getSelectedItem(),user));
                 root = loader2.load();
                 SubjectController = loader2.getController();
                 myStage.setTitle("Editing a subject");

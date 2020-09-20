@@ -228,7 +228,7 @@ class MainControllerTest {
         robot.clickOn("Profesor");
         robot.clickOn("Confirm");
         try {
-            Thread.sleep(600);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -502,7 +502,7 @@ class MainControllerTest {
         robot.press(KeyCode.ENTER).release(KeyCode.ENTER);
 
         assertEquals(3,daoUser.getAllUsers().size());
-assertEquals("Edit Editing tabak@gmail.com",daoUser.getAllUsers().get(1).toString());
+assertEquals("Edit Editing",daoUser.getAllUsers().get(1).toString());
         Button btn = robot.lookup("#btnSreach").queryAs(Button.class);
         Platform.runLater( () -> {
             Stage stage = (Stage) btn.getScene().getWindow();
@@ -558,7 +558,7 @@ assertEquals("Edit Editing tabak@gmail.com",daoUser.getAllUsers().get(1).toStrin
         robot.press(KeyCode.ENTER).release(KeyCode.ENTER);
 
         assertEquals(3,daoUser.getAllUsers().size());
-        assertEquals("Dzan Tabakovic tabak@gmail.com",daoUser.getAllUsers().get(1).toString());
+        assertEquals("Dzan Tabakovic",daoUser.getAllUsers().get(1).toString());
         Button btn = robot.lookup("#btnSreach").queryAs(Button.class);
         Platform.runLater( () -> {
             Stage stage = (Stage) btn.getScene().getWindow();
@@ -616,7 +616,7 @@ assertEquals("Edit Editing tabak@gmail.com",daoUser.getAllUsers().get(1).toStrin
         robot.press(KeyCode.ENTER).release(KeyCode.ENTER);
 
         assertEquals(3,daoUser.getAllUsers().size());
-        assertEquals("Dzan Tabakovic tabak@gmail.com",daoUser.getAllUsers().get(1).toString());
+        assertEquals("Dzan Tabakovic",daoUser.getAllUsers().get(1).toString());
         Button btn = robot.lookup("#btnSreach").queryAs(Button.class);
         Platform.runLater( () -> {
             Stage stage = (Stage) btn.getScene().getWindow();
@@ -661,7 +661,7 @@ assertEquals("Edit Editing tabak@gmail.com",daoUser.getAllUsers().get(1).toStrin
         robot.press(KeyCode.ENTER).release(KeyCode.ENTER);
 
         assertEquals(2,daoUser.getAllUsers().size());
-        assertNotEquals("Dzan Tabakovic tabak@gmail.com",daoUser.getAllUsers().get(1).toString());
+        assertNotEquals("Dzan Tabakovic",daoUser.getAllUsers().get(1).toString());
         Button btn = robot.lookup("#btnSreach").queryAs(Button.class);
         Platform.runLater( () -> {
             Stage stage = (Stage) btn.getScene().getWindow();
@@ -706,7 +706,7 @@ assertEquals("Edit Editing tabak@gmail.com",daoUser.getAllUsers().get(1).toStrin
         robot.press(KeyCode.ENTER).release(KeyCode.ENTER);
 
         assertEquals(3,daoUser.getAllUsers().size());
-        assertEquals("Dzan Tabakovic tabak@gmail.com",daoUser.getAllUsers().get(1).toString());
+        assertEquals("Dzan Tabakovic",daoUser.getAllUsers().get(1).toString());
         Button btn = robot.lookup("#btnSreach").queryAs(Button.class);
         Platform.runLater( () -> {
             Stage stage = (Stage) btn.getScene().getWindow();

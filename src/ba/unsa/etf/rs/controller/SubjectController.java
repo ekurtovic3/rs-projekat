@@ -1,6 +1,7 @@
 package ba.unsa.etf.rs.controller;
 
 import ba.unsa.etf.rs.database.*;
+import ba.unsa.etf.rs.model.Profesor;
 import ba.unsa.etf.rs.model.Subject;
 import ba.unsa.etf.rs.model.User;
 import javafx.beans.property.SimpleObjectProperty;
@@ -29,6 +30,7 @@ public class SubjectController
     private  ProfessorToSubjectDAO daoDaoProfessorToSubject=ProfessorToSubjectDAO.getInstance();
     private SimpleObjectProperty<User> trenutniProfesor = new SimpleObjectProperty<>();
 
+
     public SubjectController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Subject selectedItem) {
         this.subject=selectedItem;
         this.daoClass=daoClass;
@@ -36,6 +38,17 @@ public class SubjectController
         this.daoProfessorToSubjectDAO=daoProfessorToSubjectDAO;
         this.daoSubject=daoSubject;
         this.daoUser=daoUser;
+
+    }
+
+    public SubjectController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Subject selectedItem,User user) {
+        this.subject=selectedItem;
+        this.daoClass=daoClass;
+        this.daoClassroom=daoClassroom;
+        this.daoProfessorToSubjectDAO=daoProfessorToSubjectDAO;
+        this.daoSubject=daoSubject;
+        this.daoUser=daoUser;
+        this.user=user;
     }
 
 
@@ -58,6 +71,7 @@ public class SubjectController
 
         setProf();
         setStud();
+        if (user instanceof Profesor) mbtnAddProfesor.setDisable(true);
     }
 
 
@@ -123,10 +137,20 @@ public class SubjectController
     {
         if (getTrenutniProfesor() != null)
         {
-            int idP = daoUser.findUserID(getTrenutniProfesor().getJmbg());
-            int idS = daoSubject.findSubjectID(subject.getName());
-            daoProfessorToSubjectDAO.deleteProfesorToSubject(idP, idS);
-            setTrenutniProfesor(null);
+            if(getTrenutniProfesor() instanceof Profesor && user instanceof Profesor){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText("You dont have permission to delete profesors of this subject!.");
+                alert.showAndWait();
+
+            }
+            else{
+
+                int idP = daoUser.findUserID(getTrenutniProfesor().getJmbg());
+                int idS = daoSubject.findSubjectID(subject.getName());
+                daoProfessorToSubjectDAO.deleteProfesorToSubject(idP, idS);
+                setTrenutniProfesor(null);
+            }
 
             try
             {
@@ -138,7 +162,10 @@ public class SubjectController
             }
         }
         else {
-            System.out.println("Nije oznacen ni jedan profesor");
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("You have to select a user in order to delete it.");
+            alert.showAndWait();
         }
 
         setProf();

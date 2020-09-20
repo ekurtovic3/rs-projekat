@@ -126,21 +126,7 @@ public class ProfessorToSubjectDAO
         }
         return FXCollections.observableArrayList(result);
     }
-    /*
-    public ObservableList<Profesor> getProfesorsForAdd(Subject subject) throws SQLException {
-        //  ArrayList<Profesor> result = new ArrayList<>();
-        ObservableList<Profesor> allProfesors= UserDAO.getAllProfesors();
-       // ObservableList<Profesor> profesorsOfSubject= getProfesorsOfSubject(subject);
-        // profesorsOfSubject.removeAll(allProfesors);
-        //List<Profesor> result=null;
-        //List<Profesor> result = allProfesors.stream().filter(aObject -> {return  profesorsOfSubject.contains(aObject); }).collect(Collectors.toList());
-        for (int i=0;i<result.size();i++) {
-            System.out.println("Profesor za dodavanje:"+result.get(i));
 
-        }
-        return  FXCollections.observableArrayList(result);
-    }
-*/
     public  void addProfesorToSubject(int id1,int id2){
         try {
             addProfesorToSubject.setInt(1,id1);
@@ -162,32 +148,7 @@ public class ProfessorToSubjectDAO
         }
     }
 
-    public void clearAll()
-    {
-        try
-        {
-            PreparedStatement DeleteAll = datConn.getConnection().prepareStatement("Delete FROM ProfesorSubject ");
-            DeleteAll.executeUpdate();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
 
-
-    }
-    public void defaultData()
-    {
-        daoSubject.clearAll();
-        daoSubject.defaultData();
-        daoClassroom.clearAll();
-        daoClassroom.defaultData();
-        addProfesorToSubject(2,1);
-        addProfesorToSubject(2,2);
-        addProfesorToSubject(3,1);
-        addProfesorToSubject(3,2);
-
-    }
 
     public  ObservableList<User> getAllProfessorsThatAreNoProfessorsOnASubject(Subject subject)
     {
@@ -233,5 +194,31 @@ public class ProfessorToSubjectDAO
         }
 
         return FXCollections.observableArrayList(result);
+    }
+    public void clearAll()
+    {
+        try
+        {
+            PreparedStatement DeleteAll = datConn.getConnection().prepareStatement("Delete FROM ProfesorSubject ");
+            DeleteAll.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+
+    }
+    public void defaultData()
+    {
+        daoUser.clearAll();
+        daoUser.defaultData();
+        daoSubject.clearAll();
+        daoSubject.defaultData();
+        daoClassroom.clearAll();
+        daoClassroom.defaultData();
+       // addProfesorToSubject(2,1);
+        addProfesorToSubject(3,1);
+
     }
 }
