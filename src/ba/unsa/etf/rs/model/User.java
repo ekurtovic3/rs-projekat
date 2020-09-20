@@ -133,7 +133,7 @@ public class User {
 
     @Override
     public String toString() {
-        return this.getName()+" "+this.getSurname()+" "+this.getEmail();
+        return this.getName()+" "+this.getSurname();
     }
 
     @Override

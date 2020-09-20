@@ -96,6 +96,7 @@ public class MainController {
     private int year = 2020;
     private Object StartScreenController;
 
+    private boolean deletingUser = false;
 
     public MainController() throws SQLException {
 
@@ -221,9 +222,14 @@ public class MainController {
                 if (getTrenutniKorisnik() instanceof Profesor) radioProfesor.setSelected(true);
                 if (getTrenutniKorisnik() instanceof Admin) {
                     btnUserEdit.setDisable(true);
-                }
-                else btnUserEdit.setDisable(false);
+                    btnUserDelete.setDisable(true);
 
+                }
+                else {
+                    btnUserEdit.setDisable(false);
+                    btnUserDelete.setDisable(false);
+
+                }
             }
         });
         fldName.textProperty().addListener((obs, oldIme, newIme) -> {
@@ -391,6 +397,8 @@ public class MainController {
             FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/addSubject.fxml"));
             loader3.setController(new AddSubjectController(daoSubject));
             root = loader3.load();
+            myStage.setTitle("Adding a subject");
+
             addSubjectController = loader3.getController();
             myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             myStage.setResizable(false);
@@ -405,12 +413,14 @@ public class MainController {
                     } else {
                         statusMsg.setText("Subject not added.");
                     }
+                    setSubjectsTimetable();
                 }
             });
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
 
@@ -424,6 +434,7 @@ public class MainController {
                 loader2.setController(new SubjectController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, (Subject) listViewSubjects.getSelectionModel().getSelectedItem()));
                 root = loader2.load();
                 SubjectController = loader2.getController();
+                myStage.setTitle("Editing a subject");
                 myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
                 myStage.setResizable(false);
                 myStage.show();
@@ -446,7 +457,7 @@ public class MainController {
             daoSubject.deleteSubject(((Subject) listViewSubjects.getSelectionModel().getSelectedItem()).getName());
            setSubjects();// listViewSubjects.setItems(daoSubject.getAllSubjects());
             statusMsg.setText("Subject deleted.");
-
+setSubjectsTimetable();
         }
     }
 
@@ -493,10 +504,12 @@ public class MainController {
         listViewUsers.setItems(daoUser.getAllUsers());
     }
 
-    public void confirmUser(ActionEvent actionEvent) {
+    public void confirmUser(ActionEvent actionEvent)
+    {
+        deletingUser = false;
 
-
-        if (getTrenutniKorisnik() != null && !btnUserDelete.isDisable()) {
+        if (getTrenutniKorisnik() != null && !btnUserDelete.isDisable())
+        {
             btnCancelUser.setDisable(true);
             btnConfirmUser.setDisable(true);
             btnUserAdd.setDisable(false);
@@ -508,25 +521,35 @@ public class MainController {
             listViewUsers.setItems(daoUser.getAllUsers());
             statusMsg.setText("User deleted.");
 
-        } else if (getTrenutniKorisnik() == null && !btnUserDelete.isDisable()) {
-            System.out.println("Nije oznacen ni jedan korisnik za brisanje");
-        } else if (isValidAll() && getTrenutniKorisnik() != null && !btnUserEdit.isDisable()) {
-            try {
+            deletingUser = true;
+        }
+        else if (isValidAll() && getTrenutniKorisnik() != null && !btnUserEdit.isDisable())
+        {
+            try
+            {
                 int pom=daoUser.EditUserExist(fldUsername.getText(),fldJmbg.getText(),daoUser.findUserID2(fldJmbg.getText()));
-                if(checkEmail(fldEmail.getText())){
-                    if (radioProfesor.isSelected()) {
+                if(checkEmail(fldEmail.getText()))
+                {
+                    if (radioProfesor.isSelected())
+                    {
                         daoUser.UpdateUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
                         statusMsg.setText("User edited.");
 
-                    } else if (radioStudent.isSelected()) {
+                    }
+                    else if (radioStudent.isSelected())
+                    {
                         daoUser.UpdateUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
                         statusMsg.setText("User edited.");
                     }
                     else {
                         daoUser.UpdateUser(new Admin(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())));
                         statusMsg.setText("User edited.");
-                    }}
-            }  catch (ObjectAlredyExist objectAlredyExist) {
+                    }
+                }
+
+            }
+            catch (ObjectAlredyExist objectAlredyExist)
+            {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Edit failed");
                 alert.setHeaderText(null);
@@ -534,10 +557,15 @@ public class MainController {
                 alert.showAndWait();
             }
 
-        } else if (isValidAll() && !btnUserAdd.isDisable()) {
-            try {
+        }
+        else if (isValidAll() && !btnUserAdd.isDisable())
+        {
+            try
+            {
                 int a=daoUser.AddUserExist(fldUsername.getText(),fldJmbg.getText());
-                if (radioProfesor.isSelected() && checkEmail(fldEmail.getText())) {
+
+                if (radioProfesor.isSelected() && checkEmail(fldEmail.getText()))
+                {
                     pw=generisiPassword();
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Password");
@@ -548,7 +576,9 @@ public class MainController {
 
                     daoUser.addUser(new Profesor(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), pw);
                     statusMsg.setText("User added.");
-                } else if (radioStudent.isSelected() && checkEmail(fldEmail.getText())) {
+                }
+                else if (radioStudent.isSelected() && checkEmail(fldEmail.getText()))
+                {
                     pw=generisiPassword();
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Password");
@@ -558,38 +588,41 @@ public class MainController {
                     statusMsg.setText("User added.");
                     daoUser.addUser(new Student(fldName.getText(), fldSurname.getText(), fldEmail.getText(), fldJmbg.getText(), fldUsername.getText(), Date.valueOf(dpBirthday.getValue())), pw);
                 }
-            } catch (ObjectAlredyExist objectAlredyExist) {
+            }
+            catch (ObjectAlredyExist objectAlredyExist)
+            {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Edit failed");
                 alert.setHeaderText(null);
                 alert.setContentText("Sorry, add failed, this username or JMBG alredy exist");
                 alert.showAndWait();
             }
-
-
-
         }
 
-        if (!isValidAll() || !checkEmail(fldEmail.getText()) && (!btnUserAdd.isDisable() || !btnUserEdit.isDisable())){
-            try {
+        if (deletingUser == false && (!isValidAll() || !checkEmail(fldEmail.getText()) && (!btnUserAdd.isDisable() || !btnUserEdit.isDisable())))
+        {
+            try
+            {
                 throw new EmptyField("There is a filed that is invalid or empty");
-            } catch (EmptyField emptyField) {
+            }
+            catch (EmptyField emptyField)
+            {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Invalid form");
                 alert.setHeaderText(null);
                 alert.setContentText("There is a field that is invalid or empty.");
                 alert.showAndWait();
-            }}
-            else{
-                btnCancelUser.setDisable(true);
-                btnConfirmUser.setDisable(true);
-                btnUserAdd.setDisable(false);
-                btnUserDelete.setDisable(false);
-                btnUserEdit.setDisable(false);
-                listViewUsers.setDisable(false);
-                disable();
             }
-
+        }
+        else {
+            btnCancelUser.setDisable(true);
+            btnConfirmUser.setDisable(true);
+            btnUserAdd.setDisable(false);
+            btnUserDelete.setDisable(false);
+            btnUserEdit.setDisable(false);
+            listViewUsers.setDisable(false);
+            disable();
+        }
 
         listViewUsers.setItems(daoUser.getAllUsers());
     }
@@ -618,18 +651,38 @@ public class MainController {
         btnUserDelete.setDisable(true);
         enable();
         if (getTrenutniKorisnik() == null) {
-            System.out.println("ERROR nije izabran ni jedan korisnik");
+            btnUserAdd.setDisable(false);
+            btnUserDelete.setDisable(false);
+            btnConfirmUser.setDisable(true);
+            btnCancelUser.setDisable(true);
             disable();
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("You have to select a user in order to edit it.");
+            alert.showAndWait();
+
         }
         statusMsg.setText("Editing user.");
     }
 
     public void btnUserDelete(ActionEvent actionEvent) {
-        btnUserAdd.setDisable(true);
+   if(getTrenutniKorisnik()!=null) {     btnUserAdd.setDisable(true);
         btnUserEdit.setDisable(true);
         btnConfirmUser.setDisable(false);
         btnCancelUser.setDisable(false);
-        statusMsg.setText("Deliting user.");
+        statusMsg.setText("Deliting user.");}
+   else if (getTrenutniKorisnik() == null) {
+       btnUserAdd.setDisable(false);
+       btnUserDelete.setDisable(false);
+       btnConfirmUser.setDisable(true);
+       btnCancelUser.setDisable(true);
+       disable();
+       Alert alert = new Alert(Alert.AlertType.WARNING);
+       alert.setTitle("Warning");
+       alert.setHeaderText("You have to select a user in order to delete it.");
+       alert.showAndWait();
+
+   }
     }
 
     public void addClassroom(ActionEvent actionEvent) {
@@ -639,6 +692,7 @@ public class MainController {
             FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/classroom.fxml"));
             loader3.setController(new ClassroomController(daoClassroom));
             root = loader3.load();
+            myStage.setTitle("Adding a classroom");
             addClassroomController = loader3.getController();
             myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             myStage.setResizable(false);
@@ -653,21 +707,23 @@ public class MainController {
                     } else {
                         statusMsg.setText("Classroom not added.");
                     }
+                    cbClassroom.setItems(daoClassroom.getAllClassrooms());
+
                 }
             });
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void editClassroom(ActionEvent actionEvent) {
-        try {
+       if(getTrenutniClassroom()!=null){ try {
             Parent root = null;
             Stage myStage = new Stage();
             FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/classroom.fxml"));
             loader3.setController(new ClassroomController(daoClassroom,getTrenutniClassroom()));
             root = loader3.load();
+            myStage.setTitle("Editing a classroom");
             addClassroomController = loader3.getController();
             myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
             myStage.setResizable(false);
@@ -687,7 +743,7 @@ public class MainController {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }}
     }
 
     public void deleteClassrom(ActionEvent actionEvent) {
@@ -696,8 +752,9 @@ public class MainController {
             daoClassroom.deleteClassroom(((Classroom) listViewClassroom.getSelectionModel().getSelectedItem()).getName());
             listViewClassroom.setItems(daoClassroom.getAllClassrooms());
             statusMsg.setText("Classroom deleted.");
-
+            cbClassroom.setItems(daoClassroom.getAllClassrooms());
         }
+
     }
 
 
@@ -760,6 +817,7 @@ public class MainController {
                 FXMLLoader loader3 = new FXMLLoader(getClass().getResource("/fxml/timetable.fxml"));
                 loader3.setController(new ClassController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, (Classroom) cbClassroom.getValue(), (Subject) cbSubject.getValue(), Date.valueOf((LocalDate) listViewCalendar.getSelectionModel().getSelectedItem()),user));
                 root = loader3.load();
+                myStage.setTitle("Timetable of "+Date.valueOf((LocalDate) listViewCalendar.getSelectionModel().getSelectedItem()).toString());
                 ClassController = loader3.getController();
                 myStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
                 myStage.setResizable(false);

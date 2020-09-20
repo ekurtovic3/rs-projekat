@@ -265,6 +265,7 @@ public class StartScreenController implements Initializable {
             Parent root = null;
             Stage myStage = new Stage();
             FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/mainform.fxml"));
+            myStage.setTitle("Schedule making application");
             loader2.setController(new MainController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, daoUser.findUserByID(id)));
             root = loader2.load();
             MainController = loader2.getController();
@@ -300,6 +301,7 @@ public class StartScreenController implements Initializable {
                 daoUser.addUser(new Student(tfNameSignIn.getText(), tfSurnameSignIn.getText(), tfEmailSignIn.getText(), tfJMBGSignIn.getText(), tfUsernameSignIn.getText(), Date.valueOf(dpDateOfBirthSignIn.getValue())), tfPasswordSignUp.getText());
                 Stage myStage = new Stage();
                 FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/fxml/mainform.fxml"));
+                myStage.setTitle("Schedule making application");
                 loader2.setController(new MainController(daoClass, daoClassroom, daoProfessorToSubjectDAO, daoSubject, daoUser, student));
                 root = loader2.load();
                 MainController = loader2.getController();

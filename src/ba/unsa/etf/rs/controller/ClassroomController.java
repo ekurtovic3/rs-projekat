@@ -26,6 +26,8 @@ this.daoClassroom=daoClassroom;
         this.daoClassroom=daoClassroom;
         this.classroom=trenutniClassroom;
         edit=true;
+
+
     }
 
     @FXML
@@ -33,6 +35,8 @@ this.daoClassroom=daoClassroom;
 if(edit==true){
     fldClassroomName.setText(classroom.getName());
     fldCapacity.setText(String.valueOf(classroom.getCapacity()));
+    fldClassroomName.getStyleClass().add("poljeIspravno");
+    fldCapacity.getStyleClass().add("poljeIspravno");
 }
         fldClassroomName.textProperty().addListener((obs, oldIme, newIme) -> {
             if (!newIme.isEmpty()) {
@@ -54,13 +58,14 @@ if(edit==true){
         }
     });}
 
+
         private boolean isNumeric(String strNum) {
             if (strNum == null) {
                 return false;
             }
             try {
                 double d = Double.parseDouble(strNum);
-            } catch (NumberFormatException nfe) {
+            } catch (Exception nfe) {
                 return false;
             }
             return true;
@@ -108,5 +113,15 @@ if(edit==true){
             stage.close();
 
         }
+         else{
+          if(fldCapacity.getText().isEmpty()) {
+              fldCapacity.getStyleClass().removeAll("poljeIspravno");
+              fldCapacity.getStyleClass().add("poljeNijeIspravno");
+          }
+          if ((fldClassroomName.getText().isEmpty())) {
+              fldClassroomName.getStyleClass().removeAll("poljeIspravno");
+              fldClassroomName.getStyleClass().add("poljeNijeIspravno");
+          }
+          }
     }
 }

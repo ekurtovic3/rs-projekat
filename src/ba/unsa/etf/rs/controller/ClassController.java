@@ -138,17 +138,38 @@ spPeriod.setVisible(false);
     }
 
     public void editClass(ActionEvent actionEvent) {
-        enable();
+       if (getTrenutniClass()!=null) {enable();
         btnClassDelete.setDisable(true);
-        btnClassAdd.setDisable(true);
+        btnClassAdd.setDisable(true);}
+       else {
+           btnConfirmClass.setDisable(true);
+           btnCancelClass.setDisable(true);
+           btnClassEdit.setDisable(false);
+           btnClassAdd.setDisable(false);
+           Alert alert = new Alert(Alert.AlertType.WARNING);
+           alert.setTitle("Warning");
+           alert.setHeaderText("You have to select a class in order to edit it.");
+           alert.showAndWait();
+       }
     }
 
     public void deleteClass(ActionEvent actionEvent) {
+        if(getTrenutniClass()!=null){
         disable();
         btnConfirmClass.setDisable(false);
         btnCancelClass.setDisable(false);
         btnClassEdit.setDisable(true);
-        btnClassAdd.setDisable(true);
+        btnClassAdd.setDisable(true);}
+        else {
+            btnConfirmClass.setDisable(true);
+            btnCancelClass.setDisable(true);
+            btnClassEdit.setDisable(false);
+            btnClassAdd.setDisable(false);
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("You have to select a class in order to delete it.");
+            alert.showAndWait();
+        }
     }
 
     public void cancelClass(ActionEvent actionEvent) {

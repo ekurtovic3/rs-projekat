@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import java.net.URL?>
-<AnchorPane prefHeight="162.0" prefWidth="295.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane prefHeight="162.0" prefWidth="295.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@/css/mainform.css" />
     </stylesheets>
@@ -20,13 +20,13 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Naziv sale" />
-            <Label text="Kapacitet sale" GridPane.rowIndex="1" />
+            <Label text="Classroom name:" />
+            <Label text="Capacty:" GridPane.rowIndex="1" />
             <TextField fx:id="fldClassroomName" GridPane.columnIndex="1" />
             <TextField fx:id="fldCapacity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
              <ButtonBar prefHeight="32.0" prefWidth="523.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
                  <buttons>
-                     <Button mnemonicParsing="false"  onAction="#btnCancelClassroom" style="-fx-background-color: lightpink; -fx-border-color: black; -fx-border-radius: 5px; -fx-background-radius: 5px;" text="Cancel" />
+                     <Button mnemonicParsing="false" onAction="#btnCancelClassroom" style="-fx-background-color: lightpink; -fx-border-color: black; -fx-border-radius: 5px; -fx-background-radius: 5px;" text="Cancel" />
                      <Button mnemonicParsing="false" onAction="#btnConfirmClassroom" style="-fx-border-color: black; -fx-background-color: greenyellow; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Confirm" />
                  </buttons>
              </ButtonBar>

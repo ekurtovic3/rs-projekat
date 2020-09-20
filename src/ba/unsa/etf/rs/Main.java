@@ -69,7 +69,7 @@ public class Main extends Application
         CountryDAO countryDao = CountryDAO.getInstance();
         loader.setController(new StartScreenController(countryDao));
         Parent root = loader.load();
-        primaryStage.setTitle("");
+        primaryStage.setTitle("Log in/Sign up");
         primaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
         primaryStage.show();
 

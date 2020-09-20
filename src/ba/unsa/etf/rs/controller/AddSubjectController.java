@@ -68,6 +68,10 @@ public class AddSubjectController {
 
             alert.showAndWait();
         }
+        else {
+            fldNameSubject.getStyleClass().removeAll("poljeIspravno");
+            fldNameSubject.getStyleClass().add("poljeNijeIspravno");
+        }
 
     }
 
