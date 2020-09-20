@@ -11,7 +11,8 @@ import javafx.scene.control.*;
 
 import java.sql.SQLException;
 
-public class SubjectController {
+public class SubjectController
+{
     public MenuButton mbtnAddProfesor;
     public MenuButton mbtnAddStudent;
     public ListView<User> profesorsOfSubject;
@@ -25,6 +26,7 @@ public class SubjectController {
     private ProfessorToSubjectDAO daoProfessorToSubjectDAO;
     private SubjectDAO daoSubject;
     private UserDAO daoUser;
+    private  ProfessorToSubjectDAO daoDaoProfessorToSubject=ProfessorToSubjectDAO.getInstance();
     private SimpleObjectProperty<User> trenutniProfesor = new SimpleObjectProperty<>();
 
     public SubjectController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Subject selectedItem) {
@@ -38,16 +40,21 @@ public class SubjectController {
 
 
     @FXML
-    public void initialize() {
-        try {
+    public void initialize()
+    {
+        try
+        {
             profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getUsersOfSubject(subject));
             fldSubjectName.setText(subject.toString());
-
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
         }
+
         profesorsOfSubject.getSelectionModel().selectedItemProperty().addListener((obs, oldKorisnik, newKorisnik) -> {
-            setTrenutniProfesor((User) newKorisnik); });
+            setTrenutniProfesor((User) newKorisnik);
+        });
 
         setProf();
         setStud();
@@ -57,73 +64,83 @@ public class SubjectController {
     public SubjectController() {
     }
 
-    public void setProf() {
-
+    public void setProf()
+    {
             mbtnAddProfesor.getItems().clear();
-            ObservableList<User> profesors = daoUser.getAllSpecificUsers(2);
-            for (int i = 0; i < profesors.size(); i++) {
+            ObservableList<User> profesors = daoProfessorToSubjectDAO.getAllProfessorsThatAreNoProfessorsOnASubject(subject);
+
+            for (int i = 0; i < profesors.size(); i++)
+            {
                 User p = profesors.get(i);
                 MenuItem i1 = new MenuItem(profesors.get(i).toString());
+
                 i1.setOnAction(event -> {
-                    try {
+                    try
+                    {
                         daoProfessorToSubjectDAO.addProfesorToSubject(daoUser.findUserID(p.getJmbg()), daoSubject.findSubjectID(subject.getName()));
                         profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getUsersOfSubject(subject));
                         mbtnAddProfesor.getItems().remove(i1);
 
-                    } catch (SQLException e) {
+                    }
+                    catch (SQLException e)
+                    {
                         e.printStackTrace();
                     }
 
                 });
-                    if(!profesorsOfSubject.getItems().contains(p)) {
-
-                    mbtnAddProfesor.getItems().add(i1);}
-
+                mbtnAddProfesor.getItems().add(i1);
             }
 
     }
-    public void setStud() {
+    public void setStud()
+    {
         mbtnAddStudent.getItems().clear();
 
-        ObservableList<User> students = daoUser.getAllSpecificUsers(1);
-        for (int i = 0; i < students.size(); i++) {
+        ObservableList<User> students = daoProfessorToSubjectDAO.getAllStudentsThatAreNotOnASubject(subject);
+        for (int i = 0; i < students.size(); i++)
+        {
             User p = students.get(i);
             MenuItem i1 = new MenuItem(students.get(i).toString());
+
             i1.setOnAction(event -> {
-                try {
+                try
+                {
                     daoProfessorToSubjectDAO.addProfesorToSubject(daoUser.findUserID(p.getJmbg()), daoSubject.findSubjectID(subject.getName()));
                     profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getUsersOfSubject(subject));
                     mbtnAddStudent.getItems().remove(i1);
-                } catch (SQLException e) {
+                }
+                catch (SQLException e)
+                {
                     e.printStackTrace();
                 }
             });
-            try {
-                if(!daoProfessorToSubjectDAO.getUsersOfSubject(subject).contains(p)) {
-                    mbtnAddStudent.getItems().add(i1);}
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            }
-
+            mbtnAddStudent.getItems().add(i1);
+        }
     }
 
 
-    public void btnDeleteProf(ActionEvent actionEvent) {
-        if (getTrenutniProfesor() != null) {
+    public void btnDeleteProf(ActionEvent actionEvent)
+    {
+        if (getTrenutniProfesor() != null)
+        {
             int idP = daoUser.findUserID(getTrenutniProfesor().getJmbg());
             int idS = daoSubject.findSubjectID(subject.getName());
             daoProfessorToSubjectDAO.deleteProfesorToSubject(idP, idS);
             setTrenutniProfesor(null);
-            setProf();
-            try {
+
+            try
+            {
                 profesorsOfSubject.setItems(daoProfessorToSubjectDAO.getUsersOfSubject(subject));
-            } catch (SQLException e) {
+            }
+            catch (SQLException e)
+            {
                 e.printStackTrace();
             }
-        } else {
+        }
+        else {
             System.out.println("Nije oznacen ni jedan profesor");
         }
+
         setProf();
         setStud();
     }

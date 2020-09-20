@@ -217,7 +217,7 @@ public class ClassDAO
         daoClassroom.addClassroom(new Classroom("VA",50));
         Class aclass1=new Class(12,13,0,new Classroom("0-1",10),new Subject("UUP"), Class.Type.Exercises, Date.valueOf(LocalDate.now()));
         Class aclass2=new Class(13,14,0,new Classroom("0-2",10),new Subject("UUP"), Class.Type.Lectures, Date.valueOf(LocalDate.now()));
-        Class aclass3=new Class(8,9,0,new Classroom("VA",10),new Subject("RS"), Class.Type.Tutorial, Date.valueOf(LocalDate.now()));
+        Class aclass3=new Class(17,18,0,new Classroom("VA",10),new Subject("RS"), Class.Type.Tutorial, Date.valueOf(LocalDate.now()));
 
         addClass(aclass1);
         addClass(aclass2);

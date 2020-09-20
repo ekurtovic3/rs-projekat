@@ -42,6 +42,7 @@ public class Main extends Application {
 
 import ba.unsa.etf.rs.controller.StartScreenController;
 import ba.unsa.etf.rs.database.CountryDAO;
+import ba.unsa.etf.rs.database.UserDAO;
 import ba.unsa.etf.rs.database.XMLFormat;
 import ba.unsa.etf.rs.model.Subject;
 import javafx.application.Application;
@@ -61,10 +62,11 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        UserDAO daoUser=UserDAO.getInstance();
+        daoUser.clearAll();
+        daoUser.defaultData();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/startScreen.fxml"));
-
         CountryDAO countryDao = CountryDAO.getInstance();
-
         loader.setController(new StartScreenController(countryDao));
         Parent root = loader.load();
         primaryStage.setTitle("");

@@ -146,7 +146,6 @@ public class MainController {
     @FXML
     public void initialize() {
 
-
         setSubjectsTimetable();
         cbClassroom.setItems(daoClassroom.getAllClassrooms());
         statusMsg.setText("Program started...");
@@ -154,6 +153,8 @@ public class MainController {
             tbClassrooms.setDisable(true);
             tbSubjects.setDisable(true);
             tbUsers.setDisable(true);
+            //btnUserAdd.setDisable(true);
+           // btnUserDelete.setDisable(true);
         }
         if (user instanceof Profesor){
             tbClassrooms.setDisable(true);
@@ -169,7 +170,10 @@ public class MainController {
         btnCancelUser.setDisable(true);
         btnConfirmUser.setDisable(true);
         setSubjects();// listViewSubjects.setItems(daoSubject.getAllSubjects());
-        listViewUsers.setItems(daoUser.getAllUsers());
+    //   if(user instanceof Admin)
+           listViewUsers.setItems(daoUser.getAllUsers());
+       // if(user instanceof Student) listUsers.addAll(user);
+
         radioAllUsers.setSelected(true);
         listViewClassroom.setItems(daoClassroom.getAllClassrooms());
         disable();

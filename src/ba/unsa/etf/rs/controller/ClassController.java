@@ -44,7 +44,19 @@ public class ClassController {
     private SimpleObjectProperty<Class> trenutniClass = new SimpleObjectProperty<>();
     Calendar cal = Calendar.getInstance();
 
-    public ClassController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Classroom classroom, Subject subject, Date selectedItem,User user) {
+    public ClassController() {
+        this.daoClass = ClassDAO.getInstance();
+        this.daoClassroom = ClassroomDAO.getInstance();
+        this.daoProfessorToSubjectDAO = ProfessorToSubjectDAO.getInstance();
+        this.daoSubject = SubjectDAO.getInstance();
+        this.daoUser = UserDAO.getInstance();
+        this.classroom = new Classroom("0-1",10);
+        this.subject = new Subject("UUP");
+        this.date = Date.valueOf(LocalDate.now());
+        this.user=daoUser.getAllUsers().get(0);
+    }
+
+    public ClassController(ClassDAO daoClass, ClassroomDAO daoClassroom, ProfessorToSubjectDAO daoProfessorToSubjectDAO, SubjectDAO daoSubject, UserDAO daoUser, Classroom classroom, Subject subject, Date selectedItem, User user) {
         this.daoClass = daoClass;
         this.daoClassroom = daoClassroom;
         this.daoProfessorToSubjectDAO = daoProfessorToSubjectDAO;
@@ -55,6 +67,7 @@ public class ClassController {
         this.date = selectedItem;
         this.user=user;
     }
+
 
 
     @FXML
@@ -70,8 +83,8 @@ public class ClassController {
            else if (user instanceof Admin) System.out.println("Logovao se admin");
 spPeriod.setVisible(false);
         lbPeriod.setVisible(false);
-        ObservableList<Class> result = daoClass.initializeClass(date, classroom, subject);
-        listViewClass.setItems(result);
+    if(date!=null && classroom!=null && subject!=null)   { ObservableList<Class> result = daoClass.initializeClass(date, classroom, subject);
+        listViewClass.setItems(result);}
         choiceSubject.setItems(daoSubject.getAllSubjects());
         choiceClassroom.setItems(daoClassroom.getAllClassrooms());
 
@@ -252,5 +265,8 @@ spPeriod.setVisible(false);
     public void setTrenutniClass(Class trenutniClass) {
         this.trenutniClass.set(trenutniClass);
     }
+
+
+
 }
 
