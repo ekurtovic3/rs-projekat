@@ -877,9 +877,7 @@ setSubjectsTimetable();
         XMLFormat xml = new XMLFormat();
         xml.zapisiXmlSuject(daoSubject.getAllSubjectsXML());
     }
-    public void about(ActionEvent actionEvent) {
-        System.out.println("About");
-    }
+
     public void logOut(ActionEvent actionEvent) {
 
         Node n = (Node) actionEvent.getSource();

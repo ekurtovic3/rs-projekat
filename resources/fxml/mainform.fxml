@@ -34,16 +34,10 @@
                                     </items>
                                 </Menu>
 
-                                <MenuItem text="_Exit" />
 
                             </items>
                         </Menu>
 
-                        <Menu text="_Help">
-                            <items>
-                                <MenuItem onAction="#about" text="_About" />
-                            </items>
-                        </Menu>
                     </menus>
                 </MenuBar>
             </children>

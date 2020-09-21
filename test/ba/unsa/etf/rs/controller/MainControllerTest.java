@@ -495,7 +495,7 @@ class MainControllerTest {
         robot.clickOn("Student");
         robot.clickOn("Confirm");
         try {
-            Thread.sleep(600);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -551,7 +551,7 @@ assertEquals("Edit Editing",daoUser.getAllUsers().get(1).toString());
         robot.clickOn("Student");
         robot.clickOn("Cancel");
         try {
-            Thread.sleep(600);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -609,7 +609,7 @@ assertEquals("Edit Editing",daoUser.getAllUsers().get(1).toString());
         robot.write("~a5");
         robot.clickOn("Confirm");
         try {
-            Thread.sleep(600);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -654,7 +654,7 @@ assertEquals("Edit Editing",daoUser.getAllUsers().get(1).toString());
 
         robot.clickOn("Confirm");
         try {
-            Thread.sleep(600);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -699,7 +699,7 @@ assertEquals("Edit Editing",daoUser.getAllUsers().get(1).toString());
 
         robot.clickOn("Cancel");
         try {
-            Thread.sleep(600);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
